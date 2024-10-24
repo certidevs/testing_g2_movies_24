@@ -12,3 +12,4 @@ public class G2MoviesApplication {
 
 }
 //comentario de prueba creado por dani, se puede borrar
+//otro comentario
