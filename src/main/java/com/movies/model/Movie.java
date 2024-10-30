@@ -40,4 +40,4 @@ public class Movie {
     @JoinColumn(name = "category_id", nullable = false)
     private Categoria category;
 
-}
+}//
