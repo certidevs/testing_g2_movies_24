@@ -15,7 +15,7 @@ public class CustomerController {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @GetMapping
+    @GetMapping("")
     public String findAll(Model model) {
         model.addAttribute("customers", customerRepository.findAll());
         return "customer-list";
@@ -33,15 +33,15 @@ public class CustomerController {
         return "redirect:/customers";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/{id}")
     public String findById(@PathVariable("id") int id, Model model) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid customer ID:" + id));
         model.addAttribute("customer", customer);
-        return "customer-form";
+        return "customer-detail";
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/edit/{id}")
     public String updateCustomer(@PathVariable("id") int id, @ModelAttribute("customer") Customer customer) {
         customer.setId(id);
         customerRepository.save(customer);

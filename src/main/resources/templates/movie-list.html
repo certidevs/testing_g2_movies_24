@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Películas</title>
+</head>
+<body>
+<h1>Lista de Películas</h1>
+
+<!-- Botón para crear una nueva película -->
+<a href="/movies/create">Nueva Película</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Duración (min)</th>
+        <th>Año</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="movie : ${movies}">
+        <td th:text="${movie.id}"></td>
+        <td th:text="${movie.name}"></td>
+        <td th:text="${movie.duration}"></td>
+        <td th:text="${movie.year}"></td>
+        <td>
+            <a th:href="@{/movies/{id}/edit(id=${movie.id})}">Editar</a>
+            <a th:href="@{/movies/{id}/delete(id=${movie.id})}" onclick="return confirm('¿Estás seguro de que deseas eliminar esta película?')">Eliminar</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
