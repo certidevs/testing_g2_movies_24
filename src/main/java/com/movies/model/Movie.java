@@ -36,8 +36,8 @@ public class Movie {
     )
     private Set<Customer> customer = new HashSet<>();
 
-   // @ManyToOne
-  //  @JoinColumn(name = "category_id", nullable = false)
-  //  private Category category;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Categoria category;
 
 }
