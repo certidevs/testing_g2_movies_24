@@ -21,10 +21,13 @@ public class Categoria {
     private String nombre;
     private String descripcion;
 
-    public Categoria(Long id, String nombre, String descripcion ) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-    }
+    // Las lineas comentadas de abajo dan error, por que supuestamente ya estan definidas,
+    // pero las dejo ahi por si acaso
+
+    //public Categoria(Long id, String nombre, String descripcion ) {
+    //    this.id = id;
+    //    this.nombre = nombre;
+    //    this.descripcion = descripcion;
+    // }
 }
 

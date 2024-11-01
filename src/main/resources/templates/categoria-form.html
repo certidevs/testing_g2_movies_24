@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Categoria</title>
+</head>
+<body>
+<h1 th:text="${categoria.id == null} ? 'Crear Cliente' : 'Editar Cliente'"></h1>
+<form th:action="@{/categorias}" th:object="${categoria}" method="post">
+    <input type="hidden" th:if="${categoria.id != null}" th:field="*{id}"/>
+    <div>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" th:field="*{nombre}" required/>
+    </div>
+    <div>
+        <label for="descripcion">Descripcion:</label>
+        <input type="text" id="descripcion" th:field="*{descripcion}" required/>
+    </div>
+    <div>
+        <button type="submit">Guardar</button>
+    </div>
+</form>
+<a href="/categorias">Volver a la lista</a>
+</body>
+</html>
