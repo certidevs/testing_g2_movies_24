@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Valoración</title>
+</head>
+<body>
+<h1>Formulario de Valoración</h1>
+<form action="#" th:action="@{/valoraciones/save}" th:object="${valoracion}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <p>Usuario ID: <input type="text" th:field="*{usuario.id}" required/></p>
+    <p>Pelicula ID: <input type="text" th:field="*{pelicula.id}" required/></p>
+    <p>Puntuacion: <input type="number" th:field="*{puntuacion}" required/></p>
+    <p>Comentario: <input type="text" th:field="*{comentario}" required/></p>
+    <button type="submit">Guardar</button>
+</form>
+<a href="/valoraciones">Volver a la lista</a>
+</body>
+</html>

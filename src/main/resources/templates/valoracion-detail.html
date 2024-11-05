@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Valoración</title>
+</head>
+<body>
+<h1>Detalle de Valoración</h1>
+
+<div th:if="${valoracion != null}">
+    <p><strong>ID:</strong> <span th:text="${valoracion.id}"></span></p>
+    <p><strong>Usuario:</strong> <span th:text="${valoracion.usuario.nombre}"></span></p>
+    <p><strong>Película:</strong> <span th:text="${valoracion.pelicula.nombre}"></span></p>
+    <p><strong>Puntuación:</strong> <span th:text="${valoracion.puntuacion}"></span></p>
+    <p><strong>Comentario:</strong> <span th:text="${valoracion.comentario}"></span></p>
+</div>
+
+<div th:if="${valoracion == null}">
+    <p>No se encontró la valoración solicitada.</p>
+</div>
+
+<a href="/valoraciones">Volver a la lista de valoraciones</a>
+</body>
+</html>
+

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Valoraciones</title>
+</head>
+<body>
+<h1>Lista de Valoraciones</h1>
+<div th:if="${valoraciones.isEmpty()}">
+    <p>No hay valoraciones disponibles.</p>
+</div>
+<div th:unless="${valoraciones.isEmpty()}">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Pelicula</th>
+            <th>Puntuacion</th>
+            <th>Comentario</th>
+            <th>Acciones</th>
+        </tr>
+        <tr th:each="valoracion : ${valoraciones}">
+            <td th:text="${valoracion.id}"></td>
+            <td th:text="${valoracion.usuario.nombre}"></td>
+            <td th:text="${valoracion.pelicula.nombre}"></td>
+            <td th:text="${valoracion.puntuacion}"></td>
+            <td th:text="${valoracion.comentario}"></td>
+            <td>
+                <a th:href="@{/valoraciones/form(id=${valoracion.id})}">Editar</a> |
+                <a th:href="@{/valoraciones/delete/{id}(id=${valoracion.id})}">Eliminar</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<a href="/valoraciones/form">Crear nueva Valoración</a>
+</body>
+</html>
