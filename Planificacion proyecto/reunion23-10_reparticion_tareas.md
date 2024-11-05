@@ -7,7 +7,7 @@ Usuario->hecho por Ana
 *id
 *name
 *email
-*password**ok
+*password
 @OneToMany-> Pelicula
 
 
@@ -19,7 +19,7 @@ película @ManyToOne
 comentario: String
 puntuación: Integer
 
-Película:->David+Ana
+Película:->David +Ana
 
 id
 name
@@ -38,7 +38,7 @@ Cine (Opcion)-> no
 
 Diseño BBDD-> draw.io-> DIAGRAMA DE CLASES-> DIAGRAMA UML-> link de drive->GINES
 
-BBDD-> PROGRAMA DE CLASE->david+Gines-> MY SQL WORKBENCH
+BBDD-> PROGRAMA DE CLASE->david +Gines-> MY SQL WORKBENCH
 
 
 ## PASOS QUE DEBE REALIZAR CADA PERSONA:
