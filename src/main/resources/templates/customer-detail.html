@@ -2,14 +2,42 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Detalle de Cliente</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
 </head>
 <body>
-<h1>Detalle del Cliente</h1>
-<p>ID: <span th:text="${customer.id}"></span></p>
-<p>Nombre: <span th:text="${customer.nombre}"></span></p>
-<p>Apellido: <span th:text="${customer.apellido}"></span></p>
-<p>Email: <span th:text="${customer.email}"></span></p>
-<p>Password: <span th:text="${customer.password}"></span></p>
-<a href="/customers">Volver a la lista</a>
+    <div th:replace="~{navbar :: nav1}"></div>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Detalle del Cliente</h1>
+        
+        <div class="card p-4 shadow-sm">
+            <div class="mb-3">
+                <p><strong>ID:</strong> <span th:text="${customer.id}"></span></p>
+            </div>
+            <div class="mb-3">
+                <p><strong>Nombre:</strong> <span th:text="${customer.nombre}"></span></p>
+            </div>
+            <div class="mb-3">
+                <p><strong>Apellido:</strong> <span th:text="${customer.apellido}"></span></p>
+            </div>
+            <div class="mb-3">
+                <p><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
+            </div>
+            <div class="mb-3">
+                <p><strong>Password:</strong> <span th:text="${customer.password}"></span></p>
+            </div>
+            <div class="mt-3">
+                <a href="/customer-list" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{footer :: footer1}"></div>
+
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/webjars/font-awesome/js/all.min.js}"></script>
 </body>
 </html>

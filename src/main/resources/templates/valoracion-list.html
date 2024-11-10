@@ -3,35 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista de Valoraciones</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
 </head>
 <body>
-<h1>Lista de Valoraciones</h1>
-<div th:if="${valoraciones.isEmpty()}">
-    <p>No hay valoraciones disponibles.</p>
+<div th:replace="~{navbar :: nav1}"></div>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Lista de Valoraciones</h1>
+
+
+    <div th:if="${valoraciones.isEmpty()}" class="alert alert-warning">
+        <p>No hay valoraciones disponibles.</p>
+    </div>
+
+    <div th:unless="${valoraciones.isEmpty()}">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Película</th>
+                    <th>Puntuación</th>
+                    <th>Comentario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="valoracion : ${valoraciones}">
+                    <td th:text="${valoracion.id}"></td>
+                    <td th:text="${valoracion.usuario.nombre}"></td>
+                    <td th:text="${valoracion.pelicula.nombre}"></td>
+                    <td th:text="${valoracion.puntuacion}"></td>
+                    <td th:text="${valoracion.comentario}"></td>
+                    <td>
+                        <a th:href="@{/valoraciones/form(id=${valoracion.id})}" class="btn btn-sm btn-warning me-1">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a th:href="@{/valoraciones/delete/{id}(id=${valoracion.id})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta valoración?')">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a href="/valoraciones/form" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Crear nueva Valoración
+    </a>
 </div>
-<div th:unless="${valoraciones.isEmpty()}">
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Usuario</th>
-            <th>Pelicula</th>
-            <th>Puntuacion</th>
-            <th>Comentario</th>
-            <th>Acciones</th>
-        </tr>
-        <tr th:each="valoracion : ${valoraciones}">
-            <td th:text="${valoracion.id}"></td>
-            <td th:text="${valoracion.usuario.nombre}"></td>
-            <td th:text="${valoracion.pelicula.nombre}"></td>
-            <td th:text="${valoracion.puntuacion}"></td>
-            <td th:text="${valoracion.comentario}"></td>
-            <td>
-                <a th:href="@{/valoraciones/form(id=${valoracion.id})}">Editar</a> |
-                <a th:href="@{/valoraciones/delete/{id}(id=${valoracion.id})}">Eliminar</a>
-            </td>
-        </tr>
-    </table>
-</div>
-<a href="/valoraciones/form">Crear nueva Valoración</a>
+
+<div th:replace="~{footer :: footer1}"></div>
+
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/font-awesome/js/all.min.js}"></script>
 </body>
 </html>
+

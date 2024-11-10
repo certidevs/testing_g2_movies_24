@@ -2,28 +2,51 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Detalle de Película</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
 </head>
 <body>
-<h1>Detalle de la Película</h1>
-<div>
-    <p><strong>ID:</strong> <span th:text="${movie.id}"></span></p>
-    <p><strong>Nombre:</strong> <span th:text="${movie.name}"></span></p>
-    <p><strong>Duración:</strong> <span th:text="${movie.duration}"></span> minutos</p>
-    <p><strong>Año:</strong> <span th:text="${movie.year}"></span></p>
+    <div th:replace="~{navbar :: nav1}"></div>
 
-    <div th:if="${movie.customers != null}">
-        <h2>Clientes Asociados</h2>
-        <ul>
-            <li th:each="customer : ${movie.customers}">
-                <p><strong>Nombre:</strong> <span th:text="${customer.nombre}"></span></p>
-                <p><strong>Apellido:</strong> <span th:text="${customer.apellido}"></span></p>
-                <p><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
-            </li>
-        </ul>
+    <div class="container mt-4">
+        <h1 class="mb-4">Detalle de la Película</h1>
+
+        <div class="card p-4 shadow-sm">
+            <div class="mb-3">
+                <p><strong>ID:</strong> <span th:text="${movie.id}"></span></p>
+            </div>
+            <div class="mb-3">
+                <p><strong>Nombre:</strong> <span th:text="${movie.name}"></span></p>
+            </div>
+            <div class="mb-3">
+                <p><strong>Duración:</strong> <span th:text="${movie.duration}"></span> minutos</p>
+            </div>
+            <div class="mb-3">
+                <p><strong>Año:</strong> <span th:text="${movie.year}"></span></p>
+            </div>
+
+            <div th:if="${movie.customers != null}" class="mt-4">
+                <h2 class="h5">Clientes </h2>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:each="customer : ${movie.customers}">
+                        <p class="mb-1"><strong>Nombre:</strong> <span th:text="${customer.nombre}"></span></p>
+                        <p class="mb-1"><strong>Apellido:</strong> <span th:text="${customer.apellido}"></span></p>
+                        <p class="mb-1"><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="/movie-list" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a la lista de películas
+            </a>
+        </div>
     </div>
-</div>
 
-<a href="/movies">Volver a la lista de películas</a>
+    <div th:replace="~{footer :: footer1}"></div>
+
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/webjars/font-awesome/js/all.min.js}"></script>
 </body>
 </html>
-<!---->

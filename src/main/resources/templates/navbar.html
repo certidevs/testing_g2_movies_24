@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="nav1" class="navbar navbar-expand-lg bg-success" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white" href="#">
+            <img src="Planificacion proyecto/logo.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+            App
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarApp" aria-controls="navbarApp" aria-expanded="false" aria-label="Alternar navegación">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarApp">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" th:href="@{/movie-list}">
+                        <i class="fas fa-film"></i>
+                        Peliculas
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" th:href="@{/categoria-list}">
+                        <i class="fas fa-tags"></i>
+                        Categorias
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" th:href="@{/valoracion-list}">
+                        <i class="fas fa-star"></i>
+                        Valoraciones
+                    </a>
+                </li>
+            </ul>
+
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
+                <button class="btn btn-outline-light">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
+
