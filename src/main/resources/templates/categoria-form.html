@@ -3,23 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Formulario Categoria</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
 </head>
 <body>
-<h1 th:text="${categoria.id == null} ? 'Crear Cliente' : 'Editar Cliente'"></h1>
-<form th:action="@{/categorias}" th:object="${categoria}" method="post">
-    <input type="hidden" th:if="${categoria.id != null}" th:field="*{id}"/>
-    <div>
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" th:field="*{nombre}" required/>
+    <div th:replace="~{navbar :: nav1}"></div>
+
+    <div class="container mt-4">
+        <h1 class="mb-4" th:text="${categoria.id == null} ? 'Crear Categoria' : 'Editar Categoria'"></h1>
+        
+        <form th:action="@{/categorias}" th:object="${categoria}" method="post" class="card p-4 shadow-sm">
+            <input type="hidden" th:if="${categoria.id != null}" th:field="*{id}"/>
+            
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required/>
+            </div>
+            
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripcion:</label>
+                <input type="text" id="descripcion" th:field="*{descripcion}" class="form-control" required/>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-3">
+                <a href="/categorias" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </div>
+        </form>
     </div>
-    <div>
-        <label for="descripcion">Descripcion:</label>
-        <input type="text" id="descripcion" th:field="*{descripcion}" required/>
-    </div>
-    <div>
-        <button type="submit">Guardar</button>
-    </div>
-</form>
-<a href="/categorias">Volver a la lista</a>
+
+    <div th:replace="~{footer :: footer1}"></div>
+
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/webjars/font-awesome/js/all.min.js}"></script>
 </body>
 </html>

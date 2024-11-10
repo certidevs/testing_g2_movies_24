@@ -3,12 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Detalle  Categorias</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
 </head>
 <body>
-<h1>Detalle del Cliente</h1>
-<p>ID: <span th:text="${categoria.id}"></span></p>
-<p>Nombre: <span th:text="${categoria.nombre}"></span></p>
-<p>Apellido: <span th:text="${categoria.descripcion}"></span></p>
-<a href="/categorias">Volver a la lista</a>
+    <div th:replace="~{navbar :: nav1}"></div>
+    
+    <div class="container mt-4">
+        <h1 class="mb-4">Detalle de la Categoría</h1>
+        <p><strong>ID:</strong> <span th:text="${categoria.id}"></span></p>
+        <p><strong>Nombre:</strong> <span th:text="${categoria.nombre}"></span></p>
+        <p><strong>Descripción:</strong> <span th:text="${categoria.descripcion}"></span></p>
+        <a href="/categorias" class="btn btn-secondary mt-3">
+            <i class="fas fa-arrow-left"></i> Volver a la lista
+        </a>
+    </div>
+    
+
+<div th:replace="~{footer :: footer1}"></div>
+
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/font-awesome/js/all.min.js}"></script>
 </body>
 </html>

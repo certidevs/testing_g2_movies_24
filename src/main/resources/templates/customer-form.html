@@ -2,8 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Formulario de Cliente</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
 </head>
 <body>
+    <div th:replace="~{navbar :: nav1}"></div>
+    <h1>Formulario Clientes</h1>
 <h1 th:text="${customer.id == null} ? 'Crear Cliente' : 'Editar Cliente'"></h1>
 <form th:action="@{/customers}" th:object="${customer}" method="post">
     <input type="hidden" th:if="${customer.id != null}" th:field="*{id}"/>
@@ -28,5 +32,9 @@
     </div>
 </form>
 <a href="/customers">Volver a la lista</a>
+<div th:replace="~{footer :: footer1}"></div>
+
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/font-awesome/js/all.min.js}"></script>
 </body>
 </html>
