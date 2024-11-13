@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.data.repository.CrudRepository;
 
 @Controller
-@RequestMapping("/Categorias")
+@RequestMapping("/categorias")
 public class CategoriaController {
 
     @Autowired
@@ -17,41 +17,42 @@ public class CategoriaController {
 
     @GetMapping
     public String findAll(Model model) {
-        model.addAttribute("Categorias", CategoriaRepository.findAll());
-        return "Categoria-list";
+        model.addAttribute("categorias", CategoriaRepository.findAll());
+        return "categoria-list";
     }
 
     @GetMapping("/new")
     public String createCategoria(Model model) {
-        model.addAttribute("Categoria", new Categoria());
-        return "Categoria-form";
+        model.addAttribute("categorias", new Categoria());
+        model.addAttribute("returnUrl", "categorias");
+        return "categoria-form";
     }
 
     @PostMapping
-    public String saveCategoria(@ModelAttribute("Categoria") Categoria Categoria) {
+    public String saveCategoria(@ModelAttribute("categorias") Categoria Categoria) {
         CategoriaRepository.save(Categoria);
-        return "redirect:/Categorias";
+        return "redirect:/categorias";
     }
 
     @GetMapping("/edit/{id}")
     public String findById(@PathVariable("id") int id, Model model) {
         Categoria Categoria = CategoriaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Categoria ID:" + id));
-        model.addAttribute("Categoria", Categoria);
-        return "Categoria-form";
+                .orElseThrow(() -> new IllegalArgumentException("ID de Categoria no valido:" + id));
+        model.addAttribute("categorias", Categoria);
+        return "categoria-form";
     }
 
     @PostMapping("/update/{id}")
-    public String updateCategoria(@PathVariable("id") int id, @ModelAttribute("Categoria") Categoria Categoria) {
+    public String updateCategoria(@PathVariable("id") int id, @ModelAttribute("Categorias") Categoria Categoria) {
         Categoria.setId((long) id);
         CategoriaRepository.save(Categoria);
-        return "redirect:/Categorias";
+        return "redirect:/categorias";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteCategoria(@PathVariable("id") int id) {
         CategoriaRepository.deleteById(id);
-        return "redirect:/Categorias";
+        return "redirect:/categorias";
     }
 }
 
