@@ -15,7 +15,7 @@ public class CategoriaController {
     @Autowired
     private CategoriaRepository CategoriaRepository;
 
-    @GetMapping
+    @GetMapping("")
     public String findAll(Model model) {
         model.addAttribute("categorias", CategoriaRepository.findAll());
         return "categoria-list";
