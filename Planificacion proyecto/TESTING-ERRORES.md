@@ -6,4 +6,4 @@ La URL localhost:8080/valoraciones/form no existe
 
 La URL localhost:8080/customers/edit/1 no existe
 
-Revisar redirecciones de categoria
+las direcciones del index.html no coinciden con las del controlador, 

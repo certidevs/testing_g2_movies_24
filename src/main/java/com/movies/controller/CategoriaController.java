@@ -9,7 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.data.repository.CrudRepository;
 
 @Controller
-@RequestMapping("/categorias")
+//@RequestMapping("/categorias")
+@RequestMapping("/categoria-list")
 public class CategoriaController {
 
     @Autowired
