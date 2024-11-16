@@ -3,6 +3,9 @@ package com.movies.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,8 +23,12 @@ public class Customer {
     private String password;
 
     @ManyToMany
-    @JoinColumn(name = "movies.id")
-    private Movie movie;
+    @JoinTable(
+            name = "customer_movies",
+            joinColumns = @JoinColumn(name = "customer.id"),
+            inverseJoinColumns = @JoinColumn(name = "movie.id")
+    )
+    private Set<Movie> movies = new HashSet<>();
 
     @OneToMany
     @JoinColumn(name = "valoracion.id")

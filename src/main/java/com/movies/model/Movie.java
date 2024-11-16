@@ -29,8 +29,12 @@ public class Movie {
     private Integer year;
 
     @ManyToMany
-    @JoinColumn(name = "customer.id", nullable = false)
-    private Customer customer;
+    @JoinTable(
+            name = "customer_movies",
+            joinColumns = @JoinColumn(name = "movie.id"),
+            inverseJoinColumns = @JoinColumn(name = "customer.id")
+    )
+    private Set<Customer> customer = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "categoria.id", nullable = false)
