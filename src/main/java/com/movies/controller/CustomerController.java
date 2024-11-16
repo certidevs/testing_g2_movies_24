@@ -16,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.NoSuchElementException;
+
 @Controller
 //@RequestMapping("/customers")
 @AllArgsConstructor
@@ -41,6 +43,17 @@ public class CustomerController {
                 () -> { throw  new IllegalArgumentException("Invalid customer ID:" + id);}
         );
         return "customer-detail";
+    }
+
+    @GetMapping("customer404/{id}")
+    public String findById_NotExist(@PathVariable Long id, Model model){
+        return customerRepository.findById(id)
+                .map(customer -> {
+                    model.addAttribute("customer", customer);
+                    return "customer-detail";
+                })
+                .orElseThrow(() ->new NoSuchElementException( "Customer not found"));
+
     }
 
 

@@ -13,9 +13,11 @@ import org.mockito.Mock;
 import org.springframework.ui.Model;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -61,6 +63,17 @@ public class CustomerControllerUnitTest {
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
         String view = customerController.findById(1L, model);
         assertEquals("customer-detail", view);
+        verify(customerRepository).findById(1L);
+        verify(model, never()).addAttribute(eq("customer"), any());
+    }
+    @Test
+    void findById_IdNotFound(){
+        when(customerRepository.findById(1L)).thenReturn(Optional.empty());
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+            customerController.findById_NotExist(1L, model);
+        });
+        String view = customerController.findById_NotExist(1L, model);
+        assertEquals("customer404/{id}", view);
         verify(customerRepository).findById(1L);
         verify(model, never()).addAttribute(eq("customer"), any());
     }
