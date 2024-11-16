@@ -32,6 +32,6 @@ public class Customer {
     )
     private Set<Movie> movies = new HashSet<>();
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Valoracion> valoraciones = new ArrayList<>();
 }

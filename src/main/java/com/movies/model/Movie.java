@@ -40,9 +40,9 @@ public class Movie {
 
     @ManyToOne
     @JoinColumn(name = "categoria.id", nullable = false)
-    private Categoria category;
+    private Categoria categoria;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<Valoracion> valoraciones = new ArrayList<>();
 
 }//

@@ -1,10 +1,10 @@
 package com.movies.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -29,5 +29,8 @@ public class Categoria {
     //    this.nombre = nombre;
     //    this.descripcion = descripcion;
     // }
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "categoria.id")
+    private List<Movie> movies = new ArrayList<>();
 }
 
