@@ -29,15 +29,11 @@ public class Movie {
     private Integer year;
 
     @ManyToMany
-    @JoinTable(
-            name = "movie_users",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<Customer> customer = new HashSet<>();
+    @JoinColumn(name = "customer.id", nullable = false)
+    private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "categoria.id", nullable = false)
     private Categoria category;
 
 }//

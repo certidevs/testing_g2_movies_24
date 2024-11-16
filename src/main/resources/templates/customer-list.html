@@ -34,7 +34,7 @@
                     <td th:text="${customer.email}"></td>
                     <td th:text="${customer.password}"></td>
                     <td>
-                        <a th:href="@{/customers/edit/{id}(id=${customer.id})}" class="btn btn-sm btn-warning">
+                        <a th:href="@{/customers/update/{id}(id=${customer.id})}" class="btn btn-sm btn-warning">
                             <i class="fas fa-edit"></i> Editar
                         </a>
                         <a th:href="@{/customers/delete/{id}(id=${customer.id})}" class="btn btn-sm btn-danger ms-2">
