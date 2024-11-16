@@ -26,7 +26,7 @@ public class Customer {
 
     @ManyToMany
     @JoinTable(
-            name = "customer_movies",
+            name = "customer.movies",
             joinColumns = @JoinColumn(name = "customer.id"),
             inverseJoinColumns = @JoinColumn(name = "movie.id")
     )
