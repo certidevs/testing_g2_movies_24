@@ -1,5 +1,6 @@
 package com.movies.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,25 +14,27 @@ import com.movies.model.Valoracion;
 import com.movies.repository.ValoracionRepository;
 
 @Controller
-@RequestMapping("/valoraciones")
+@AllArgsConstructor
+//@RequestMapping("/valoraciones")
+
 public class ValoracionController {
 
-    @Autowired
+
     private ValoracionRepository valoracionRepository;
 
-    @GetMapping("")
+    @GetMapping("valoraciones")
     public String findAll(Model model) {
         model.addAttribute("valoraciones", valoracionRepository.findAll());
         return "valoracion-list";
     }
 
-    @GetMapping("/new")
+    @GetMapping("valoraciones/new")
     public String createValoracion(Model model) {
         model.addAttribute("valoracion", new Valoracion());
         return "valoracion-form";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("valoraciones/{id}")
     public String findById(@PathVariable("id") int id, Model model) {
         Valoracion valoracion = valoracionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid valoracion ID:" + id));
@@ -39,14 +42,14 @@ public class ValoracionController {
         return "valoracion-detail";
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping("valoraciones/edit/{id}")
     public String updateValoracion(@PathVariable("id") int id, @ModelAttribute("valoracion") Valoracion valoracion) {
         valoracion.setId(id);
         valoracionRepository.save(valoracion);
-        return "redirect:/valoraciones";
+        return "valoracion-form";
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("valoraciones/delete/{id}")
     public String deleteCustomer(@PathVariable("id") int id) {
         valoracionRepository.deleteById(id);
         return "redirect:/valoraciones";

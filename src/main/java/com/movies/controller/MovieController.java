@@ -22,15 +22,15 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 @Controller
 @Valid
-@RequestMapping("/movies")
+//@RequestMapping("/movies")
 public class MovieController {
-    @Autowired
+
     private final MovieRepository movieRepository;
 
 
 
 
-    @GetMapping("")
+    @GetMapping("movies")
     public String findAll(HttpSession session, Model model) {
         model.addAttribute("returnUrl", "movie");
         List<Movie> movies = StreamSupport.stream(movieRepository.findAll().spliterator(), false)
@@ -49,7 +49,7 @@ public class MovieController {
         model.addAttribute("error", "\uD83E\uDD74 " + message);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("movies/{id}")
     public String findById(Model model, @PathVariable Long id) {
         model.addAttribute("returnUrl", "movie");
 
@@ -64,14 +64,14 @@ public class MovieController {
         return "movie-list";
     }
 
-    @GetMapping("/create")
+    @GetMapping("movies/new")
     public String createForm(Model model) {
         model.addAttribute("movie", new Movie());
         model.addAttribute("returnUrl", "movie");
         return "movie-form";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("movies/update/{id}")
     public String editForm(Model model, @PathVariable Long id) {
         model.addAttribute("returnUrl", "movie");
 
@@ -86,7 +86,7 @@ public class MovieController {
         return "movie-list";
     }
 
-    @PostMapping("")
+    @PostMapping("movies")
     public String saveForm(@Valid @ModelAttribute Movie movie, BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("movie", movie);
@@ -98,7 +98,7 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("movies/delete/{id}")
     public String deleteById(@PathVariable Long id) {
         if (id > 0 && movieRepository.existsById(id)) {
             movieRepository.deleteById(id);
