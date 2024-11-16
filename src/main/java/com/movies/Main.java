@@ -13,7 +13,7 @@ public class Main {
 		var context = SpringApplication.run(Main.class, args);
 		CustomerRepository productRepository = context.getBean(CustomerRepository.class);
 		Customer customer = Customer.builder()
-				.id(1)
+				.id(1L)
 				.nombre("Cliente")
 				.apellido("1")
 				.email("123@gmail.com")
