@@ -3,7 +3,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -39,5 +41,8 @@ public class Movie {
     @ManyToOne
     @JoinColumn(name = "categoria.id", nullable = false)
     private Categoria category;
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Valoracion> valoraciones = new ArrayList<>();
 
 }//

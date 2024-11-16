@@ -3,7 +3,9 @@ package com.movies.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,7 +32,6 @@ public class Customer {
     )
     private Set<Movie> movies = new HashSet<>();
 
-    @OneToMany
-    @JoinColumn(name = "valoracion.id")
-    private Valoracion valoracion;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Valoracion> valoraciones = new ArrayList<>();
 }
