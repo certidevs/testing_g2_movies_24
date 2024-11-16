@@ -1,7 +1,7 @@
 package com.movies.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,6 +9,12 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Builder
 @Entity
 @Table(name = "movies")
 public class Movie {
