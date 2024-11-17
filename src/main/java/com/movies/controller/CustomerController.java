@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
@@ -41,20 +42,17 @@ public class CustomerController {
         customerRepository.findById(id)
                 .ifPresentOrElse(
                         customer -> model.addAttribute("customer", customer),
-                () -> { throw  new IllegalArgumentException("Invalid customer ID:" + id);}
+                        () -> { throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"); }
         );
         return "customer-detail";
     }
 
-    @GetMapping("customer404/{id}")
+    @GetMapping("customers404/{id}")
     public String findById_NotExist(@PathVariable Long id, Model model){
-        return customerRepository.findById(id)
-                .map(customer -> {
-                    model.addAttribute("customer", customer);
-                    return "customer-detail";
-                })
-                .orElseThrow(() ->new NoSuchElementException( "Customer not found"));
-
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+        model.addAttribute("customer", customer);
+         return "customer-detail";
     }
 
 
@@ -95,6 +93,9 @@ public class CustomerController {
 
     @GetMapping("customers/delete/{id}")
     public String deleteCustomer(@PathVariable("id") Long id) {
+        if (!customerRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+        }
         customerRepository.deleteById(id);
         return "redirect:/customers";
     }
@@ -112,7 +113,8 @@ public class CustomerController {
         movie.setYear(year);
         customer.getMovies().add(movie);
         movieRepository.save(movie);
-        return "redirect:/customers" ;
+        customerRepository.save(customer);
+        return "redirect:/customers/" + customerId;
     }
 
 
@@ -148,9 +150,10 @@ public class CustomerController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
         Valoracion valoracion = valoracionRepository.findById(valoracionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Valoracion not found"));
-
+        if (customer.getValoraciones() == null) {
+            customer.setValoraciones(new ArrayList<>());
+        }
         customer.getValoraciones().remove(valoracion);
-        //valoracionRepository.delete(valoracion);
         customerRepository.save(customer);
 
         return "redirect:/customers/" + customerId;

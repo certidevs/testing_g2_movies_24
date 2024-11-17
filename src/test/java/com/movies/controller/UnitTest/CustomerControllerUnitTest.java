@@ -64,20 +64,22 @@ public class CustomerControllerUnitTest {
     @Test
     void findById_CustomerNotFound(){
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-        customerController.findById(1L, model);
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            customerController.findById(1L, model);
         });
-        assertEquals("Invalid customer ID:1", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Customer not found", exception.getReason());
         verify(customerRepository).findById(1L);
         verify(model, never()).addAttribute(eq("customer"), any());
     }
     @Test
     void findById_IdNotFound(){
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             customerController.findById_NotExist(1L, model);
         });
-        assertEquals("Customer not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Customer not found", exception.getReason());
         verify(customerRepository).findById(1L);
         verify(model, never()).addAttribute(eq("customer"), any());
     }
@@ -135,6 +137,7 @@ public class CustomerControllerUnitTest {
 
     @Test
     void deleteCustomer(){
+        when(customerRepository.existsById(1L)).thenReturn(true);
         String view = customerController.deleteCustomer(1L);
         assertEquals("redirect:/customers", view);
         verify(customerRepository).deleteById(1L);
@@ -145,7 +148,7 @@ public class CustomerControllerUnitTest {
         Customer customer = Customer.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
         String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021);
-        assertEquals("redirect:/customers", view);
+        assertEquals("redirect:/customers/1", view);
         verify(customerRepository).findById(1L);
         verify(movieRepository).save(any());
     }

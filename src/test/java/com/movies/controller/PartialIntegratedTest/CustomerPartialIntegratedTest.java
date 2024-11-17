@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.verify;
@@ -73,17 +74,21 @@ public class CustomerPartialIntegratedTest {
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/customers/{id}", 1L))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
+                .andExpect(result -> assertEquals("Customer not found", ((ResponseStatusException) result.getResolvedException()).getReason()));
+
+        verify(customerRepository).findById(1L);
     }
 
     @Test
     void findById_IdNotFound() throws Exception {
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/customer404/{id}", 1L))
+        mockMvc.perform(get("/customers404/{id}", 1L))
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoSuchElementException))
-                .andExpect(result -> assertEquals("Customer not found", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
+                .andExpect(result -> assertEquals("Customer not found", ((ResponseStatusException) result.getResolvedException()).getReason()));
 
         verify(customerRepository).findById(1L);
     }
@@ -137,8 +142,10 @@ public class CustomerPartialIntegratedTest {
     void saveCustomerUpdate() throws Exception {
         Customer customer = Customer.builder().id(1L).nombre("Cliente").build();
         when(customerRepository.existsById(1L)).thenReturn(true);
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
-        mockMvc.perform(post("/customers/update/{id}", 1L)
+        mockMvc.perform(post("/customers")
+                        .param("id", "1")
                         .param("nombre", "Cliente Actualizado")
                         .param("apellido", "1")
                         .param("email", "123@gmail.com")
@@ -147,11 +154,13 @@ public class CustomerPartialIntegratedTest {
                 .andExpect(redirectedUrl("/customers"));
 
         verify(customerRepository).existsById(1L);
+        verify(customerRepository).findById(1L);
         verify(customerRepository).save(any(Customer.class));
     }
     @Test
     void deleteCustomer() throws Exception{
-        mockMvc.perform(post("/customers/delete/{id}", 1L))
+        when(customerRepository.existsById(1L)).thenReturn(true);
+        mockMvc.perform(get("/customers/delete/{id}", 1L))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/customers"));
 
@@ -177,11 +186,17 @@ public class CustomerPartialIntegratedTest {
 
     @Test
     void removeMovieFromCustomer() throws Exception {
-        mockMvc.perform(post("/customers/1/remove-movie/{movieId}", 1L))
+        Customer customer = Customer.builder().id(1L).build();
+        Movie movie = Movie.builder().id(1L).build();
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
+        mockMvc.perform(post("/customers/1/remove-movie/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/customers/1"));
 
-        verify(movieRepository).deleteById(1L);
+        verify(customerRepository).findById(1L);
+        verify(movieRepository).findById(1L);
+        verify(customerRepository).save(any(Customer.class));
     }
 
     @Test
@@ -190,8 +205,8 @@ public class CustomerPartialIntegratedTest {
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
         mockMvc.perform(post("/customers/1/add-valoracion")
-                        .param("rating", "5")
-                        .param("comment", "Buen servicio"))
+                        .param("puntuacion", "5")
+                        .param("comentario", "Buen servicio"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/customers/1"));
 
@@ -200,10 +215,16 @@ public class CustomerPartialIntegratedTest {
     }
     @Test
     void removeValoracionFromCustomer() throws Exception {
+        Customer customer = Customer.builder().id(1L).build();
+        Valoracion valoracion = Valoracion.builder().id(1).build();
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+        when(valoracionRepository.findById(1)).thenReturn(Optional.of(valoracion));
         mockMvc.perform(post("/customers/1/remove-valoracion/{valoracionId}", 1L))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/customers/1"));
 
-        verify(valoracionRepository).deleteById(1);
+        verify(customerRepository).findById(1L);
+        verify(valoracionRepository).findById(1);
+        verify(customerRepository).save(any(Customer.class));
     }
 }
