@@ -1,8 +1,10 @@
 package com.movies.controller.PartialIntegratedTest;
 
+import com.movies.model.Categoria;
 import com.movies.model.Customer;
 import com.movies.model.Movie;
 import com.movies.model.Valoracion;
+import com.movies.repository.CategoriaRepository;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
@@ -40,6 +42,9 @@ public class CustomerPartialIntegratedTest {
 
      @MockBean
     private MovieRepository movieRepository;
+
+     @MockBean
+     private CategoriaRepository categoriaRepository;
 
     @MockBean
     private ValoracionRepository valoracionRepository;
@@ -169,17 +174,20 @@ public class CustomerPartialIntegratedTest {
     @Test
     void addMovieToCustomer() throws Exception {
         Customer customer = Customer.builder().id(1L).build();
+        Categoria categoria = Categoria.builder().id(1).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-
+        when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
         mockMvc.perform(post("/customers/1/add-movie")
                 .param("id", "1")
-                .param("nombre", "Pelicula")
-                .param("duracion", "60")
-                .param("year", "2021"))
+                .param("name", "Pelicula")
+                .param("duration", "60")
+                .param("year", "2021")
+                .param("categoriaId", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/customers/1"));
 
         verify(customerRepository).findById(1L);
+        verify(categoriaRepository).findById(1);
         verify(movieRepository).save(any(Movie.class));
         verify(customerRepository).save(any(Customer.class));
     }

@@ -1,9 +1,11 @@
 package com.movies.controller.UnitTest;
 
 import com.movies.controller.CustomerController;
+import com.movies.model.Categoria;
 import com.movies.model.Customer;
 import com.movies.model.Movie;
 import com.movies.model.Valoracion;
+import com.movies.repository.CategoriaRepository;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
@@ -38,6 +40,9 @@ public class CustomerControllerUnitTest {
 
     @Mock
     private ValoracionRepository valoracionRepository;
+
+    @Mock
+    private CategoriaRepository categoriaRepository;
 
     @Mock
     Model model;
@@ -146,11 +151,14 @@ public class CustomerControllerUnitTest {
     @Test
     void addMovieToCustomer(){
         Customer customer = Customer.builder().id(1L).build();
+        Categoria categoria = Categoria.builder().id(1).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021);
+        when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
+        String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021, 1);
         assertEquals("redirect:/customers/1", view);
         verify(customerRepository).findById(1L);
-        verify(movieRepository).save(any());
+        verify(categoriaRepository).findById(1);
+        verify(movieRepository).save(any(Movie.class));
     }
     @Test
     void removeMovieFromCustomer(){

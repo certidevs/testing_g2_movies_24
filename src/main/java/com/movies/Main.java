@@ -40,7 +40,7 @@ public class Main {
 
 		CategoriaRepository categoriaRepository = context.getBean(CategoriaRepository.class);
 		Categoria categoria = Categoria.builder()
-				.id(1L)
+				.id(1)
 				.nombre("Categoria")
 				.descripcion("Descripcion")
 				.build();

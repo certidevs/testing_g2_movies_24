@@ -1,8 +1,10 @@
 package com.movies.controller;
 
+import com.movies.model.Categoria;
 import com.movies.model.Customer;
 import com.movies.model.Movie;
 import com.movies.model.Valoracion;
+import com.movies.repository.CategoriaRepository;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
@@ -30,6 +32,7 @@ public class CustomerController {
     private CustomerRepository customerRepository;
     private MovieRepository movieRepository;
     private ValoracionRepository valoracionRepository;
+    private CategoriaRepository categoriaRepository;
 
     @GetMapping("customers")
     public String findAll(Model model) {
@@ -100,17 +103,20 @@ public class CustomerController {
         return "redirect:/customers";
     }
     @PostMapping("customers/{customerId}/add-movie")
-    public String addMovieToCustomer(@PathVariable Long customerId,@RequestParam Long id,@RequestParam String nombre,@RequestParam int duracion, @RequestParam int year) {
+    public String addMovieToCustomer(@PathVariable Long customerId,@RequestParam Long id,@RequestParam String name,@RequestParam int duration, @RequestParam int year, @RequestParam int categoriaId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+        Categoria categoria = categoriaRepository.findById(categoriaId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria not found"));
         if (customer.getMovies() == null) {
             customer.setMovies(new HashSet<>());
         }
         Movie movie = new Movie();
         movie.setId(id);
-        movie.setName(nombre);
-        movie.setDuration(duracion);
+        movie.setName(name);
+        movie.setDuration(duration);
         movie.setYear(year);
+        movie.setCategoria(categoria);
         customer.getMovies().add(movie);
         movieRepository.save(movie);
         customerRepository.save(customer);

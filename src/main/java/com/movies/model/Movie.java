@@ -39,13 +39,13 @@ public class Movie {
     @ManyToMany
     @JoinTable(
             name = "customer_movies",
-            joinColumns = @JoinColumn(name = "movie_id", nullable = false),
+            joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "customer.id")
     )
     private Set<Customer> customer = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "categoria_id", nullable = false)
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
     @ManyToMany(mappedBy = "movies")
