@@ -1,8 +1,10 @@
 package com.movies;
 
+import com.movies.model.Categoria;
 import com.movies.model.Customer;
 import com.movies.model.Movie;
 import com.movies.model.Valoracion;
+import com.movies.repository.CategoriaRepository;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
@@ -36,12 +38,21 @@ public class Main {
 
 		productRepository.saveAll(List.of(customer, customer2));
 
+		CategoriaRepository categoriaRepository = context.getBean(CategoriaRepository.class);
+		Categoria categoria = Categoria.builder()
+				.id(1L)
+				.nombre("Categoria")
+				.descripcion("Descripcion")
+				.build();
+		categoriaRepository.save(categoria);
+
 		MovieRepository movieRepository = context.getBean(MovieRepository.class);
 		Movie movie = Movie.builder()
 				.id(1L)
 				.name("Pelicula")
 				.duration(60)
 				.year(2021)
+				.categoria(categoria)
 				.build();
 
 		System.out.println(movie);

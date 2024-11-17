@@ -39,13 +39,13 @@ public class Movie {
     @ManyToMany
     @JoinTable(
             name = "customer_movies",
-            joinColumns = @JoinColumn(name = "movie.id"),
+            joinColumns = @JoinColumn(name = "movie_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "customer.id")
     )
     private Set<Customer> customer = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "categoria.id", nullable = false)
+    @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)

@@ -29,8 +29,7 @@ public class Categoria {
     //    this.nombre = nombre;
     //    this.descripcion = descripcion;
     // }
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "categoria.id")
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
     private List<Movie> movies = new ArrayList<>();
 }
 
