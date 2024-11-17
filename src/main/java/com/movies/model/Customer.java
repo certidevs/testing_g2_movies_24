@@ -24,9 +24,10 @@ public class Customer {
     private String email;
     private String password;
 
+
     @ManyToMany
     @JoinTable(
-            name = "customer.movies",
+            name = "customer_movies",
             joinColumns = @JoinColumn(name = "customer.id"),
             inverseJoinColumns = @JoinColumn(name = "movie.id")
     )

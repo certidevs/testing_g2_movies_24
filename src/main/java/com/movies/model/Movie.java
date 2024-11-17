@@ -48,6 +48,9 @@ public class Movie {
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
+    @ManyToMany(mappedBy = "movies")
+    private Set<Customer> customers = new HashSet<>();
+
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<Valoracion> valoraciones = new ArrayList<>();
 

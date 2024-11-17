@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -80,16 +81,17 @@ public class CustomerController {
     public String saveCustomer(@ModelAttribute Customer customer) {
         if (customer.getId() == null) {
             customerRepository.save(customer);
+        }else {
+            if (customerRepository.existsById(customer.getId())) {
+                customerRepository.findById(customer.getId())
+                        .ifPresent(customerDB -> {
+                            BeanUtils.copyProperties(customer, customerDB, "id");
+                            customerRepository.save(customerDB);
+                        });
+            }
         }
-        customerRepository.findById(customer.getId())
-                .ifPresent(customerDB -> {
-                    BeanUtils.copyProperties(customer, customerDB, "id");
-                    customerRepository.save(customerDB);
-                });
-
         return "redirect:/customers";
     }
-
 
     @GetMapping("customers/delete/{id}")
     public String deleteCustomer(@PathVariable("id") Long id) {
@@ -100,19 +102,17 @@ public class CustomerController {
     public String addMovieToCustomer(@PathVariable Long customerId,@RequestParam Long id,@RequestParam String nombre,@RequestParam int duracion, @RequestParam int year) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+        if (customer.getMovies() == null) {
+            customer.setMovies(new HashSet<>());
+        }
         Movie movie = new Movie();
         movie.setId(id);
         movie.setName(nombre);
         movie.setDuration(duracion);
         movie.setYear(year);
-        movieRepository.save(movie);
-
-        if (customer.getMovies().stream().anyMatch(m -> m.getId().equals(id))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Movie already associated with the customer");
-        }else{
         customer.getMovies().add(movie);
-        customerRepository.save(customer);}
-        return "redirect:/customers/" + customerId; // Redirige al detalle del cliente
+        movieRepository.save(movie);
+        return "redirect:/customers" ;
     }
 
 
@@ -122,14 +122,16 @@ public class CustomerController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
-
+        if (customer.getMovies() == null) {
+            customer.setMovies(new HashSet<>());
+        }
         customer.getMovies().remove(movie);
         customerRepository.save(customer);
 
         return "redirect:/customers/" + customerId;
     }
     @PostMapping("customers/{customerId}/add-valoracion")
-    public String addValoracionToCustomer(@PathVariable Long customerId, @RequestParam int puntuacion, @RequestParam String comentario) {
+    public String addValoracionToCustomer(@PathVariable Long customerId, @RequestParam int puntuacion, @RequestParam String comentario, Model model) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
         Valoracion valoracion = new Valoracion();
@@ -137,7 +139,7 @@ public class CustomerController {
         valoracion.setComentario(comentario);
         valoracion.setCustomer(customer);
         valoracionRepository.save(valoracion);
-
+        model.addAttribute("customer", customer);
         return "redirect:/customers/" + customerId;
     }
     @PostMapping("customers/{customerId}/remove-valoracion/{valoracionId}")
