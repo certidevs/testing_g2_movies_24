@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -34,17 +35,25 @@ public class CustomerController {
     private ValoracionRepository valoracionRepository;
     private CategoriaRepository categoriaRepository;
 
+
     @GetMapping("customers")
     public String findAll(Model model) {
         model.addAttribute("customers", customerRepository.findAll());
         return "customer-list";
     }
+    //TODO: Bug-> en cuanto intento añadir la categoria al modelo,
+    // se me han borrado los customers de la BBDD, que venian importados del sql,
+    // solo se quedan los customers creados main
 
     @GetMapping("customers/{id}")
     public String findById(@PathVariable("id") Long id, Model model) {
         customerRepository.findById(id)
                 .ifPresentOrElse(
-                        customer -> model.addAttribute("customer", customer),
+                        customer -> {
+                        model.addAttribute("customer", customer);
+                        List<Categoria> categoria = (List<Categoria>) categoriaRepository.findAll();
+                        model.addAttribute("categoria", categoria);
+                        },
                         () -> { throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"); }
         );
         return "customer-detail";
@@ -150,6 +159,8 @@ public class CustomerController {
         model.addAttribute("customer", customer);
         return "redirect:/customers/" + customerId;
     }
+    //TODO: Bug-> no puedo añadir ninguna valoracion al costumer,
+    // porque creo que findall de valoracion no funciona (no se visualiza en el valoracion-list al ejecutar main)
     @PostMapping("customers/{customerId}/remove-valoracion/{valoracionId}")
     public String removeValoracionFromCustomer(@PathVariable Long customerId, @PathVariable int valoracionId) {
         Customer customer = customerRepository.findById(customerId)
@@ -164,8 +175,6 @@ public class CustomerController {
 
         return "redirect:/customers/" + customerId;
     }
-
-
-
+    //TODO: Bug-> si no puedo añadir ninguna valoracion al customer, tampoco la puedo eliminar del customer
 
 }

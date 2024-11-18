@@ -49,13 +49,14 @@ DROP TABLE IF EXISTS `movie_categoria`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `movie_categoria` (
-  `movie_id` int NOT NULL,
-  `categoria_id` int NOT NULL,
-  PRIMARY KEY (`movie_id`,`categoria_id`),
+  `movie_id` INT NOT NULL,
+  `categoria_id` INT NOT NULL,
+  PRIMARY KEY (`movie_id`, `categoria_id`), -- Clave primaria compuesta
   KEY `categoria_id` (`categoria_id`),
   CONSTRAINT `movie_categoria_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`id`) ON DELETE CASCADE,
   CONSTRAINT `movie_categoria_ibfk_2` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,12 +77,16 @@ DROP TABLE IF EXISTS `movie`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `movie` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `duration` int NOT NULL,
-  `year` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `duration` INT NOT NULL,
+  `year` INT NOT NULL,
+  `categoria_id` INT DEFAULT NULL,
+  PRIMARY KEY (`id`), -- Solo una PRIMARY KEY
+  KEY `categoria_id` (`categoria_id`),
+  CONSTRAINT `movie_fk_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,9 +95,24 @@ CREATE TABLE `movie` (
 
 LOCK TABLES `movie` WRITE;
 /*!40000 ALTER TABLE `movie` DISABLE KEYS */;
-INSERT INTO `movie` VALUES (1,'Inception',148,2010),(2,'Matrix',136,1999),(3,'Mad Max: Fury Road',120,2015),(4,'The Godfather',175,1972),(5,'Pulp Fiction',154,1994);
+INSERT INTO `movie` (`id`, `name`, `duration`, `year`, `categoria_id`)
+VALUES (1,'Inception',148,2010,1),(2,'Matrix',136,1999,1),(3,'Mad Max: Fury Road',120,2015,2),(4,'The Godfather',175,1972,2),(5,'Pulp Fiction',154,1994,2);
 /*!40000 ALTER TABLE `movie` ENABLE KEYS */;
 UNLOCK TABLES;
+
+CREATE TABLE `customer_movies` (
+  `customer_id` INT NOT NULL,
+  `movie_id` INT NOT NULL,
+  PRIMARY KEY (`customer_id`, `movie_id`),
+  CONSTRAINT `fk_customer_movies_customer`
+    FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_customer_movies_movie`
+    FOREIGN KEY (`movie_id`) REFERENCES `movie` (`id`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `customer_movies` (`customer_id`, `movie_id`) VALUES(1, 1),(1, 2),(2, 3),(3, 1);
 
 --
 -- Table structure for table `customer`
@@ -128,19 +148,19 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `valoracion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `valoracion` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `customer_id` int NOT NULL,
-  `movie_id` int NOT NULL,
-  `comentario` text,
-  `puntuacion` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `customer_id` (`customer_id`),
-  KEY `movie_id` (`movie_id`),
-  CONSTRAINT `valoracion_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `valoracion_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `valoracion_chk_1` CHECK ((`puntuacion` between 1 and 10))
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE valoracion (
+    id int NOT NULL AUTO_INCREMENT,
+    customer_id int NOT NULL,
+    movie_id int NOT NULL,
+    comentario text,
+    puntuacion int DEFAULT NULL,
+    PRIMARY KEY (id),
+    KEY customer_id (customer_id),
+    KEY movie_id (movie_id),
+    CONSTRAINT valoracion_ibfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE,
+    CONSTRAINT valoracion_ibfk_2 FOREIGN KEY (movie_id) REFERENCES movie (id) ON DELETE CASCADE,
+    CONSTRAINT valoracion_chk_1 CHECK ((puntuacion BETWEEN 1 AND 10))
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,7 +169,8 @@ CREATE TABLE `valoracion` (
 
 LOCK TABLES `valoracion` WRITE;
 /*!40000 ALTER TABLE `valoracion` DISABLE KEYS */;
-INSERT INTO `valoracion` VALUES (1,1,1,'Increíble historia y efectos visuales',9),(2,2,1,'Muy original y bien dirigida',8),(3,3,2,'Un clásico del cine moderno',10),(4,1,3,'Acción sin parar',9),(5,2,4,'Una obra maestra',10),(6,4,5,'Excelente narrativa y diálogos',9),(7,3,1,'Me encantó el final',8),(8,5,3,'Intensa y emocionante',7),(9,4,2,'Revolucionaria para su época',9),(10,5,5,'Gran combinación de géneros',8);
+INSERT INTO `valoracion` (id, customer_id, movie_id, comentario, puntuacion) 
+VALUES (1,1,1,'Increíble historia y efectos visuales',9),(2,2,1,'Muy original y bien dirigida',8),(3,3,2,'Un clásico del cine moderno',10),(4,1,3,'Acción sin parar',9),(5,2,4,'Una obra maestra',10),(6,4,5,'Excelente narrativa y diálogos',9),(7,3,1,'Me encantó el final',8),(8,5,3,'Intensa y emocionante',7),(9,4,2,'Revolucionaria para su época',9),(10,5,5,'Gran combinación de géneros',8);
 /*!40000 ALTER TABLE `valoracion` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
