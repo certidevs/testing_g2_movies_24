@@ -31,5 +31,9 @@ public class Categoria {
     // }
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
     private List<Movie> movies = new ArrayList<>();
+
+    public static Object Id() {
+        return null;
+    }
 }
 
