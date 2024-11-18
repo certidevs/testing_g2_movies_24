@@ -148,19 +148,19 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `valoracion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `valoracion` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `customer_id` int NOT NULL,
-  `movie_id` int NOT NULL,
-  `comentario` text,
-  `puntuacion` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `customer_id` (`customer_id`),
-  KEY `movie_id` (`movie_id`),
-  CONSTRAINT `valoracion_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `valoracion_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `valoracion_chk_1` CHECK ((`puntuacion` between 1 and 10))
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE valoracion (
+    id int NOT NULL AUTO_INCREMENT,
+    customer_id int NOT NULL,
+    movie_id int NOT NULL,
+    comentario text,
+    puntuacion int DEFAULT NULL,
+    PRIMARY KEY (id),
+    KEY customer_id (customer_id),
+    KEY movie_id (movie_id),
+    CONSTRAINT valoracion_ibfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE,
+    CONSTRAINT valoracion_ibfk_2 FOREIGN KEY (movie_id) REFERENCES movie (id) ON DELETE CASCADE,
+    CONSTRAINT valoracion_chk_1 CHECK ((puntuacion BETWEEN 1 AND 10))
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,7 +169,8 @@ CREATE TABLE `valoracion` (
 
 LOCK TABLES `valoracion` WRITE;
 /*!40000 ALTER TABLE `valoracion` DISABLE KEYS */;
-INSERT INTO `valoracion` VALUES (1,1,1,'Increíble historia y efectos visuales',9),(2,2,1,'Muy original y bien dirigida',8),(3,3,2,'Un clásico del cine moderno',10),(4,1,3,'Acción sin parar',9),(5,2,4,'Una obra maestra',10),(6,4,5,'Excelente narrativa y diálogos',9),(7,3,1,'Me encantó el final',8),(8,5,3,'Intensa y emocionante',7),(9,4,2,'Revolucionaria para su época',9),(10,5,5,'Gran combinación de géneros',8);
+INSERT INTO `valoracion` (id, customer_id, movie_id, comentario, puntuacion) 
+VALUES (1,1,1,'Increíble historia y efectos visuales',9),(2,2,1,'Muy original y bien dirigida',8),(3,3,2,'Un clásico del cine moderno',10),(4,1,3,'Acción sin parar',9),(5,2,4,'Una obra maestra',10),(6,4,5,'Excelente narrativa y diálogos',9),(7,3,1,'Me encantó el final',8),(8,5,3,'Intensa y emocionante',7),(9,4,2,'Revolucionaria para su época',9),(10,5,5,'Gran combinación de géneros',8);
 /*!40000 ALTER TABLE `valoracion` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
