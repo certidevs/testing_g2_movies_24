@@ -117,7 +117,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES (1,'juan@example.com','password1','Juan'),(2,'maria@example.com','password2','Maria'),(3,'luis@example.com','password3','Luis'),(4,'ana@example.com','password4','Ana'),(5,'carlos@example.com','password5','Carlos');
+INSERT INTO `customer` VALUES (1,'juan@example.com','password1','Juan', 'Cuesta'),(2,'maria@example.com','password2','Maria', 'Jesus'),(3,'luis@example.com','password3','Luis', 'Fernandez'),(4,'ana@example.com','password4','Ana', 'Ruiz'),(5,'carlos@example.com','password5','Carlos', 'Latre');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
