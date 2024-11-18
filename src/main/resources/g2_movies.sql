@@ -94,6 +94,20 @@ INSERT INTO `movie` VALUES (1,'Inception',148,2010),(2,'Matrix',136,1999),(3,'Ma
 /*!40000 ALTER TABLE `movie` ENABLE KEYS */;
 UNLOCK TABLES;
 
+CREATE TABLE `customer_movies` (
+  `customer_id` INT NOT NULL,
+  `movie_id` INT NOT NULL,
+  PRIMARY KEY (`customer_id`, `movie_id`),
+  CONSTRAINT `fk_customer_movies_customer`
+    FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_customer_movies_movie`
+    FOREIGN KEY (`movie_id`) REFERENCES `movie` (`id`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO `customer_movies` (`customer_id`, `movie_id`) VALUES(1, 1),(1, 2),(2, 3),(3, 1);
+
 --
 -- Table structure for table `customer`
 --

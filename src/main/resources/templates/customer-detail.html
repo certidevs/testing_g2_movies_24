@@ -63,8 +63,8 @@
                     <input type="number" id="year" name="year" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label for="categoria" class="form-label">Categoría:</label>
-                    <select id="categoria" name="categoriaId" class="form-select"> <!--required-->
+                    <label for="categoriaId" class="form-label">Categoría:</label>
+                    <select id="categoriaId" name="categoriaId" class="form-select"> <!--required-->
                         <option value="" disabled selected>Selecciona una categoría</option>
                         <option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.name}"></option>
                     </select>
