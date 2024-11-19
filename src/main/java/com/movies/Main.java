@@ -40,7 +40,7 @@ public class Main {
 
 		CategoriaRepository categoriaRepository = context.getBean(CategoriaRepository.class);
 		Categoria categoria = Categoria.builder()
-				.id(1)
+				.id(1L)
 				.nombre("Categoria")
 				.descripcion("Descripcion")
 				.build();
@@ -62,7 +62,7 @@ public class Main {
 		Valoracion valoracion = Valoracion.builder()
 				.movie(movie)
 				.customer(customer)
-				.id(2)
+				.id(2L)
 				.puntuacion(5)
 				.comentario("Comentario dummy")
 				.build();
