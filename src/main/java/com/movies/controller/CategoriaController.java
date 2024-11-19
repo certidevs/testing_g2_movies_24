@@ -94,4 +94,20 @@ public class CategoriaController {
         categoriaRepository.deleteById(id);
         return "redirect:/categorias";
     }
+
+    public String getFormCreateCategoria(Model model) {
+        return "";
+    }
+
+    public String getFormUpdateCategoria(Model model, long l) {
+        return "";
+    }
+
+    public String saveCategoria(Categoria categoria) {
+        return "";
+    }
+
+    public String deleteCategoria(long l) {
+        return "";
+    }
 }
