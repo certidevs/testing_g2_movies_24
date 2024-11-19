@@ -2,6 +2,7 @@ package com.movies.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.movies.model.Valoracion;
 import com.movies.repository.ValoracionRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @AllArgsConstructor
@@ -27,13 +29,6 @@ public class ValoracionController {
         model.addAttribute("valoraciones", valoracionRepository.findAll());
         return "valoracion-list";
     }
-
-    @GetMapping("valoraciones/new")
-    public String createValoracion(Model model) {
-        model.addAttribute("valoracion", new Valoracion());
-        return "valoracion-form";
-    }
-
     @GetMapping("valoraciones/{id}")
     public String findById(@PathVariable("id") int id, Model model) {
         Valoracion valoracion = valoracionRepository.findById(id)
@@ -42,12 +37,28 @@ public class ValoracionController {
         return "valoracion-detail";
     }
 
-    @PostMapping("valoraciones/edit/{id}")
-    public String updateValoracion(@PathVariable("id") int id, @ModelAttribute("valoracion") Valoracion valoracion) {
-        valoracion.setId(id);
-        valoracionRepository.save(valoracion);
+    @GetMapping("valoraciones/new")
+    public String createValoracion(Model model) {
+        model.addAttribute("valoracion", new Valoracion());
         return "valoracion-form";
     }
+
+    @GetMapping("valoraciones/edit/{id}")
+    public String updateValoracion(Model model, @PathVariable Integer id) {
+        Valoracion valoracion = valoracionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        model.addAttribute("valoracion", valoracion);
+        return "valoracion-form";
+    }
+
+    @PostMapping("valoraciones")
+    public String save(@ModelAttribute Valoracion valoracion) {
+        valoracionRepository.save(valoracion);
+        return "redirect:/valoraciones";
+    }
+
+
 
     @GetMapping("valoraciones/delete/{id}")
     public String deleteCustomer(@PathVariable("id") int id) {

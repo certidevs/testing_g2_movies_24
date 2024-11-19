@@ -27,13 +27,15 @@ public class Customer {
 
 
     @ManyToMany
-    @JoinTable(
-            name = "customer_movies",
-            joinColumns = @JoinColumn(name = "customer.id"),
-            inverseJoinColumns = @JoinColumn(name = "movie.id")
-    )
+    @ToString.Exclude
+//    @JoinTable(
+//            name = "customer_movies",
+//            joinColumns = @JoinColumn(name = "customer.id"),
+//            inverseJoinColumns = @JoinColumn(name = "movie.id")
+//    )
     private Set<Movie> movies = new HashSet<>();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Valoracion> valoraciones = new ArrayList<>();
 }

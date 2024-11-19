@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Data
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -36,22 +36,24 @@ public class Movie {
     @Max(value = 2100, message = "El año debe ser menor a 2100")
     private Integer year;
 
-    @ManyToMany
-    @JoinTable(
-            name = "customer_movies",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "customer.id")
-    )
-    private Set<Customer> customer = new HashSet<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "customer_movies",
+//            joinColumns = @JoinColumn(name = "movie_id"),
+//            inverseJoinColumns = @JoinColumn(name = "customer.id")
+//    )
+//    private Set<Customer> customer = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
     @ManyToMany(mappedBy = "movies")
+    @ToString.Exclude
     private Set<Customer> customers = new HashSet<>();
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Valoracion> valoraciones = new ArrayList<>();
 
 }//

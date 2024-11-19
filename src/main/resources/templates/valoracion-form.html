@@ -12,17 +12,17 @@
     <div class="container mt-4">
         <h1 class="mb-4">Formulario de Valoración</h1>
         
-        <form action="#" th:action="@{/valoraciones/save}" th:object="${valoracion}" method="post" class="card p-4 shadow-sm">
+        <form th:action="@{/valoraciones}" th:object="${valoracion}" method="post" class="card p-4 shadow-sm">
             <input type="hidden" th:field="*{id}"/>
             
             <div class="mb-3">
                 <label for="usuarioId" class="form-label">Usuario ID:</label>
-                <input type="text" id="usuarioId" th:field="*{usuario.id}" class="form-control" required/>
+                <input type="text" id="usuarioId" th:field="*{customer.id}" class="form-control" required/>
             </div>
             
             <div class="mb-3">
                 <label for="peliculaId" class="form-label">Película ID:</label>
-                <input type="text" id="peliculaId" th:field="*{pelicula.id}" class="form-control" required/>
+                <input type="text" id="peliculaId" th:field="*{movie.id}" class="form-control" required/>
             </div>
             
             <div class="mb-3">
@@ -32,7 +32,7 @@
             
             <div class="mb-3">
                 <label for="comentario" class="form-label">Comentario:</label>
-                <input type="text" id="comentario" th:field="*{comentario}" class="form-control" required/>
+                <textarea id="comentario" th:field="*{comentario}" class="form-control" required></textarea>
             </div>
 
 
@@ -40,7 +40,7 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Guardar
                 </button>
-                <a href="/valoracion-list" class="btn btn-secondary">
+                <a href="/valoraciones" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Volver a la lista
                 </a>
             </div>

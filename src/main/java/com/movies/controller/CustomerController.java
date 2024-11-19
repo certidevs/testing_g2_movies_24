@@ -51,8 +51,8 @@ public class CustomerController {
                 .ifPresentOrElse(
                         customer -> {
                         model.addAttribute("customer", customer);
-                        List<Categoria> categoria = (List<Categoria>) categoriaRepository.findAll();
-                        model.addAttribute("categoria", categoria);
+                        List<Categoria> categorias = categoriaRepository.findAll();
+                        model.addAttribute("categorias", categorias);
                         },
                         () -> { throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"); }
         );

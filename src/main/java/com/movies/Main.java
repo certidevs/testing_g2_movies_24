@@ -66,6 +66,7 @@ public class Main {
 				.puntuacion(5)
 				.comentario("Comentario dummy")
 				.build();
+		valoracionRepository.save(valoracion);
 	}
 
 }

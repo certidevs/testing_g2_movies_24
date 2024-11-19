@@ -32,12 +32,17 @@
             <tbody>
                 <tr th:each="valoracion : ${valoraciones}">
                     <td th:text="${valoracion.id}"></td>
-                    <td th:text="${valoracion.usuario.nombre}"></td>
-                    <td th:text="${valoracion.pelicula.nombre}"></td>
+
+                    <td th:if="${valoracion.customer}" th:text="${valoracion.customer.nombre}"></td>
+                    <td th:unless="${valoracion.customer}">No hay cliente.</td>
+
+                    <td th:if="${valoracion.movie}" th:text="${valoracion.movie.name}"></td>
+                    <td th:unless="${valoracion.movie}">No hay película.</td>
+
                     <td th:text="${valoracion.puntuacion}"></td>
                     <td th:text="${valoracion.comentario}"></td>
                     <td>
-                        <a th:href="@{/valoraciones/form(id=${valoracion.id})}" class="btn btn-sm btn-warning me-1">
+                        <a th:href="@{/valoraciones/edit/{id}(id=${valoracion.id})}" class="btn btn-sm btn-warning me-1">
                             <i class="fas fa-edit"></i> Editar
                         </a>
                         <a th:href="@{/valoraciones/delete/{id}(id=${valoracion.id})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta valoración?')">
@@ -49,7 +54,7 @@
         </table>
     </div>
 
-    <a href="/valoraciones/form" class="btn btn-primary">
+    <a href="/valoraciones/new" class="btn btn-primary">
         <i class="fas fa-plus"></i> Crear nueva Valoración
     </a>
 </div>

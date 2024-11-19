@@ -57,7 +57,7 @@ public class MovieController {
             Optional<Movie> movieOptional = movieRepository.findById(id);
             if (movieOptional.isPresent() ) {
                 model.addAttribute("movie", movieOptional.get());
-                return "movie-detail.html";
+                return "movie-detail";
             }
         }
         model.addAttribute("error", "\uD83E\uDD74 Película no encontrada");
@@ -91,10 +91,11 @@ public class MovieController {
         if (result.hasErrors()) {
             model.addAttribute("movie", movie);
             model.addAttribute("returnUrl", "movie");
+            // TODO meter mensaje error para que se sepa que ha fallado por pantalla
             return "movie-form";
         } else {
             movieRepository.save(movie);
-            return "redirect:/movie-list" + movie.getId();
+            return "redirect:/movies/" + movie.getId();
         }
     }
 
@@ -103,6 +104,6 @@ public class MovieController {
         if (id > 0 && movieRepository.existsById(id)) {
             movieRepository.deleteById(id);
         }
-        return "redirect:/movie-list";
+        return "redirect:/movies";
     }
 }//

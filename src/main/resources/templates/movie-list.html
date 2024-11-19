@@ -11,7 +11,7 @@
     <div class="container mt-4">
         <h1 class="mb-4">Lista de Películas</h1>
 
-        <a href="/movies/create" class="btn btn-primary mb-3">
+        <a href="/movies/new" class="btn btn-primary mb-3">
             <i class="fas fa-plus"></i> Nueva Película
         </a>
 
@@ -32,10 +32,10 @@
                     <td th:text="${movie.duration}"></td>
                     <td th:text="${movie.year}"></td>
                     <td>
-                        <a th:href="@{/movies/{id}/edit(id=${movie.id})}" class="btn btn-sm btn-warning me-1">
+                        <a th:href="@{/movies/update/{id}(id=${movie.id})}" class="btn btn-sm btn-warning me-1">
                             <i class="fas fa-edit"></i> Editar
                         </a>
-                        <a th:href="@{/movies/{id}/delete(id=${movie.id})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta película?')">
+                        <a th:href="@{/movies/delete/{id}(id=${movie.id})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta película?')">
                             <i class="fas fa-trash"></i> Eliminar
                         </a>
                     </td>

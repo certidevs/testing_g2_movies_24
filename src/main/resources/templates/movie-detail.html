@@ -25,6 +25,8 @@
                 <p><strong>Año:</strong> <span th:text="${movie.year}"></span></p>
             </div>
 
+            <!-- Botón de añadir a películas del usuario autenticado, necesario Spring security -->
+
             <div th:if="${movie.customers != null}" class="mt-4">
                 <h2 class="h5">Clientes </h2>
                 <ul class="list-group list-group-flush">
@@ -36,6 +38,9 @@
                 </ul>
             </div>
         </div>
+
+        <!-- mini formulario para que el usuario autenticado con spring security pueda
+        agregar una valoracion a esta película -->
 
         <div class="mt-4">
             <a href="/movie-list" class="btn btn-secondary">
