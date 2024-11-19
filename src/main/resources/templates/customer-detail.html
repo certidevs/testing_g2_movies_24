@@ -28,11 +28,10 @@
             <div class="mb-3 card-text">
                 <p><strong>Password:</strong> <span th:text="${customer.password}"></span></p>
             </div>
-            <h2>Películas Asociadas</h2>
+            <h2> Ver Películas del usuario</h2>
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center" th:each="movie : ${customer.movies}">
                     <div>
-                        <strong>ID:</strong> <span th:text="${movie.id}"></span> |
                         <strong>Nombre:</strong> <span th:text="${movie.name}"></span> |
                         <strong>Duración:</strong> <span th:text="${movie.duration}"></span> minutos |
                         <strong>Año:</strong> <span th:text="${movie.year}"></span>
@@ -44,65 +43,33 @@
                     </form>
                 </li>
             </ul>
-            <h2>Nueva Película</h2>
 
-<!--            Las peliculas se crean en el formulario de peliculas-->
-<!--            <form th:action="@{/customers/{customerId}/add-movie(customerId=${customer.id})}" method="post">-->
-<!--                <div class="mb-3">-->
-<!--                    <label for="movieId" class="form-label">ID de la Película:</label>-->
-<!--                    <input type="number" id="movieId" name="id" class="form-control" readonly>-->
-<!--                </div>-->
-<!--                <div class="mb-3">-->
-<!--                    <label for="movieName" class="form-label">Nombre de la Película:</label>-->
-<!--                    <input type="text" id="movieName" name="name" class="form-control" required>-->
-<!--                </div>-->
-<!--                <div class="mb-3">-->
-<!--                    <label for="duration" class="form-label">Duración (minutos):</label>-->
-<!--                    <input type="number" id="duration" name="duration" class="form-control" required>-->
-<!--                </div>-->
-<!--                <div class="mb-3">-->
-<!--                    <label for="year" class="form-label">Año</label>-->
-<!--                    <input type="number" id="year" name="year" class="form-control" required>-->
-<!--                </div>-->
-<!--               <div class="mb-3">-->
-<!--                   <label for="categoria_id" class="form-label">Categoría:</label>-->
-<!--                   <select id="categoria_id" class="form-select">-->
-<!--                       <option value="" disabled selected>Selecciona una categoría</option>-->
-<!--                       <option th:each="categoria : ${categorias}"-->
-<!--                               th:value="${categoria.id}"-->
-<!--                               th:text="${categoria.nombre}">-->
-<!--                       </option>-->
-<!--                   </select>-->
-<!--                </div>-->
-<!--                <button type="submit" class="btn btn-primary">-->
-<!--                    <i class="fas fa-plus"></i> Añadir Película-->
-<!--                </button>-->
-<!--            </form>-->
-            <!--TODO: bug-> siguen sin añadirse las categorias; desconozco la causa, nose si es que en el crud de peliculas aún no se añade categoria al modelo-->
+            <!-- Selector múltiple para asociar películas -->
+            <h2>Añadir Películas al Usuario</h2>
+            <form th:action="@{/customers/{customerId}/add-movies(customerId=${customer.id})}" method="post">
+                <div class="mb-3">
+                    <label for="movies" class="form-label">Seleccionar Películas:</label>
+                    <select id="movies" name="movieIds" class="form-select" multiple>
+                        <option th:each="movie : ${peliculas}" th:value="${movie.id}" th:text="${movie.name}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Añadir Películas
+                </button>
+            </form>
+<!--    Las peliculas se crean en el formulario de peliculas, que se asocian a un select id categoria-->
 
-            <h2>Valoraciones</h2>
+            <h2>Ver valoraciones usuario</h2>
+<!--    Las valoraciones se crean en el formulario de valoraciones, que se asocian a un select id usuario y a un select id pelicula-->
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center" th:each="valoracion : ${customer.valoraciones}">
                     <div>
-                        <span th:text="${valoracion.comentario}"></span> -
-                        <span th:text="${valoracion.puntuacion}"></span>
+                        <strong>Película:</strong> <span th:text="${valoracion.movie.name}"></span> |
+                        <strong>Puntuación:</strong> <span th:text="${valoracion.puntuacion}"></span> |
+                        <strong>Comentario:</strong> <span th:text="${valoracion.comentario}"></span>
                     </div>
-                    <form th:action="@{/customers/{customerId}/remove-valoracion/{valoracionId}(customerId=${customer.id}, valoracionId=${valoracion.id})}" method="post" style="display: inline;">
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="fas fa-trash"></i> Eliminar Opinión
-                        </button>
-                    </form>
                 </li>
             </ul>
-            <h2>Añadir Nueva Valoración</h2>
-            <form th:action="@{/customers/{customerId}/add-valoracion(customerId=${customer.id})}" method="post">
-                <label for="puntuacion">Puntuación:</label>
-                <input type="number" id="puntuacion" name="puntuacion" min="1" max="5" required>
-                <label for="comentario">Comentario:</label>
-                <input type="text" id="comentario" name="comentario" required>
-                <button type="submit">Añadir</button>
-            </form>
-
             <div>
                 <a th:href="@{/customers/update/{id}(id=${customer.id})}" class="btn btn-primary">
                     <i class="fas fa-edit"></i>

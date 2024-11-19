@@ -41,9 +41,7 @@ public class CustomerController {
         model.addAttribute("customers", customerRepository.findAll());
         return "customer-list";
     }
-    //TODO: Bug-> en cuanto intento añadir la categoria al modelo,
-    // se me han borrado los customers de la BBDD, que venian importados del sql,
-    // solo se quedan los customers creados main
+    //TODO: Bug-> ver si la bbdd sigue borrando los datos de las tablas cliente
 
     @GetMapping("customers/{id}")
     public String findById(@PathVariable("id") Long id, Model model) {
@@ -159,8 +157,7 @@ public class CustomerController {
         model.addAttribute("customer", customer);
         return "redirect:/customers/" + customerId;
     }
-    //TODO: Bug-> no puedo añadir ninguna valoracion al costumer,
-    // porque creo que findall de valoracion no funciona (no se visualiza en el valoracion-list al ejecutar main)
+    //TODO: Bug-> ver si funciona
     @PostMapping("customers/{customerId}/remove-valoracion/{valoracionId}")
     public String removeValoracionFromCustomer(@PathVariable Long customerId, @PathVariable Long valoracionId) {
         Customer customer = customerRepository.findById(customerId)
@@ -175,6 +172,6 @@ public class CustomerController {
 
         return "redirect:/customers/" + customerId;
     }
-    //TODO: Bug-> si no puedo añadir ninguna valoracion al customer, tampoco la puedo eliminar del customer
+    //TODO: Bug-> ver si funciona
 
 }
