@@ -112,7 +112,7 @@ public class CustomerController {
         return "redirect:/customers";
     }
     @PostMapping("customers/{customerId}/add-movie")
-    public String addMovieToCustomer(@PathVariable Long customerId,@RequestParam Long id,@RequestParam String name,@RequestParam int duration, @RequestParam int year, @RequestParam int categoriaId) {
+    public String addMovieToCustomer(@PathVariable Long customerId,@RequestParam Long id,@RequestParam String name,@RequestParam int duration, @RequestParam int year, @RequestParam Long categoriaId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
         Categoria categoria = categoriaRepository.findById(categoriaId)
@@ -162,7 +162,7 @@ public class CustomerController {
     //TODO: Bug-> no puedo añadir ninguna valoracion al costumer,
     // porque creo que findall de valoracion no funciona (no se visualiza en el valoracion-list al ejecutar main)
     @PostMapping("customers/{customerId}/remove-valoracion/{valoracionId}")
-    public String removeValoracionFromCustomer(@PathVariable Long customerId, @PathVariable int valoracionId) {
+    public String removeValoracionFromCustomer(@PathVariable Long customerId, @PathVariable Long valoracionId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
         Valoracion valoracion = valoracionRepository.findById(valoracionId)

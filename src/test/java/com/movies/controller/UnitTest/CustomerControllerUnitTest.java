@@ -151,13 +151,13 @@ public class CustomerControllerUnitTest {
     @Test
     void addMovieToCustomer(){
         Customer customer = Customer.builder().id(1L).build();
-        Categoria categoria = Categoria.builder().id(1).build();
+        Categoria categoria = Categoria.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
-        String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021, 1);
+        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
+        String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021, 1L);
         assertEquals("redirect:/customers/1", view);
         verify(customerRepository).findById(1L);
-        verify(categoriaRepository).findById(1);
+        verify(categoriaRepository).findById(1L);
         verify(movieRepository).save(any(Movie.class));
     }
     @Test
@@ -185,14 +185,14 @@ public class CustomerControllerUnitTest {
     @Test
     void removeValoracionFromCustomer(){
         Customer customer = Customer.builder().id(1L).valoraciones(new ArrayList<>()).build();
-        Valoracion valoracion = Valoracion.builder().id(1).build();
+        Valoracion valoracion = Valoracion.builder().id(1L).build();
         customer.getValoraciones().add(valoracion);
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(valoracionRepository.findById(1)).thenReturn(Optional.of(valoracion));
-        String view = customerController.removeValoracionFromCustomer(1L, 1);
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
+        String view = customerController.removeValoracionFromCustomer(1L, 1L);
         assertEquals("redirect:/customers/1", view);
         verify(customerRepository).findById(1L);
-        verify(valoracionRepository).findById(1);
+        verify(valoracionRepository).findById(1L);
         verify(customerRepository).save(customer);
         assertFalse(customer.getValoraciones().contains(valoracion));
     }

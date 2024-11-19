@@ -30,7 +30,7 @@ public class ValoracionController {
         return "valoracion-list";
     }
     @GetMapping("valoraciones/{id}")
-    public String findById(@PathVariable("id") int id, Model model) {
+    public String findById(@PathVariable("id") Long id, Model model) {
         Valoracion valoracion = valoracionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid valoracion ID:" + id));
         model.addAttribute("valoracion", valoracion);
@@ -44,7 +44,7 @@ public class ValoracionController {
     }
 
     @GetMapping("valoraciones/edit/{id}")
-    public String updateValoracion(Model model, @PathVariable Integer id) {
+    public String updateValoracion(Model model, @PathVariable Long id) {
         Valoracion valoracion = valoracionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -61,7 +61,7 @@ public class ValoracionController {
 
 
     @GetMapping("valoraciones/delete/{id}")
-    public String deleteCustomer(@PathVariable("id") int id) {
+    public String deleteCustomer(@PathVariable("id") Long id) {
         valoracionRepository.deleteById(id);
         return "redirect:/valoraciones";
     }

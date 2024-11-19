@@ -174,9 +174,9 @@ public class CustomerPartialIntegratedTest {
     @Test
     void addMovieToCustomer() throws Exception {
         Customer customer = Customer.builder().id(1L).build();
-        Categoria categoria = Categoria.builder().id(1).build();
+        Categoria categoria = Categoria.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
+        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
         mockMvc.perform(post("/customers/1/add-movie")
                 .param("id", "1")
                 .param("name", "Pelicula")
@@ -187,7 +187,7 @@ public class CustomerPartialIntegratedTest {
                 .andExpect(redirectedUrl("/customers/1"));
 
         verify(customerRepository).findById(1L);
-        verify(categoriaRepository).findById(1);
+        verify(categoriaRepository).findById(1L);
         verify(movieRepository).save(any(Movie.class));
         verify(customerRepository).save(any(Customer.class));
     }
@@ -224,15 +224,15 @@ public class CustomerPartialIntegratedTest {
     @Test
     void removeValoracionFromCustomer() throws Exception {
         Customer customer = Customer.builder().id(1L).build();
-        Valoracion valoracion = Valoracion.builder().id(1).build();
+        Valoracion valoracion = Valoracion.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(valoracionRepository.findById(1)).thenReturn(Optional.of(valoracion));
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
         mockMvc.perform(post("/customers/1/remove-valoracion/{valoracionId}", 1L))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/customers/1"));
 
         verify(customerRepository).findById(1L);
-        verify(valoracionRepository).findById(1);
+        verify(valoracionRepository).findById(1L);
         verify(customerRepository).save(any(Customer.class));
     }
 }

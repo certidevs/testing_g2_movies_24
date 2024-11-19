@@ -87,7 +87,7 @@ public class CategoriaController {
     }
 
     @GetMapping("categorias/delete/{id}")
-    public String deleteCustomer(@PathVariable("id") Integer id) {
+    public String deleteCustomer(@PathVariable("id") Long id) {
         if (!categoriaRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "categoria no encontrada");
         }

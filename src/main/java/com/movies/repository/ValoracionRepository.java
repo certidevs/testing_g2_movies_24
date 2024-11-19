@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ValoracionRepository extends JpaRepository<Valoracion, Integer> {
+public interface ValoracionRepository extends JpaRepository<Valoracion, Long> {
 }
