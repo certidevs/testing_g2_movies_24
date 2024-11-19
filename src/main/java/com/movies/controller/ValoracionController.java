@@ -61,7 +61,7 @@ public class ValoracionController {
 
 
     @GetMapping("valoraciones/delete/{id}")
-    public String deleteCustomer(@PathVariable("id") Long id) {
+    public String deleteValoracion(@PathVariable("id") Long id) {
         valoracionRepository.deleteById(id);
         return "redirect:/valoraciones";
     }
