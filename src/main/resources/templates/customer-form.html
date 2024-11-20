@@ -35,11 +35,11 @@
     <form method="POST" th:action="@{/customers/{customer.id}/add-movies(customerId=${customer.id})}">
         <div class="mb-3">
             <label for="movies" class="form-label">Seleccionar Películas:</label>
-            <select id="movies" name="movies" class="form-select" multiple>
+            <select id="movies" name="movies[]" class="form-select" multiple>
                 <option th:each="movie : ${movies}"
                         th:value="${movie.id}"
-                        th:text="${movie.name}"
-                        th:selected="${selectedMovies != null && selectedMovies.contains(movie.id)}">
+                        th:text="${movie.name}">
+                        <!--th:selected="${selectedMovies != null && selectedMovies.contains(movie.id)}"-->
                 </option>
             </select>
         </div>
