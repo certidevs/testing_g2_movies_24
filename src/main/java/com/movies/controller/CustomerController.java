@@ -41,7 +41,7 @@ public class CustomerController {
         model.addAttribute("customers", customerRepository.findAll());
         return "customer-list";
     }
-    //TODO: Bug-> ver si la bbdd sigue borrando los datos de las tablas cliente
+    //TODO: Bug-> ver si la bbdd sigue borrando los datos de las tablas cliente-CAMBIADO A UPDATE APP PROPERTIES
 
     @GetMapping("customers/{id}")
     public String findById(@PathVariable("id") Long id, Model model) {

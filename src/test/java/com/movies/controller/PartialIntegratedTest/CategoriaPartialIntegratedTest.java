@@ -1,13 +1,11 @@
 package com.movies.controller.PartialIntegratedTest;
 
 import com.movies.model.Categoria;
-import com.movies.model.Categoria;
+import com.movies.model.Customer;
 import com.movies.model.Movie;
 import com.movies.model.Valoracion;
+import com.movies.repository.*;
 import com.movies.repository.CategoriaRepository;
-import com.movies.repository.CategoriaRepository;
-import com.movies.repository.MovieRepository;
-import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -44,7 +42,7 @@ public class CategoriaPartialIntegratedTest {
     private MovieRepository movieRepository;
 
     @MockBean
-    private CategoriaRepository customerRepository;
+    private CustomerRepository customerRepository;
 
     @MockBean
     private ValoracionRepository valoracionRepository;
