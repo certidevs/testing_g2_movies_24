@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Controller
 //@RequestMapping("/customers")
@@ -41,7 +42,7 @@ public class CustomerController {
         model.addAttribute("customers", customerRepository.findAll());
         return "customer-list";
     }
-    //TODO: Bug-> ver si la bbdd sigue borrando los datos de las tablas cliente
+    //TODO: Bug-> ver si la bbdd sigue borrando los datos de las tablas cliente-CAMBIADO A UPDATE APP PROPERTIES
 
     @GetMapping("customers/{id}")
     public String findById(@PathVariable("id") Long id, Model model) {
@@ -69,6 +70,8 @@ public class CustomerController {
     @GetMapping("customers/new")
     public String getFormCreateCustomer(Model model) {
         Customer customer = new Customer();
+        List<Movie> movies = movieRepository.findAll();
+        model.addAttribute("movies", movies);
         model.addAttribute("customer", customer);
         return "customer-form";
     }
@@ -109,24 +112,14 @@ public class CustomerController {
         customerRepository.deleteById(id);
         return "redirect:/customers";
     }
-    @PostMapping("customers/{customerId}/add-movie")
-    public String addMovieToCustomer(@PathVariable Long customerId,@RequestParam Long id,@RequestParam String name,@RequestParam int duration, @RequestParam int year, @RequestParam Long categoriaId) {
+   @PostMapping("customers/{customerId}/add-movie")
+    public String addMovieToCustomer(@PathVariable Long customerId,@RequestParam Long id,@RequestParam String name,@RequestParam int duration, @RequestParam int year, @RequestParam("movies") List<Long> movieIds) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
-        Categoria categoria = categoriaRepository.findById(categoriaId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria not found"));
-        if (customer.getMovies() == null) {
-            customer.setMovies(new HashSet<>());
-        }
-        Movie movie = new Movie();
-        movie.setId(id);
-        movie.setName(name);
-        movie.setDuration(duration);
-        movie.setYear(year);
-        movie.setCategoria(categoria);
-        customer.getMovies().add(movie);
-        movieRepository.save(movie);
-        customerRepository.save(customer);
+       List<Movie> movies = movieRepository.findAllById(movieIds);
+       customer.getMovies().addAll(movies);
+           customerRepository.save(customer);
+
         return "redirect:/customers/" + customerId;
     }
 

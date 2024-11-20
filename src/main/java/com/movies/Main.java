@@ -21,7 +21,7 @@ public class Main {
 		var context = SpringApplication.run(Main.class, args);
 		CustomerRepository productRepository = context.getBean(CustomerRepository.class);
 		Customer customer = Customer.builder()
-				.id(1L)
+				.id(6L)
 				.nombre("Cliente")
 				.apellido("1")
 				.email("123@gmail.com")
@@ -29,7 +29,7 @@ public class Main {
 				.build();
 
 		Customer customer2 = Customer.builder()
-				.id(2L)
+				.id(7L)
 				.nombre("Cliente")
 				.apellido("2")
 				.email("456@gmail.com")
@@ -40,7 +40,7 @@ public class Main {
 
 		CategoriaRepository categoriaRepository = context.getBean(CategoriaRepository.class);
 		Categoria categoria = Categoria.builder()
-				.id(1L)
+				.id(6L)
 				.nombre("Categoria")
 				.descripcion("Descripcion")
 				.build();
@@ -48,7 +48,7 @@ public class Main {
 
 		MovieRepository movieRepository = context.getBean(MovieRepository.class);
 		Movie movie = Movie.builder()
-				.id(1L)
+				.id(6L)
 				.name("Pelicula")
 				.duration(60)
 				.year(2021)
@@ -62,7 +62,7 @@ public class Main {
 		Valoracion valoracion = Valoracion.builder()
 				.movie(movie)
 				.customer(customer)
-				.id(2L)
+				.id(11L)
 				.puntuacion(5)
 				.comentario("Comentario dummy")
 				.build();
@@ -70,3 +70,5 @@ public class Main {
 	}
 
 }
+//TODO: BUG : LA TABLA CUSTOMER_MOVIES SE DUPLICA EN MYSQL AL ARRANCAR LA APP
+//todo: SE DUPLICA CUSTOMER_ID Y MOVIES_ID

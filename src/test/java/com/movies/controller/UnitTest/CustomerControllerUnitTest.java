@@ -17,10 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -151,13 +148,13 @@ public class CustomerControllerUnitTest {
     @Test
     void addMovieToCustomer(){
         Customer customer = Customer.builder().id(1L).build();
-        Categoria categoria = Categoria.builder().id(1L).build();
+        Movie movie = Movie.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
-        String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021, 1L);
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
+        String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021, Collections.singletonList(1L));
         assertEquals("redirect:/customers/1", view);
         verify(customerRepository).findById(1L);
-        verify(categoriaRepository).findById(1L);
+        verify(movieRepository).findById(1L);
         verify(movieRepository).save(any(Movie.class));
     }
     @Test
