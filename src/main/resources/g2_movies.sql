@@ -100,6 +100,7 @@ VALUES (1,'Inception',148,2010,1),(2,'Matrix',136,1999,1),(3,'Mad Max: Fury Road
 /*!40000 ALTER TABLE `movie` ENABLE KEYS */;
 UNLOCK TABLES;
 
+DROP TABLE IF EXISTS `customer_movies`;
 CREATE TABLE `customer_movies` (
   `customer_id` INT NOT NULL,
   `movie_id` INT NOT NULL,
@@ -111,6 +112,8 @@ CREATE TABLE `customer_movies` (
     FOREIGN KEY (`movie_id`) REFERENCES `movie` (`id`)
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE customer_movies ADD CONSTRAINT unique_customer_movie UNIQUE (customer_id, movie_id);
 
 INSERT INTO `customer_movies` (`customer_id`, `movie_id`) VALUES(1, 1),(1, 2),(2, 3),(3, 1);
 

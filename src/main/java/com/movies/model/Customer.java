@@ -28,11 +28,11 @@ public class Customer {
 
     @ManyToMany
     @ToString.Exclude
-//    @JoinTable(
-//            name = "customer_movies",
-//            joinColumns = @JoinColumn(name = "customer.id"),
-//            inverseJoinColumns = @JoinColumn(name = "movie.id")
-//    )
+    @JoinTable(
+            name = "customer_movies",
+            joinColumns = @JoinColumn(name = "customer.id"),
+           inverseJoinColumns = @JoinColumn(name = "movie.id")
+    )
     private Set<Movie> movies = new HashSet<>();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)

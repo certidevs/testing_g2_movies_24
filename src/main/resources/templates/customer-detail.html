@@ -44,19 +44,7 @@
                 </li>
             </ul>
 
-            <!-- Selector múltiple para asociar películas -->
-            <h2>Añadir Películas al Usuario</h2>
-            <form th:action="@{/customers/{customerId}/add-movies(customerId=${customer.id})}" method="post">
-                <div class="mb-3">
-                    <label for="movies" class="form-label">Seleccionar Películas:</label>
-                    <select id="movies" name="movieIds" class="form-select" multiple>
-                        <option th:each="movie : ${peliculas}" th:value="${movie.id}" th:text="${movie.name}"></option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Añadir Películas
-                </button>
-            </form>
+
 <!--    Las peliculas se crean en el formulario de peliculas, que se asocian a un select id categoria-->
 
             <h2>Ver valoraciones usuario</h2>

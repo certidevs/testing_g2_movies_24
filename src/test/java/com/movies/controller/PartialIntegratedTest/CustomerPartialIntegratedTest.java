@@ -174,9 +174,9 @@ public class CustomerPartialIntegratedTest {
     @Test
     void addMovieToCustomer() throws Exception {
         Customer customer = Customer.builder().id(1L).build();
-        Categoria categoria = Categoria.builder().id(1L).build();
+        Movie movie = Movie.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
         mockMvc.perform(post("/customers/1/add-movie")
                 .param("id", "1")
                 .param("name", "Pelicula")
@@ -187,7 +187,7 @@ public class CustomerPartialIntegratedTest {
                 .andExpect(redirectedUrl("/customers/1"));
 
         verify(customerRepository).findById(1L);
-        verify(categoriaRepository).findById(1L);
+        verify(movieRepository).findById(1L);
         verify(movieRepository).save(any(Movie.class));
         verify(customerRepository).save(any(Customer.class));
     }
