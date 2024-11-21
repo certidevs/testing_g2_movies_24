@@ -147,15 +147,22 @@ public class CustomerControllerUnitTest {
 
     @Test
     void addMovieToCustomer(){
-        Customer customer = Customer.builder().id(1L).build();
+        Customer customer = Customer.builder().id(1L).movies(new HashSet<>()).build();
         Movie movie = Movie.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
-        String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021, Collections.singletonList(1L));
+
+        List<Long> ids = List.of(1L, 2L);
+        List<Movie> movies = List.of(
+                Movie.builder().id(1L).build(),
+                Movie.builder().id(2L).build()
+        );
+        when(movieRepository.findAllById(ids)).thenReturn(movies);
+
+        String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021, ids);
         assertEquals("redirect:/customers/1", view);
         verify(customerRepository).findById(1L);
-        verify(movieRepository).findById(1L);
-        verify(movieRepository).save(any(Movie.class));
+        verify(movieRepository).findAllById(ids);
+        verify(customerRepository).save(any(Customer.class));
     }
     @Test
     void removeMovieFromCustomer(){
