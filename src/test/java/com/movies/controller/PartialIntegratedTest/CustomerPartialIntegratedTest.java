@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -180,18 +181,16 @@ public class CustomerPartialIntegratedTest {
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
         List<Long> movieIds = List.of(1L, 2L);
         List<Movie> movies = List.of(
-                Movie.builder().id(1L).name("Pelicula").duration(60).year(2026).build(),
-                Movie.builder().id(2L).name("Pelicula2").duration(50).year(2025).build()
+                Movie.builder().id(1L).build(),
+                Movie.builder().id(2L).build()
         );
         when(movieRepository.findAllById(movieIds)).thenReturn(movies);
         mockMvc.perform(post("/customers/1/add-movie")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("customerId", "1L")
-                .param(String.valueOf(movies), "1L", "2L"))
-                //.param("id", "1L")
-                //.param("name", "Pelicula", "Pelicula2")
-                //.param("duration", "60", "50")
-                //.param("year", "2026", "2025")
-                //.param("movieIds", "1L", "2L"))
+                //.param(String.valueOf(movies), "1L", "2L"))
+                .param("customer", "customer")
+                .param("movieIds", "1L", "2L"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/customers/1"));
 

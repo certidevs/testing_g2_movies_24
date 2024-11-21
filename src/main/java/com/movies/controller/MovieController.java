@@ -1,5 +1,6 @@
 package com.movies.controller;
 
+import com.movies.model.Categoria;
 import com.movies.model.Movie;
 import com.movies.repository.CategoriaRepository;
 import com.movies.repository.MovieRepository;
@@ -25,7 +26,7 @@ import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 @Controller
-@Valid
+//@Valid
 //@RequestMapping("/movies")
 public class MovieController {
 
@@ -35,44 +36,33 @@ public class MovieController {
 
 
     @GetMapping("movies")
-    public String findAll(HttpSession session, Model model) {
-        model.addAttribute("returnUrl", "movie");
-        List<Movie> movies = StreamSupport.stream(movieRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
-        if (!movies.isEmpty()) {
-            model.addAttribute("movies", movies);
-            model.addAttribute("entity", "películas");
-        } else {
-            addErrorMessage(model, "No hay ninguna película que mostrar");
-        }
-
+    public String findAll(Model model) {
+        model.addAttribute("movies", movieRepository.findAll());
         return "movie-list";
-    }
-
-    private void addErrorMessage(Model model, String message) {
-        model.addAttribute("error", "\uD83E\uDD74 " + message);
     }
 
     @GetMapping("movies/{id}")
     public String findById(Model model, @PathVariable Long id) {
-        model.addAttribute("returnUrl", "movie");
-
-        if (id > 0) {
-            Optional<Movie> movieOptional = movieRepository.findById(id);
-            if (movieOptional.isPresent() ) {
-                model.addAttribute("movie", movieOptional.get());
-                return "movie-detail";
-            }
-        }
-        model.addAttribute("error", "\uD83E\uDD74 Película no encontrada");
-        return "movie-list";
+        movieRepository.findById(id)
+                .ifPresentOrElse(
+                        movie -> {
+                            model.addAttribute("movie", movie);
+                            List<Categoria> categorias = categoriaRepository.findAll();
+                            model.addAttribute("categorias", categorias);
+                        },
+                        () -> {
+                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "movie not found");
+                        }
+                );
+        return "movie-detail";
     }
 
     @GetMapping("movies/new")
     public String createForm(Model model) {
         Movie movie = new Movie();
+        List <Categoria> categorias = categoriaRepository.findAll();
         model.addAttribute( "movie", movie);
-       // model.addAttribute("categorias", categoriaRepository.findAll());
+       model.addAttribute("categorias", categorias);
         //TODO AÑADIR CATEGORIAS AL CREATE FORM: PRIMERO HACER QUE FUNCIONE EL CREATE FORM
         return "movie-form";
     }
@@ -91,7 +81,7 @@ public class MovieController {
     }
 
     @PostMapping("movies")
-    public String saveMovie(@Valid @ModelAttribute Movie movie, BindingResult result, Model model) {
+    public String saveMovie(@ModelAttribute Movie movie) {
        if (movie.getId() == null) {
            movieRepository.save(movie);
        }else {
@@ -108,9 +98,20 @@ public class MovieController {
 
     @GetMapping("movies/delete/{id}")
     public String deleteById(@PathVariable Long id) {
-        if (id > 0 && movieRepository.existsById(id)) {
-            movieRepository.deleteById(id);
+        if (!movieRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found");
         }
+        movieRepository.deleteById(id);
         return "redirect:/movies";
+    }
+    @PostMapping("movies/{movieId}/add-categoria")
+    public String addCategoriaToMovie(@PathVariable Long movieId, @ModelAttribute Movie movie, @RequestParam Long categoriaId) {
+        movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
+        Categoria categoria = categoriaRepository.findById(categoriaId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+        movie.setCategoria(categoria);
+        movieRepository.save(movie);
+        return "redirect:/movies/"+movieId;
     }
 }//

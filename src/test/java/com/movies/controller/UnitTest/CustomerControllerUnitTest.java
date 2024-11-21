@@ -158,7 +158,7 @@ public class CustomerControllerUnitTest {
         );
         when(movieRepository.findAllById(ids)).thenReturn(movies);
 
-        String view = customerController.addMovieToCustomer(1L, 1L, "Pelicula", 60, 2021, ids);
+        String view = customerController.addMovieToCustomer(1L, customer, ids);
         assertEquals("redirect:/customers/1", view);
         verify(customerRepository).findById(1L);
         verify(movieRepository).findAllById(ids);
