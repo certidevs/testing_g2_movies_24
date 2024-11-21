@@ -20,6 +20,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -173,22 +175,29 @@ public class CustomerPartialIntegratedTest {
     }
     @Test
     void addMovieToCustomer() throws Exception {
-        Customer customer = Customer.builder().id(1L).build();
-        Movie movie = Movie.builder().id(1L).build();
+        Customer customer = Customer.builder().id(1L).movies(new HashSet<>()).build();
+        //Movie movie = Movie.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
+        List<Long> movieIds = List.of(1L, 2L);
+        List<Movie> movies = List.of(
+                Movie.builder().id(1L).name("Pelicula").duration(60).year(2026).build(),
+                Movie.builder().id(2L).name("Pelicula2").duration(50).year(2025).build()
+        );
+        when(movieRepository.findAllById(movieIds)).thenReturn(movies);
         mockMvc.perform(post("/customers/1/add-movie")
-                .param("id", "1")
-                .param("name", "Pelicula")
-                .param("duration", "60")
-                .param("year", "2021")
-                .param("categoriaId", "1"))
+                .param("customerId", "1L")
+                .param(String.valueOf(movies), "1L", "2L"))
+                //.param("id", "1L")
+                //.param("name", "Pelicula", "Pelicula2")
+                //.param("duration", "60", "50")
+                //.param("year", "2026", "2025")
+                //.param("movieIds", "1L", "2L"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/customers/1"));
 
         verify(customerRepository).findById(1L);
-        verify(movieRepository).findById(1L);
-        verify(movieRepository).save(any(Movie.class));
+        verify(movieRepository).findAllById(movieIds);
+        //verify(movieRepository).save(any(Movie.class));
         verify(customerRepository).save(any(Customer.class));
     }
 

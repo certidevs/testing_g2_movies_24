@@ -31,7 +31,7 @@
     </div>
 
     <!-- Selector múltiple de movies que muestre las películas que ya tiene permitiendo seleccionar o deseleccionar -->
-    <h2>Añadir Películas al Usuario</h2><!--es selector individual, TODO: que sea multiple-->
+    <h2>Añadir Películas al Usuario</h2>
     <form method="POST" th:action="@{/customers/{customer.id}/add-movies(customerId=${customer.id})}">
         <div class="mb-3">
             <label for="movies" class="form-label">Seleccionar Películas:</label>

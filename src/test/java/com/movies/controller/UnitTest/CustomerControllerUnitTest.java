@@ -148,7 +148,7 @@ public class CustomerControllerUnitTest {
     @Test
     void addMovieToCustomer(){
         Customer customer = Customer.builder().id(1L).movies(new HashSet<>()).build();
-        Movie movie = Movie.builder().id(1L).build();
+        //Movie movie = Movie.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
         List<Long> ids = List.of(1L, 2L);

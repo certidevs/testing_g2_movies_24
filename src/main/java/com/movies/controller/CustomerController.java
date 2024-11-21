@@ -113,7 +113,8 @@ public class CustomerController {
         return "redirect:/customers";
     }
    @PostMapping("customers/{customerId}/add-movie")
-    public String addMovieToCustomer(@PathVariable Long customerId,@RequestParam Long id,@RequestParam String name,@RequestParam int duration, @RequestParam int year, @RequestParam("movies") List<Long> movieIds) {
+    public String addMovieToCustomer(@PathVariable Long customerId,@RequestParam Long id,@RequestParam String name,@RequestParam int duration,
+         @RequestParam int year, @RequestParam("movies") List<Long> movieIds) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
        List<Movie> movies = movieRepository.findAllById(movieIds);
