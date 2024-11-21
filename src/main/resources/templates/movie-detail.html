@@ -24,19 +24,20 @@
             <div class="mb-3">
                 <p><strong>Año:</strong> <span th:text="${movie.year}"></span></p>
             </div>
-
-            <!-- Botón de añadir a películas del usuario autenticado, necesario Spring security -->
-
-            <div th:if="${movie.customers != null}" class="mt-4">
-                <h2 class="h5">Clientes </h2>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item" th:each="customer : ${movie.customers}">
-                        <p class="mb-1"><strong>Nombre:</strong> <span th:text="${customer.nombre}"></span></p>
-                        <p class="mb-1"><strong>Apellido:</strong> <span th:text="${customer.apellido}"></span></p>
-                        <p class="mb-1"><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
-                    </li>
-                </ul>
+            <div class="mb-3">
+                <p><strong>Categoría:</strong> <span th:text="${movie.categoria.nombre}"></span></p>
             </div>
+            <!-- Botón de añadir a películas del usuario autenticado, necesario Spring security -->
+            <h2>Ver valoraciones pelicula</h2>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="valoracion : ${movie.valoraciones}">
+                    <div>
+                        <strong>Película:</strong> <span th:text="${valoracion.customer.nombre}"></span> |
+                        <strong>Puntuación:</strong> <span th:text="${valoracion.puntuacion}"></span> |
+                        <strong>Comentario:</strong> <span th:text="${valoracion.comentario}"></span>
+                    </div>
+                </li>
+            </ul>
         </div>
 
         <!-- mini formulario para que el usuario autenticado con spring security pueda

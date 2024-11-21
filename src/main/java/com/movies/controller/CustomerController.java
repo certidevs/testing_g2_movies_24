@@ -49,12 +49,12 @@ public class CustomerController {
         customerRepository.findById(id)
                 .ifPresentOrElse(
                         customer -> {
-                        model.addAttribute("customer", customer);
-                        List<Categoria> categorias = categoriaRepository.findAll();
-                        model.addAttribute("categorias", categorias);
+                            model.addAttribute("customer", customer);
+                            List<Movie> movies = movieRepository.findAll();
+                            model.addAttribute("movies", movies);
                         },
                         () -> { throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"); }
-        );
+                );
         return "customer-detail";
     }
 
@@ -79,14 +79,24 @@ public class CustomerController {
     @GetMapping("customers/update/{id}")
     public String getFormUpdateCustomer(Model model, @PathVariable Long id) {
         customerRepository.findById(id)
-                .ifPresentOrElse(customer-> {
+                .ifPresentOrElse(customer -> {
                             model.addAttribute("customer", customer);
+
+                            // Obtener las películas asociadas al cliente de manera eficiente
+                            List<Movie> movies = movieRepository.findByCustomerId(id);
+                            model.addAttribute("movies", movies);
+
+                            // Obtener las valoraciones asociadas al cliente de manera eficiente
+                            List<Valoracion> valoraciones = valoracionRepository.findByCustomerId(id);
+                            model.addAttribute("valoraciones", valoraciones);
+
                         },
                         () -> {
                             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "not found");
                         });
         return "customer-form";
     }
+
 
     @PostMapping("customers")
     public String saveCustomer(@ModelAttribute Customer customer) {
