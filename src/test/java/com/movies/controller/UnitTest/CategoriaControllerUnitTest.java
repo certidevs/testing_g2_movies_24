@@ -2,13 +2,7 @@ package com.movies.controller.UnitTest;
 
 import com.movies.controller.CategoriaController;
 import com.movies.model.Categoria;
-import com.movies.model.Customer;
-import com.movies.model.Movie;
-import com.movies.model.Valoracion;
 import com.movies.repository.CategoriaRepository;
-import com.movies.repository.CustomerRepository;
-import com.movies.repository.MovieRepository;
-import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,15 +28,6 @@ public class CategoriaControllerUnitTest {
 
     @Mock
     private CategoriaRepository categoriaRepository;
-
-    @Mock
-    private MovieRepository movieRepository;
-
-    @Mock
-    private ValoracionRepository valoracionRepository;
-
-    @Mock
-    private CategoriaRepository customerRepository;
 
     @Mock
     Model model;
@@ -73,7 +58,7 @@ public class CategoriaControllerUnitTest {
             categoriaController.findById(1L, model);
         });
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Categoria not found", exception.getReason());
+        assertEquals("categoria not found", exception.getReason());
         verify(categoriaRepository).findById(1L);
         verify(model, never()).addAttribute(eq("categoria"), any());
     }
@@ -84,7 +69,7 @@ public class CategoriaControllerUnitTest {
             categoriaController.findById_NotExist(1L, model);
         });
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Categoria not found", exception.getReason());
+        assertEquals("categoria not found", exception.getReason());
         verify(categoriaRepository).findById(1L);
         verify(model, never()).addAttribute(eq("categoria"), any());
     }

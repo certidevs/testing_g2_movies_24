@@ -4,24 +4,15 @@ import com.movies.model.Categoria;
 import com.movies.model.Movie;
 import com.movies.repository.CategoriaRepository;
 import com.movies.repository.MovieRepository;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 
 @RequiredArgsConstructor
@@ -113,5 +104,17 @@ public class MovieController {
         movie.setCategoria(categoria);
         movieRepository.save(movie);
         return "redirect:/movies/"+movieId;
+    }
+
+    public String deleteMovie(long l) {
+        return "";
+    }
+
+    public String getFormUpdateMovie(Model model, long l) {
+        return "";
+    }
+
+    public String getFormCreateMovie(Model model) {
+        return "";
     }
 }//
