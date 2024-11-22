@@ -174,7 +174,7 @@ public class CustomerPartialIntegratedTest {
 
         verify(customerRepository).deleteById(1L);
     }
-    @Test
+/*    @Test
     void addMovieToCustomer() throws Exception {
         Customer customer = Customer.builder().id(1L).movies(new HashSet<>()).build();
         //Movie movie = Movie.builder().id(1L).build();
@@ -242,5 +242,5 @@ public class CustomerPartialIntegratedTest {
         verify(customerRepository).findById(1L);
         verify(valoracionRepository).findById(1L);
         verify(customerRepository).save(any(Customer.class));
-    }
+    }*/
 }

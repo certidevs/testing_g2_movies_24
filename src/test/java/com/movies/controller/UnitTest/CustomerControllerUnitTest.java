@@ -145,7 +145,7 @@ public class CustomerControllerUnitTest {
         verify(customerRepository).deleteById(1L);
     }
 
-    @Test
+  /*  @Test
     void addMovieToCustomer(){
         Customer customer = Customer.builder().id(1L).movies(new HashSet<>()).build();
         //Movie movie = Movie.builder().id(1L).build();
@@ -199,6 +199,6 @@ public class CustomerControllerUnitTest {
         verify(valoracionRepository).findById(1L);
         verify(customerRepository).save(customer);
         assertFalse(customer.getValoraciones().contains(valoracion));
-    }
+    }*/
 
 }

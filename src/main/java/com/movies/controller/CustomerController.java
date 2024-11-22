@@ -47,14 +47,10 @@ public class CustomerController {
     @GetMapping("customers/{id}")
     public String findById(@PathVariable("id") Long id, Model model) {
         customerRepository.findById(id)
-                .ifPresentOrElse(
-                        customer -> {
-                            model.addAttribute("customer", customer);
-                            List<Movie> movies = movieRepository.findAll();
-                            model.addAttribute("movies", movies);
-                        },
-                        () -> { throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"); }
-                );
+                .ifPresent(customer ->
+                        model.addAttribute("customer", customer));
+                     // model.addAttribute("movies", movieRepository.findAll());
+                    //model.addAttribute("valoraciones", valoracionRepository.findAll());
         return "customer-detail";
     }
 
@@ -79,21 +75,10 @@ public class CustomerController {
     @GetMapping("customers/update/{id}")
     public String getFormUpdateCustomer(Model model, @PathVariable Long id) {
         customerRepository.findById(id)
-                .ifPresentOrElse(customer -> {
-                            model.addAttribute("customer", customer);
-
-                            // Obtener las películas asociadas al cliente de manera eficiente
-                            List<Movie> movies = movieRepository.findByCustomerId(id);
-                            model.addAttribute("movies", movies);
-
-                            // Obtener las valoraciones asociadas al cliente de manera eficiente
-                            List<Valoracion> valoraciones = valoracionRepository.findByCustomerId(id);
-                            model.addAttribute("valoraciones", valoraciones);
-
-                        },
-                        () -> {
-                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "not found");
-                        });
+                .ifPresent(customer ->
+                            model.addAttribute("customer", customer));
+                            model.addAttribute("movies", movieRepository.findAll());
+                            model.addAttribute("valoraciones", valoracionRepository.findAll());
         return "customer-form";
     }
 
@@ -122,7 +107,7 @@ public class CustomerController {
         customerRepository.deleteById(id);
         return "redirect:/customers";
     }
-   @PostMapping("customers/{customerId}/add-movie")
+/*   @PostMapping("customers/{customerId}/add-movie")
     public String addMovieToCustomer(@PathVariable Long customerId,@ModelAttribute Customer customer, @RequestParam("movies") List<Long> movieIds) {
        customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
@@ -176,5 +161,5 @@ public class CustomerController {
         return "redirect:/customers/" + customerId;
     }
     //TODO: Bug-> ver si funciona
-
+*/
 }

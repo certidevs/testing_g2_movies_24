@@ -32,10 +32,10 @@
 
     <!-- Selector múltiple de movies que muestre las películas que ya tiene permitiendo seleccionar o deseleccionar -->
     <h2>Añadir Películas al Usuario</h2>
-    <form method="POST" th:action="@{/customers/{customer.id}/add-movies(customerId=${customer.id})}">
+    <!--<form method="POST" th:action="@{/customers/{customer.id}/add-movies(customerId=${customer.id})}">-->
         <div class="mb-3">
-            <label for="movies" class="form-label">Seleccionar Películas:</label>
-            <select th:field="*{movies}" id="movies" name="movies[]" class="form-select" multiple>
+            <label for="movie" class="form-label">Seleccionar Películas:</label>
+            <select id="movie" th:field="*{movies}"  class="form-select" multiple>
                 <option th:each="movie : ${movies}"
                         th:value="${movie.id}"
                         th:text="${movie.name}">
@@ -43,10 +43,10 @@
                 </option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Añadir Películas
-        </button>
-    </form>
+    <!--   <button type="submit" class="btn btn-primary">
+           <i class="fas fa-plus"></i> Añadir Películas
+       </button>
+   </form>-->
 
     </form>
 
