@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulario de Cliente</title>
+    <title id="customer_form_title">Formulario de Cliente</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
 </head>
 <body>
     <div th:replace="~{navbar :: nav1}"></div>
 <div class="container mt-4">
-    <h1>Formulario Clientes</h1>
+    <h1 id="customer_form_h1">Formulario Clientes</h1>
 
 <h1 th:text="${customer.id == null} ? 'Crear Cliente' : 'Editar Cliente'"></h1>
 <form method="POST" th:object="${customer}" th:action="@{/customers}">
@@ -34,8 +34,8 @@
     <h2>Añadir Películas al Usuario</h2>
     <!--<form method="POST" th:action="@{/customers/{customer.id}/add-movies(customerId=${customer.id})}">-->
         <div class="mb-3">
-            <label for="movie" class="form-label">Seleccionar Películas:</label>
-            <select id="movie" th:field="*{movies}"  class="form-select" multiple>
+            <label for="customer_movie" class="form-label">Seleccionar Películas:</label>
+            <select id="customer_movie" th:field="*{movies}"  class="form-select" multiple>
                 <option th:each="movie : ${movies}"
                         th:value="${movie.id}"
                         th:text="${movie.name}">
@@ -50,12 +50,12 @@
 
     </form>
 
-    <button type="submit" th:if="${customer.id}" class="btn btn-primary">
+    <button id="customer_save_update" type="submit" th:if="${customer.id}" class="btn btn-primary">
         <i class="fas fa-save"></i>Guardar modificación</button>
 
-    <button type="submit" th:unless="${customer.id}" class="btn btn-primary">
+    <button id="customer_save_new" type="submit" th:unless="${customer.id}" class="btn btn-primary">
         <i class="fas fa-save"></i>Guardar nuevo </button>
-    <a th:href="@{/customers}" class="btn btn-secondary">
+    <a id="backBtn_customer_list" th:href="@{/customers}" class="btn btn-secondary">
         <i class="fas fa-arrow-left"></i>
         Volver atrás
     </a>

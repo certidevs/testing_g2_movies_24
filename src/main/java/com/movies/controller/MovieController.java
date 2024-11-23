@@ -12,7 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.awt.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @RequiredArgsConstructor
@@ -63,6 +65,7 @@ public class MovieController {
         movieRepository.findById(id)
                 .ifPresentOrElse(movie -> {
                         model.addAttribute("movie", movie);
+                        model.addAttribute("categorias", categoriaRepository.findAll());
     },
             () -> {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "not found");
@@ -106,15 +109,20 @@ public class MovieController {
         return "redirect:/movies/"+movieId;
     }
 
-    public String deleteMovie(long l) {
-        return "";
-    }
+    //public String deleteMovie(long l) { return ""};//ya tenemos 1
 
-    public String getFormUpdateMovie(Model model, long l) {
-        return "";
-    }
+    //public String getFormUpdateMovie(Model model, long l) {return "";}//ya tenemos 1
 
-    public String getFormCreateMovie(Model model) {
-        return "";
+
+    //public String getFormCreateMovie(Model model) {return "";}//ya tenemos 1
+
+    @GetMapping("movies404/{id}")
+    public String findById_NotExist(Model model, long id) {
+        return movieRepository.findById(id)
+                .map(movie->{model.addAttribute("movie", movie);
+                    return "movie-detail";
+                })
+                .orElseThrow(()->
+                        new NoSuchElementException("Pelicula no encontrado"));
     }
 }//

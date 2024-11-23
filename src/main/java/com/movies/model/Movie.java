@@ -54,6 +54,6 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Valoracion> valoraciones = new ArrayList<>();
+    private Set<Valoracion> valoraciones = new HashSet<>();
 
 }//

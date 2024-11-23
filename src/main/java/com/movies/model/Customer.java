@@ -37,5 +37,5 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Valoracion> valoraciones = new ArrayList<>();
+    private Set<Valoracion> valoraciones = new HashSet<>();
 }

@@ -46,7 +46,7 @@ public class MovieControllerUnitTest {
         Movie movie = Movie.builder().id(1L).build();
 
         when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
-        String view = movieController.findById(1L, model);
+        String view = movieController.findById(model, 1L);
         assertEquals("movie-detail", view);
         verify(movieRepository).findById(1L);
         verify(model).addAttribute("movie", movie);
@@ -55,7 +55,7 @@ public class MovieControllerUnitTest {
     void findById_MovieNotFound(){
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            movieController.findById(1L, model);
+            movieController.findById(model,1L);
         });
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("movie not found", exception.getReason());
@@ -66,7 +66,7 @@ public class MovieControllerUnitTest {
     void findById_IdNotFound(){
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            movieController.findById_NotExist(1L, model);
+            movieController.findById_NotExist(model, 1L);
         });
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("movie not found", exception.getReason());
@@ -77,7 +77,7 @@ public class MovieControllerUnitTest {
     @Test
     void getFormCreateMovie(){
         Movie movie = new Movie();
-        String view = movieController.getFormCreateMovie(model);
+        String view = movieController.createForm(model);
         assertEquals("movie-form", view);
         verify(model).addAttribute(eq("movie"), any(Movie.class));
     }
@@ -86,7 +86,7 @@ public class MovieControllerUnitTest {
     void getFormUpdateMovie(){
         Movie movie = Movie.builder().id(1L).build();
         when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
-        String view = movieController.getFormUpdateMovie(model, 1L);
+        String view = movieController.editForm(model, 1L);
         assertEquals("movie-form", view);
         verify(model).addAttribute("movie", movie);
         verify(movieRepository).findById(1L);
@@ -95,7 +95,7 @@ public class MovieControllerUnitTest {
     void getFormUpdateMovie_NotFound(){
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            movieController.getFormUpdateMovie(model, 1L);
+            movieController.editForm(model, 1L);
         });
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("not found", exception.getReason());
@@ -114,7 +114,7 @@ public class MovieControllerUnitTest {
     @Test
     void saveMovieUpdate(){
         Movie movie = Movie.builder().id(1L).build();
-        Movie movieUpdate = Movie.builder().id(1L).nombre("Editado").build();
+        Movie movieUpdate = Movie.builder().id(1L).name("Editado").build();
         when(movieRepository.existsById(1L)).thenReturn(true);
         when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
         String view = movieController.saveMovie(movieUpdate);
@@ -122,13 +122,13 @@ public class MovieControllerUnitTest {
         verify(movieRepository).findById(1L);
         verify(movieRepository).existsById(1L);
         verify(movieRepository).save(movie);
-        assertEquals(movieUpdate.getNombre(), movie.getNombre());
+        assertEquals(movieUpdate.getName(), movie.getName());
     }
 
     @Test
     void deleteMovie(){
         when(movieRepository.existsById(1L)).thenReturn(true);
-        String view = movieController.deleteMovie(1L);
+        String view = movieController.deleteById(1L);
         assertEquals("redirect:/movies", view);
         verify(movieRepository).deleteById(1L);
     }

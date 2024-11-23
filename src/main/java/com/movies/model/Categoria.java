@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -31,7 +33,7 @@ public class Categoria {
     //    this.descripcion = descripcion;
     // }
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
-    private List<Movie> movies = new ArrayList<>();
+    private Set<Movie> movies = new HashSet<>();
 
     public static Object Id() {
         return null;

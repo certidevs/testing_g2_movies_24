@@ -49,26 +49,28 @@ public class CustomerController {
         customerRepository.findById(id)
                 .ifPresent(customer ->
                         model.addAttribute("customer", customer));
-                     // model.addAttribute("movies", movieRepository.findAll());
-                    //model.addAttribute("valoraciones", valoracionRepository.findAll());
+        model.addAttribute("movies", movieRepository.findAll());
+        model.addAttribute("categorias", categoriaRepository.findAll());
+        model.addAttribute("valoraciones", valoracionRepository.findAll());
         return "customer-detail";
     }
 
     @GetMapping("customers404/{id}")
-    public String findById_NotExist(@PathVariable Long id, Model model){
-        Customer customer = customerRepository.findById(id)
+    public String findById_NotExist(@PathVariable Long id, Model model) {
+        return customerRepository.findById(id)
+                .map(customer -> {
+                    model.addAttribute("customer", customer);
+                    return "customer-detail";
+                })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
-        model.addAttribute("customer", customer);
-         return "customer-detail";
     }
-
 
     @GetMapping("customers/new")
     public String getFormCreateCustomer(Model model) {
         Customer customer = new Customer();
         List<Movie> movies = movieRepository.findAll();
-        model.addAttribute("movies", movies);
         model.addAttribute("customer", customer);
+        model.addAttribute("movies", movies);
         return "customer-form";
     }
 
@@ -78,7 +80,6 @@ public class CustomerController {
                 .ifPresent(customer ->
                             model.addAttribute("customer", customer));
                             model.addAttribute("movies", movieRepository.findAll());
-                            model.addAttribute("valoraciones", valoracionRepository.findAll());
         return "customer-form";
     }
 
