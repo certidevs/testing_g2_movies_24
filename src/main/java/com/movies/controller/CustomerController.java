@@ -46,9 +46,9 @@ public class CustomerController {
 
     @GetMapping("customers/{id}")
     public String findById(@PathVariable("id") Long id, Model model) {
-        customerRepository.findById(id)
-                .ifPresent(customer ->
-                        model.addAttribute("customer", customer));
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+        model.addAttribute("customer", customer);
         model.addAttribute("movies", movieRepository.findAll());
         model.addAttribute("categorias", categoriaRepository.findAll());
         model.addAttribute("valoraciones", valoracionRepository.findAll());
@@ -68,17 +68,16 @@ public class CustomerController {
     @GetMapping("customers/new")
     public String getFormCreateCustomer(Model model) {
         Customer customer = new Customer();
-        List<Movie> movies = movieRepository.findAll();
         model.addAttribute("customer", customer);
-        model.addAttribute("movies", movies);
+        model.addAttribute("movies", movieRepository.findAll());
         return "customer-form";
     }
 
     @GetMapping("customers/update/{id}")
     public String getFormUpdateCustomer(Model model, @PathVariable Long id) {
-        customerRepository.findById(id)
-                .ifPresent(customer ->
-                            model.addAttribute("customer", customer));
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+                            model.addAttribute("customer", customer);
                             model.addAttribute("movies", movieRepository.findAll());
         return "customer-form";
     }
@@ -86,19 +85,10 @@ public class CustomerController {
 
     @PostMapping("customers")
     public String saveCustomer(@ModelAttribute Customer customer) {
-        if (customer.getId() == null) {
-            customerRepository.save(customer);
-        }else {
-            if (customerRepository.existsById(customer.getId())) {
-                customerRepository.findById(customer.getId())
-                        .ifPresent(customerDB -> {
-                            BeanUtils.copyProperties(customer, customerDB, "id");
-                            customerRepository.save(customerDB);
-                        });
-            }
+        customerRepository.save(customer);
+         return "redirect:/customers";
         }
-        return "redirect:/customers";
-    }
+
 
     @GetMapping("customers/delete/{id}")
     public String deleteCustomer(@PathVariable("id") Long id) {

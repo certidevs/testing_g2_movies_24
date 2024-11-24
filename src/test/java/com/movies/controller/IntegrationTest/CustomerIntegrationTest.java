@@ -1,5 +1,9 @@
 package com.movies.controller.IntegrationTest;
-
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.hasItem;
 import com.movies.model.Customer;
 import com.movies.repository.CategoriaRepository;
 import com.movies.repository.CustomerRepository;
@@ -7,11 +11,19 @@ import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,28 +49,65 @@ public class CustomerIntegrationTest {
 
     @Test
     void findAll() throws Exception {
-        customerRepository.save(Customer.builder().id(1L).build());
+        customerRepository.deleteAll();
+        Customer customer1 = customerRepository.save(Customer.builder()
+                .id(1L)
+                .nombre("Ana")
+                .apellido("C")
+                .email("ana.c@example.com")
+                .password("password")
+                .build());
+
+        Customer customer2 = customerRepository.save(Customer.builder()
+                .id(2L)
+                .nombre("P")
+                .apellido("C")
+                .email("p.c@example.com")
+                .password("password")
+                .build());
 
         mockMvc.perform(get("/customers"))
-               .andExpect(status().isOk())
-               .andExpect(view().name("customer-list"))
-               .andExpect(model().attributeExists("customers"));
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("customers"))
+                .andExpect(model().attribute("customers", hasSize(2)))
+                .andExpect(model().attribute("customers", hasItem(
+                        allOf(
+                                hasProperty("id", is(customer1.getId())),
+                                hasProperty("nombre", is(customer1.getNombre())),
+                                hasProperty("apellido", is(customer1.getApellido())),
+                                hasProperty("email", is(customer1.getEmail()))
+                        )
+                )))
+                .andExpect(model().attribute("customers", hasItem(
+                        allOf(
+                                hasProperty("id", is(customer2.getId())),
+                                hasProperty("nombre", is(customer2.getNombre())),
+                                hasProperty("apellido", is(customer2.getApellido())),
+                                hasProperty("email", is(customer2.getEmail()))
+                        )
+                )));
     }
     @Test
     void findById() throws Exception {
-        Customer customer = customerRepository.save(Customer.builder().id(1L).build());
+        Customer customer = customerRepository.save(Customer.builder()
+                .id(1L)
+                .nombre("Ana")
+                .apellido("C")
+                .email("ana.c@example.com")
+                .password("password")
+                .build());
 
         mockMvc.perform(get("/customers/{id}", customer.getId()))
-               .andExpect(status().isOk())
-               .andExpect(view().name("customer-detail"))
-               .andExpect(model().attributeExists("customer"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("customer-detail"))
+                .andExpect(model().attributeExists("customer"));
     }
     @Test
     void findById_NotExist() throws Exception {
-        mockMvc.perform(get("/customers404/{id}", 1L))
-               .andExpect(status().isNotFound());
+        mockMvc.perform(get("/customers404/{id}", 999L))
+                .andExpect(status().isNotFound());
     }
-    @Test
+        @Test
     void getFormToCreateCustomer() throws Exception {
         mockMvc.perform(get("/customers/new"))
                .andExpect(status().isOk())
@@ -76,18 +125,42 @@ public class CustomerIntegrationTest {
     }
     @Test
     void saveCustomer() throws Exception {
-        mockMvc.perform(get("/customers"))
-               .andExpect(status().isOk())
-               .andExpect(view().name("customer-list"))
-               .andExpect(model().attributeExists("customers"));
+        Customer customer = Customer.builder()
+                .id(1L)
+                .nombre("Ana")
+                .apellido("C")
+                .email("ana.c@example.com")
+                .password("password")
+                .build();
+          mockMvc.perform(MockMvcRequestBuilders.post("/customers")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("nombre", "Ana")
+                        .param("apellido", "C")
+                        .param("email", "ana.c@example.com")
+                        .param("password", "password"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/customers"));
+
+
+        assertEquals("Ana", customer.getNombre());
+        assertEquals("C", customer.getApellido());
+        assertEquals("ana.c@example.com", customer.getEmail());
+        assertEquals("password", customer.getPassword());
     }
+
     @Test
     void deleteCustomer() throws Exception {
-        Customer customer = customerRepository.save(Customer.builder().id(1L).build());
+        Customer customer = customerRepository.save(Customer.builder()
+                .id(1L)
+                .nombre("P")
+                .apellido("C")
+                .email("p.c@example.com")
+                .password("password")
+                .build());
 
         mockMvc.perform(get("/customers/delete/{id}", customer.getId()))
-               .andExpect(status().is3xxRedirection())
-               .andExpect(redirectedUrl("/customers"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/customers"));
     }
 
 }

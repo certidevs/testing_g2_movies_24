@@ -110,7 +110,7 @@ public class CustomerControllerUnitTest {
             customerController.getFormUpdateCustomer(model, 1L);
         });
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("not found", exception.getReason());
+        assertEquals("Customer not found", exception.getReason());
         verify(customerRepository).findById(1L);
         verify(model, never()).addAttribute(eq("customer"), any());
     }
@@ -125,16 +125,15 @@ public class CustomerControllerUnitTest {
 
     @Test
     void saveCustomerUpdate(){
-        Customer customer = Customer.builder().id(1L).build();
-        Customer customerUpdate = Customer.builder().id(1L).nombre("Editado").build();
-        when(customerRepository.existsById(1L)).thenReturn(true);
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        String view = customerController.saveCustomer(customerUpdate);
-        assertEquals("redirect:/customers", view);
-        verify(customerRepository).findById(1L);
-        verify(customerRepository).existsById(1L);
-        verify(customerRepository).save(customer);
-        assertEquals(customerUpdate.getNombre(), customer.getNombre());
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setNombre("Juan");
+        customer.setApellido("Cuesta");
+        customer.setEmail("presidente@example.com");
+        customer.setPassword("password123");
+        String result = customerController.saveCustomer(customer);
+        verify(customerRepository, times(1)).save(customer); // Verifica que se llama una vez al método save
+        assertEquals("redirect:/customers", result); // Verifica la redirección esperada
     }
 
     @Test

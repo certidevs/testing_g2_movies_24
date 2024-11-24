@@ -32,7 +32,9 @@ public class Categoria {
     //    this.nombre = nombre;
     //    this.descripcion = descripcion;
     // }
+
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Set<Movie> movies = new HashSet<>();
 
     public static Object Id() {

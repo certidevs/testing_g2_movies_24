@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.movies.model.Movie;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 
 @Repository
@@ -16,5 +18,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
         @Query("SELECT m FROM Movie m JOIN m.customers c WHERE c.id = :customerId")
         List<Movie> findByCustomerId(@Param("customerId") Long customerId);
+
+
 
 }//

@@ -10,7 +10,7 @@
 <div class="container mt-4">
     <h1 id="customer_form_h1">Formulario Clientes</h1>
 
-<h1 th:text="${customer.id == null} ? 'Crear Cliente' : 'Editar Cliente'"></h1>
+<!--<h1 th:text="${customer.id == null} ? 'Crear Cliente' : 'Editar Cliente'"></h1>-->
 <form method="POST" th:object="${customer}" th:action="@{/customers}">
     <input type="hidden" id="id" th:field="*{id}"/>
     <div class="mb-3">
@@ -32,29 +32,18 @@
 
     <!-- Selector múltiple de movies que muestre las películas que ya tiene permitiendo seleccionar o deseleccionar -->
     <h2>Añadir Películas al Usuario</h2>
-    <!--<form method="POST" th:action="@{/customers/{customer.id}/add-movies(customerId=${customer.id})}">-->
         <div class="mb-3">
             <label for="customer_movie" class="form-label">Seleccionar Películas:</label>
-            <select id="customer_movie" th:field="*{movies}"  class="form-select" multiple>
-                <option th:each="movie : ${movies}"
-                        th:value="${movie.id}"
-                        th:text="${movie.name}">
-                        <!--th:selected="${selectedMovies != null && selectedMovies.contains(movie.id)}"-->
-                </option>
+
+            <select id="customer_movie" th:field="*{movies}" class="form-select" multiple>
+                <option th:each="movie : ${movies}" th:text="${movie.name}" th:value="${movie.id}"></option>
             </select>
+
         </div>
-    <!--   <button type="submit" class="btn btn-primary">
-           <i class="fas fa-plus"></i> Añadir Películas
-       </button>
-   </form>-->
 
-    </form>
+    <button id="customer_save_update" type="submit"  class="btn btn-primary">
+        <i class="fas fa-save"></i>Guardar </button>
 
-    <button id="customer_save_update" type="submit" th:if="${customer.id}" class="btn btn-primary">
-        <i class="fas fa-save"></i>Guardar modificación</button>
-
-    <button id="customer_save_new" type="submit" th:unless="${customer.id}" class="btn btn-primary">
-        <i class="fas fa-save"></i>Guardar nuevo </button>
     <a id="backBtn_customer_list" th:href="@{/customers}" class="btn btn-secondary">
         <i class="fas fa-arrow-left"></i>
         Volver atrás

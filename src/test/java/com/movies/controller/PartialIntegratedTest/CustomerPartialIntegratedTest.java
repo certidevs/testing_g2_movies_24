@@ -18,16 +18,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -148,9 +148,13 @@ public class CustomerPartialIntegratedTest {
     }
     @Test
     void saveCustomerUpdate() throws Exception {
-        Customer customer = Customer.builder().id(1L).nombre("Cliente").build();
-        when(customerRepository.existsById(1L)).thenReturn(true);
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setNombre("Juan");
+        customer.setApellido("Cuesta");
+        customer.setEmail("presidente@example.com");
+        customer.setPassword("password123");
+        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
         mockMvc.perform(post("/customers")
                         .param("id", "1")
@@ -161,9 +165,7 @@ public class CustomerPartialIntegratedTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/customers"));
 
-        verify(customerRepository).existsById(1L);
-        verify(customerRepository).findById(1L);
-        verify(customerRepository).save(any(Customer.class));
+        verify(customerRepository, times(1)).save(any(Customer.class));
     }
     @Test
     void deleteCustomer() throws Exception{
