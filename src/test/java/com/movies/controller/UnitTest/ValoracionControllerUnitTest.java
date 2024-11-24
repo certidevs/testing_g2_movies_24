@@ -12,95 +12,97 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ui.Model;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Test unitario para ValoracionController utilizando JUnit 5 y Mockito.
+ * Pruebas unitarias para la clase ValoracionController.
+ * Utiliza JUnit 5 y Mockito para verificar el comportamiento del controlador.
  */
 @ExtendWith(MockitoExtension.class)
 class ValoracionControllerUnitTest {
 
+    // Controlador que se probará (System Under Test - SUT)
     @InjectMocks
     private ValoracionController valoracionController;
 
+    // Repositorio simulado
     @Mock
     private ValoracionRepository valoracionRepository;
 
+    // Modelo simulado para pasar datos a la vista
     @Mock
     private Model model;
 
     @Test
-    @DisplayName("findById que SÍ tiene valoración con id")
+    @DisplayName("findById - La valoración existe")
     void findById_WhenValoracionExists() {
-        // 1. Configurar respuestas mocks
-        Customer mockUsuario = mock(Customer.class); // Simulación de Customer
-        Movie mockPelicula = mock(Movie.class);      // Simulación de Movie
+        // Configurar el mock para que devuelva una valoración simulada
+        Customer mockCustomer = Customer.builder().id(1L).nombre("John").build();
+        Movie mockMovie = Movie.builder().id(1L).name("Inception").build();
         Valoracion valoracion = Valoracion.builder()
                 .id(1L)
-                .customer(mockUsuario)
-                .movie(mockPelicula)
+                .customer(mockCustomer)
+                .movie(mockMovie)
                 .comentario("Comentario de prueba")
                 .puntuacion(5)
                 .build();
-        Optional<Valoracion> valoracionOpt = Optional.of(valoracion);
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
 
-        when(valoracionRepository.findById(1L)).thenReturn(valoracionOpt);
-
-        // 2. Ejecutar método a testear
+        // Ejecutar el método findById
         String view = valoracionController.findById(1L, model);
 
-        // 3. Aserciones y verificaciones
-        assertEquals("valoracion-detail", view);
+        // Verificar resultados
+        assertEquals("valoracion-detail", view, "La vista debería ser 'valoracion-detail'");
         verify(valoracionRepository).findById(1L);
         verify(model).addAttribute("valoracion", valoracion);
     }
 
     @Test
-    @DisplayName("findById que NO tiene valoración")
+    @DisplayName("findById - La valoración no existe")
     void findById_WhenValoracionNotExists() {
-        // 1. Configurar respuestas mocks
+        // Configurar el mock para que no devuelva ninguna valoración
         when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // 2. Ejecutar método a testear
-        String view = valoracionController.findById(1L, model);
+        // Ejecutar el método y verificar que lanza una excepción
+        assertThrows(ResponseStatusException.class, () -> valoracionController.findById(1L, model));
 
-        // 3. Aserciones y verificaciones
-        assertEquals("valoracion-detail", view);
+        // Verificar que el repositorio fue consultado pero no el modelo
         verify(valoracionRepository).findById(1L);
-        verify(model, never()).addAttribute(anyString(), any());
+        verifyNoInteractions(model);
     }
 
     @Test
-    @DisplayName("save cuando se crea una nueva valoración")
+    @DisplayName("save - Nueva valoración")
     void save_NewValoracion() {
-        // 1. Preparar datos y mocks
+        // Configurar una valoración simulada
         Valoracion nuevaValoracion = Valoracion.builder()
-                .customer(mock(Customer.class))
-                .movie(mock(Movie.class))
+                .customer(Customer.builder().id(1L).build())
+                .movie(Movie.builder().id(1L).build())
                 .comentario("Nueva valoración")
                 .puntuacion(4)
                 .build();
 
-        // 2. Ejecutar método a testear
+        // Ejecutar el método save
         String view = valoracionController.save(nuevaValoracion);
 
-        // 3. Verificaciones
-        assertEquals("redirect:/valoraciones", view);
+        // Verificar resultados
+        assertEquals("redirect:/valoraciones", view, "La vista debería redirigir a '/valoraciones'");
         verify(valoracionRepository).save(nuevaValoracion);
     }
 
     @Test
-    @DisplayName("deleteById elimina valoración por id")
+    @DisplayName("deleteById - Eliminación de valoración")
     void deleteById() {
-        // 1. Ejecutar método a testear
-        String view = valoracionController.deleteValoracion(1L);
+        // Ejecutar el método deleteById
+        String view = valoracionController.deleteById(1L);
 
-        // 2. Verificaciones
-        assertEquals("redirect:/valoraciones", view);
+        // Verificar resultados
+        assertEquals("redirect:/valoraciones", view, "La vista debería redirigir a '/valoraciones'");
         verify(valoracionRepository).deleteById(1L);
     }
 }
