@@ -1,4 +1,4 @@
-package com.movies.selenium.valoracion;
+package com.movies.controller.SeleniumTestUI.valoracionSeleniumTest;
 
 import com.movies.model.Customer;
 import com.movies.model.Movie;
