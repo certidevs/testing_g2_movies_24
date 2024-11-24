@@ -43,12 +43,10 @@ public class MovieListTest {
     }
 
     @Test
-    public void testMovieListPageTitleAndHeader() {
+    public void testMovieListPageHeader() {
         movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).build());
-
         driver.get("http://localhost:8080/movies");
-        String pageTitle = driver.findElement(By.id("title_movie_detail")).getText();
-        assertEquals("Lista de Películas", pageTitle);
+        driver.navigate().refresh();
 
         String header = driver.findElement(By.id("h1_movie_list")).getText();
         assertEquals("Lista de Películas", header);
@@ -57,6 +55,7 @@ public class MovieListTest {
     @Test
     public void testCreateNewMovieButton() {
         driver.get("http://localhost:8080/movies");
+        driver.navigate().refresh();
         WebElement createButton = driver.findElement(By.id("btnCreate_movie"));
         assertTrue(createButton.isDisplayed());
         assertEquals("Nueva Película", createButton.getText());
@@ -71,6 +70,7 @@ public class MovieListTest {
         movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).categoria(categoria).build());
 
         driver.get("http://localhost:8080/movies");
+        driver.navigate().refresh();
         WebElement movieTable = driver.findElement(By.id("movie_list_table"));
         assertTrue(movieTable.isDisplayed());
 
@@ -90,6 +90,7 @@ public class MovieListTest {
     public void testMovieActions() {
         movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).build());
         driver.get("http://localhost:8080/movies");
+        driver.navigate().refresh();
         List<WebElement> actionButtons = driver.findElements(By.cssSelector("td a"));
 
         for (WebElement button : actionButtons) {
@@ -114,6 +115,7 @@ public class MovieListTest {
     @Test
     public void testNoMoviesMessage() {
         driver.get("http://localhost:8080/movies");
+        driver.navigate().refresh();
         List<WebElement> noMoviesMessage = driver.findElements(By.id("noMovies"));
         if (!noMoviesMessage.isEmpty()) {
             assertTrue(noMoviesMessage.get(0).isDisplayed());

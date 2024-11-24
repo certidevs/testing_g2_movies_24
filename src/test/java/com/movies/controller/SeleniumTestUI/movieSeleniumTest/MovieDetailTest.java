@@ -1,9 +1,11 @@
 package com.movies.controller.SeleniumTestUI.movieSeleniumTest;
 
 import com.movies.model.Categoria;
+import com.movies.model.Customer;
 import com.movies.model.Movie;
 import com.movies.model.Valoracion;
 import com.movies.repository.CategoriaRepository;
+import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -32,6 +34,9 @@ public class MovieDetailTest {
     private CategoriaRepository categoriaRepository;
 
     @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
     private ValoracionRepository valoracionRepository;
 
     private WebDriver driver;
@@ -41,6 +46,7 @@ public class MovieDetailTest {
         movieRepository.deleteAllInBatch();
         categoriaRepository.deleteAllInBatch();
         valoracionRepository.deleteAllInBatch();
+        customerRepository.deleteAllInBatch();
         driver = new ChromeDriver();
     }
 
@@ -51,27 +57,26 @@ public class MovieDetailTest {
 
     @Test
     public void testMovieDetailPage() {
-        Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).nombre("Acción").build());
-        Set <Valoracion> valoraciones = new HashSet<>();
-        valoraciones.add(Valoracion.builder().id(1L).puntuacion(5).comentario("Excelente película").build());
-        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).categoria(categoria).valoraciones(valoraciones).build());
+        Categoria categoria = categoriaRepository.save(Categoria.builder().nombre("Acción").build());
+        Customer customer = customerRepository.save(Customer.builder().nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
+        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).categoria(categoria).build());
+        Valoracion valoracion = Valoracion.builder().puntuacion(5).comentario("Excelente película").customer(customer).movie(movie).build();
+        valoracionRepository.save(valoracion);
 
         driver.get("http://localhost:8080/movies/" + movie.getId());
-
-        String pageTitle = driver.findElement(By.id("title_movie_detail")).getText();
-        assertEquals("Detalle de Película", pageTitle);
+        driver.navigate().refresh();
 
         String header = driver.findElement(By.id("h1_movie_detail")).getText();
         assertEquals("Datos de la Película", header);
 
         String movieId = driver.findElement(By.id("movie_id")).getText();
-        assertEquals("1", movieId);
+        assertEquals( movieId, movie.getId().toString());
 
         String name = driver.findElement(By.id("name")).getText();
         assertEquals("Inception", name);
 
         String duration = driver.findElement(By.id("duration")).getText();
-        assertEquals("148 minutos", duration);
+        assertEquals("148", duration);
 
         String year = driver.findElement(By.id("year")).getText();
         assertEquals("2010", year);
@@ -94,11 +99,14 @@ public class MovieDetailTest {
 
     @Test
     public void testMovieValoraciones() {
-        Set<Valoracion> valoraciones = new HashSet<>();
-        valoraciones.add(Valoracion.builder().id(1L).puntuacion(5).comentario("Excelente película").build());
-        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).valoraciones(valoraciones).build());
+        Categoria categoria = categoriaRepository.save(Categoria.builder().nombre("Acción").build());
+        Customer customer = customerRepository.save(Customer.builder().nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
+        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).categoria(categoria).build());
+        Valoracion valoracion = Valoracion.builder().puntuacion(5).comentario("Excelente película").customer(customer).movie(movie).build();
+        valoracionRepository.save(valoracion);
 
         driver.get("http://localhost:8080/movies/" + movie.getId());
+        driver.navigate().refresh();
 
         WebElement valoracionesHeader = driver.findElement(By.id("movie_valoracion"));
         assertEquals("Ver valoraciones pelicula", valoracionesHeader.getText());

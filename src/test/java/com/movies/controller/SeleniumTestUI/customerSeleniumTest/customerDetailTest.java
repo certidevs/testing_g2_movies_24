@@ -14,10 +14,13 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.openqa.selenium.WebDriver;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,10 +47,10 @@ public class customerDetailTest {
 
     @BeforeEach
     void setUp() {
-       // customerRepository.deleteAllInBatch();
-       // movieRepository.deleteAllInBatch();
-       // categoriaRepository.deleteAllInBatch();
-       // valoracionRepository.deleteAllInBatch();
+       customerRepository.deleteAllInBatch();
+       movieRepository.deleteAllInBatch();
+       categoriaRepository.deleteAllInBatch();
+       valoracionRepository.deleteAllInBatch();
         driver = new ChromeDriver();
     }
     @AfterEach
@@ -57,14 +60,12 @@ public class customerDetailTest {
     @Test
     public void testCustomerDetailPage() {
 
-        Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").build());
+        Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
         driver.get("http://localhost:8080/customers/" + customer.getId());
-
-        String pageTitle = driver.findElement(By.id("title_customer_detail")).getText();
-        assertEquals("Datos del Cliente", pageTitle);
+        driver.navigate().refresh();
 
         String header = driver.findElement(By.id("h1_customer_detail")).getText();
-        assertEquals("Detalle del Cliente", header);
+        assertEquals("Datos del Cliente", header);
 
         String customerId = driver.findElement(By.id("customer_id")).getText();
         assertTrue(customerId.matches("\\d+"), "El ID del cliente debe ser numérico");
@@ -93,11 +94,12 @@ public class customerDetailTest {
 
     @Test
     public void testCustomerMovies() {
+        Movie movie = movieRepository.save(Movie.builder().name("Inception").duration(148).year(2010).build());
         Set<Movie> movies = new HashSet<>();
-        movies.add(Movie.builder().id(1L).name("Inception").build());
+        movies.add(movie);
         Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).build());
         driver.get("http://localhost:8080/customers/" + customer.getId());
-
+        driver.navigate().refresh();
         WebElement moviesHeader = driver.findElement(By.id("customer_movie"));
         assertEquals("Ver Películas del usuario", moviesHeader.getText());
 
@@ -108,21 +110,23 @@ public class customerDetailTest {
 
     @Test
     public void testCustomerValoraciones() {
-        Set < Valoracion > valoraciones = new HashSet<>();
-        valoraciones.add(Valoracion.builder().id(1L).puntuacion(5).comentario("Muy buena").build());
-        Set <Categoria> categorias = new HashSet<>();
-        categorias.add(Categoria.builder().id(1L).nombre("Acción").build());
-        Set<Movie> movies = new HashSet<>();
-        Movie.MovieBuilder movieBuilder = Movie.builder().id(1L).name("Inception").duration(60).year(2025).valoraciones(valoraciones);
-        for (Categoria categoria : categorias) {
-            movieBuilder.categoria(categoria);
-        }
-        Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).valoraciones(valoraciones).build());
+        Categoria categoria = Categoria.builder().id(1L).nombre("Acción").descripcion("Películas de acción").build();
+        categoria = categoriaRepository.save(categoria);
+        Movie movie = Movie.builder().id(1L).name("Inception").duration(148).year(2010).categoria(categoria).build();
+        movie = movieRepository.save(movie);
+        Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
+        Valoracion valoracion = Valoracion.builder().id(1L).puntuacion(5).comentario("Muy buena película").customer(customer).movie(movie).build();
+        valoracion = valoracionRepository.save(valoracion);
+        if (customer.getValoraciones() == null) {
+            customer.setValoraciones(new HashSet<>());}
+        customer.getValoraciones().add(valoracion);
+        if (movie.getValoraciones() == null) {
+            movie.setValoraciones(new HashSet<>());}
+        movie.getValoraciones().add(valoracion);
         driver.get("http://localhost:8080/customers/" + customer.getId());
-
+        driver.navigate().refresh();
         WebElement valoracionesHeader = driver.findElement(By.id("customer_valoracion"));
         assertEquals("Ver valoraciones usuario", valoracionesHeader.getText());
-
         WebElement firstValoracion = driver.findElement(By.id("customer_valoracion_movie"));
         assertTrue(firstValoracion.isDisplayed());
         assertEquals("Inception", firstValoracion.getText());

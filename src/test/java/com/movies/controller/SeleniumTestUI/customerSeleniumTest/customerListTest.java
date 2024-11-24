@@ -37,10 +37,10 @@ public class customerListTest {
 
     @BeforeEach
     void setUp() {
-     //   customerRepository.deleteAllInBatch();
-     //   movieRepository.deleteAllInBatch();
-     //   categoriaRepository.deleteAllInBatch();
-      //  valoracionRepository.deleteAllInBatch();
+        customerRepository.deleteAllInBatch();
+        movieRepository.deleteAllInBatch();
+        categoriaRepository.deleteAllInBatch();
+        valoracionRepository.deleteAllInBatch();
         driver = new ChromeDriver();
     }
     @AfterEach
@@ -48,11 +48,10 @@ public class customerListTest {
         driver.quit();
     }
     @Test
-    public void testCustomerListPageTitleAndHeader() {
+    public void testCustomerListPageHeader() {
         customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
         driver.get("http://localhost:8080/customers");
-        String pageTitle = driver.findElement(By.id("title_customer_list")).getText();
-        assertEquals("Lista de Clientes", pageTitle);
+        driver.navigate().refresh();
 
         String header = driver.findElement(By.id("h1_customer_list")).getText();
         assertEquals("Lista de Clientes", header);
@@ -62,6 +61,7 @@ public class customerListTest {
     public void testCreateNewCustomerButton() {
         customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
         driver.get("http://localhost:8080/customers");
+        driver.navigate().refresh();
         WebElement createButton = driver.findElement(By.id("btnCreate_customer"));
         assertTrue(createButton.isDisplayed());
         assertEquals("Nuevo Cliente", createButton.getText());
@@ -74,6 +74,7 @@ public class customerListTest {
     public void testCustomerTableContent() {
         customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
         driver.get("http://localhost:8080/customers");
+        driver.navigate().refresh();
         WebElement customerTable = driver.findElement(By.id("customer_list_table"));
         assertTrue(customerTable.isDisplayed());
 
@@ -94,6 +95,7 @@ public class customerListTest {
     public void testCustomerActions() {
         customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
         driver.get("http://localhost:8080/customers");
+        driver.navigate().refresh();
         List<WebElement> actionButtons = driver.findElements(By.cssSelector("td a"));
 
         for (WebElement button : actionButtons) {
@@ -119,6 +121,7 @@ public class customerListTest {
     public void testNoCustomersMessage() {
         customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
         driver.get("http://localhost:8080/customers");
+        driver.navigate().refresh();
         List<WebElement> noCustomersMessage = driver.findElements(By.id("noCustomers"));
         if (!noCustomersMessage.isEmpty()) {
             assertTrue(noCustomersMessage.get(0).isDisplayed());

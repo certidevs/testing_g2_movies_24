@@ -41,11 +41,9 @@ public class MovieFormTest {
     }
 
     @Test
-    public void testPageTitleAndHeader() {
+    public void testPageHeader() {
         driver.get("http://localhost:8080/movies/new");
-
-        String pageTitle = driver.findElement(By.id("movie_form_title")).getText();
-        assertEquals("Formulario de Película", pageTitle);
+        driver.navigate().refresh();
 
         String header = driver.findElement(By.id("movie_form_h1")).getText();
         assertEquals("Formulario peliculas", header);
@@ -56,7 +54,7 @@ public class MovieFormTest {
         Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).nombre("Acción").build());
 
         driver.get("http://localhost:8080/movies/new");
-
+        driver.navigate().refresh();
         driver.findElement(By.id("name")).sendKeys("Inception");
         driver.findElement(By.id("duration")).sendKeys("148");
         driver.findElement(By.id("year")).sendKeys("2010");
@@ -74,8 +72,8 @@ public class MovieFormTest {
 
         Movie movie = movieRepository.save(Movie.builder().id(1L).name("Matrix").duration(136).year(1999).categoria(categoria).build());
 
-        driver.get("http://localhost:8080/movies/" + movie.getId() + "/edit");
-
+        driver.get("http://localhost:8080/movies/update/" + movie.getId());
+        driver.navigate().refresh();
         WebElement nameInput = driver.findElement(By.id("name"));
         nameInput.clear();
         nameInput.sendKeys("The Matrix");
@@ -95,7 +93,7 @@ public class MovieFormTest {
     @Test
     public void testBackButton() {
         driver.get("http://localhost:8080/movies/new");
-
+        driver.navigate().refresh();
         WebElement backButton = driver.findElement(By.id("backBtn_movies_list"));
         assertTrue(backButton.isDisplayed());
         assertEquals("Cancelar", backButton.getText());

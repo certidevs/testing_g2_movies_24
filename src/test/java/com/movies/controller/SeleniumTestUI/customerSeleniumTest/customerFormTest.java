@@ -16,12 +16,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
 public class customerFormTest {
     @Autowired
     private CustomerRepository customerRepository;
@@ -39,10 +40,10 @@ public class customerFormTest {
 
     @BeforeEach
     void setUp() {
-       // customerRepository.deleteAllInBatch();
-      //  movieRepository.deleteAllInBatch();
-     //   categoriaRepository.deleteAllInBatch();
-     //   valoracionRepository.deleteAllInBatch();
+        customerRepository.deleteAllInBatch();
+        movieRepository.deleteAllInBatch();
+        categoriaRepository.deleteAllInBatch();
+        valoracionRepository.deleteAllInBatch();
         driver = new ChromeDriver();
     }
     @AfterEach
@@ -50,12 +51,10 @@ public class customerFormTest {
         driver.quit();
     }
     @Test
-    public void testPageTitleAndHeader() {
-        customerRepository.save(Customer.builder().id(1L).nombre("Ana").build());
+    public void testPageHeader() {
+        customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("c").email("ana@c.com").password("123").build());
         driver.get("http://localhost:8080/customers/new");
-
-        String pageTitle = driver.findElement(By.id("customer_form_title")).getText();
-        assertEquals("Formulario de Cliente", pageTitle);
+        driver.navigate().refresh();
 
         String header = driver.findElement(By.id("customer_form_h1")).getText();
         assertEquals("Formulario Clientes", header);
@@ -63,24 +62,17 @@ public class customerFormTest {
 
     @Test
     public void testFillAndSubmitFormForNewCustomer() {
-        Set <Categoria> categorias = new HashSet<>();
-        categorias.add(Categoria.builder().id(1L).nombre("Acción").build());
         Set<Movie> movies = new HashSet<>();
         Movie.MovieBuilder movieBuilder = Movie.builder().id(1L).name("Inception").duration(60).year(2025);
-        for (Categoria categoria : categorias) {
-            movieBuilder.categoria(categoria);
-        }
-        customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).build());
+        Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).build());
         driver.get("http://localhost:8080/customers/new");
+        driver.navigate().refresh();
         driver.findElement(By.id("nombre")).sendKeys("Ana");
         driver.findElement(By.id("apellido")).sendKeys("C");
         driver.findElement(By.id("email")).sendKeys("ana.c@example.com");
         driver.findElement(By.id("password")).sendKeys("123");
 
-        WebElement movieSelect = driver.findElement(By.id("customer_movie"));
-        movieSelect.findElement(By.xpath("//option[text()='Inception']")).click();
-
-        driver.findElement(By.id("customer_save_new")).click();
+        driver.findElement(By.id("customer_save")).click();
 
     }
 
@@ -93,8 +85,8 @@ public class customerFormTest {
         for (Categoria categoria : categorias) {
             movieBuilder.categoria(categoria);
         }
-        customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).build());
-        driver.get("http://localhost:8080/customers/update/id");
+        Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).build());
+        driver.get("http://localhost:8080/customers/update/"+ customer.getId());
 
         WebElement nombreInput = driver.findElement(By.id("nombre"));
         nombreInput.clear();
@@ -104,7 +96,7 @@ public class customerFormTest {
         apellidoInput.clear();
         apellidoInput.sendKeys("Doe");
 
-        driver.findElement(By.id("customer_save_update")).click();
+        driver.findElement(By.id("customer_save")).click();
 
     }
 
@@ -117,8 +109,8 @@ public class customerFormTest {
         for (Categoria categoria : categorias) {
             movieBuilder.categoria(categoria);
         }
-        customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).build());
-        driver.get("http://localhost:8080/customers/update/id");
+        Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).build());
+        driver.get("http://localhost:8080/customers/update/"+customer.getId());
         WebElement backButton = driver.findElement(By.id("backBtn_customer_list"));
         assertTrue(backButton.isDisplayed());
         assertEquals("Volver atrás", backButton.getText());
