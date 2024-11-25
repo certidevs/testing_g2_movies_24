@@ -34,6 +34,7 @@
                     <option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.nombre}"></option>
                 </select>
             </div>
+            <br><br><br>
             <div class="d-flex justify-content-between mt-4">
                 <button id="movie_save_update" type="submit" th:if="${movie.id}" class="btn btn-primary">
                     <i class="fas fa-save"></i>Guardar modificación</button>

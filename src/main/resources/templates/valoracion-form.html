@@ -14,15 +14,19 @@
         
         <form th:action="@{/valoraciones}" th:object="${valoracion}" method="post" class="card p-4 shadow-sm">
             <input type="hidden" th:field="*{id}"/>
-            
-            <div class="mb-3">
-                <label for="usuarioId" class="form-label">Usuario ID:</label>
-                <input type="text" id="usuarioId" th:field="*{customer.id}" class="form-control" required/>
+
+            <div>
+                <label for="usuarioId">Cliente:</label>
+                <select id="usuarioId" th:field="*{customer.id}">
+                    <option th:each="customer : ${customers}" th:value="${customer.id}" th:text="${customer.nombre}"></option>
+                </select>
             </div>
-            
-            <div class="mb-3">
-                <label for="peliculaId" class="form-label">Película ID:</label>
-                <input type="text" id="peliculaId" th:field="*{movie.id}" class="form-control" required/>
+
+            <div>
+                <label for="peliculaId">Pelicula:</label>
+                <select id="peliculaId" th:field="*{movie.id}">
+                    <option th:each="movie : ${movies}" th:value="${movie.id}" th:text="${movie.name}"></option>
+                </select>
             </div>
             
             <div class="mb-3">
