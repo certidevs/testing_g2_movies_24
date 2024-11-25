@@ -32,7 +32,7 @@ public class ValoracionController {
     @GetMapping("valoraciones/{id}")
     public String findById(@PathVariable("id") Long id, Model model) {
         Valoracion valoracion = valoracionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid valoracion ID:" + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         model.addAttribute("valoracion", valoracion);
         return "valoracion-detail";
     }

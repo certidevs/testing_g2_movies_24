@@ -99,7 +99,7 @@ class ValoracionControllerUnitTest {
     @DisplayName("deleteById - Eliminación de valoración")
     void deleteById() {
         // Ejecutar el método deleteById
-        String view = valoracionController.deleteById(1L);
+        String view = valoracionController.deleteValoracion(1L);
 
         // Verificar resultados
         assertEquals("redirect:/valoraciones", view, "La vista debería redirigir a '/valoraciones'");
