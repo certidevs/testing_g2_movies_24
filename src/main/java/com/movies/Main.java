@@ -21,7 +21,7 @@ public class Main {
 		var context = SpringApplication.run(Main.class, args);
 		CustomerRepository productRepository = context.getBean(CustomerRepository.class);
 		Customer customer = Customer.builder()
-				.id(6L)
+//				.id(6L)
 				.nombre("Cliente")
 				.apellido("1")
 				.email("123@gmail.com")
@@ -29,7 +29,7 @@ public class Main {
 				.build();
 
 		Customer customer2 = Customer.builder()
-				.id(7L)
+//				.id(7L)
 				.nombre("Cliente")
 				.apellido("2")
 				.email("456@gmail.com")
@@ -40,7 +40,7 @@ public class Main {
 
 		CategoriaRepository categoriaRepository = context.getBean(CategoriaRepository.class);
 		Categoria categoria = Categoria.builder()
-				.id(6L)
+//				.id(6L)
 				.nombre("Categoria")
 				.descripcion("Descripcion")
 				.build();
@@ -48,21 +48,21 @@ public class Main {
 
 		MovieRepository movieRepository = context.getBean(MovieRepository.class);
 		Movie movie = Movie.builder()
-				.id(6L)
+				//.id(6L)
 				.name("Pelicula")
 				.duration(60)
 				.year(2021)
 				.categoria(categoria)
 				.build();
 
-		System.out.println(movie);
+//		System.out.println(movie);
 		movieRepository.save(movie);
 
 		ValoracionRepository valoracionRepository = context.getBean(ValoracionRepository.class);
 		Valoracion valoracion = Valoracion.builder()
 				.movie(movie)
 				.customer(customer)
-				.id(11L)
+//				.id(11L)
 				.puntuacion(5)
 				.comentario("Comentario dummy")
 				.build();

@@ -72,7 +72,7 @@ public class CategoriaController {
 
     @PostMapping("categorias")
     public String savecategoria(@ModelAttribute Categoria categoria) {
-        if (Categoria.Id() == null) {
+        if (categoria.getId() == null) {
             categoriaRepository.save(categoria);
         } else {
             if (categoriaRepository.existsById(categoria.getId())) {
