@@ -48,11 +48,12 @@ public class customerListTest {
         driver.quit();
     }
     @Test
-    public void testCustomerListPageHeader() {
+    public void testCustomerListPageTitleAndHeader() {
         customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
         driver.get("http://localhost:8080/customers");
         driver.navigate().refresh();
-
+        String title =driver.getTitle();
+        assertEquals("Lista de Clientes", title);
         String header = driver.findElement(By.id("h1_customer_list")).getText();
         assertEquals("Lista de Clientes", header);
     }
