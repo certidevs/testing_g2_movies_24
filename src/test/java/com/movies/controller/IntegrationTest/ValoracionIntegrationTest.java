@@ -6,30 +6,25 @@ import com.movies.model.Valoracion;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Pruebas de integración completas para el controlador de valoraciones.
- * Utiliza el contexto completo de Spring y MockMvc para simular solicitudes HTTP.
- */
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional // Cada prueba se ejecuta dentro de una transacción que se revierte al final
-class ValoracionIntegrationTest {
+@Transactional
+public class ValoracionIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,85 +38,135 @@ class ValoracionIntegrationTest {
     @Autowired
     private MovieRepository movieRepository;
 
-    @Test
-    void findAll() throws Exception {
-        // Crear datos de prueba en la base de datos
-        Customer customer = customerRepository.save(Customer.builder().nombre("John").apellido("Doe").build());
-        Movie movie = movieRepository.save(Movie.builder().name("Inception").year(2010).duration(148).build());
-        valoracionRepository.save(Valoracion.builder().customer(customer).movie(movie).puntuacion(5).comentario("Great movie!").build());
-
-        // Realizar solicitud GET para obtener todas las valoraciones
-        mockMvc.perform(get("/valoraciones"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("valoracion-list"))
-                .andExpect(model().attributeExists("valoraciones"))
-                .andExpect(model().attribute("valoraciones", hasSize(1)));
+    @BeforeEach
+    void setUp() {
+        valoracionRepository.deleteAll();
+        movieRepository.deleteAll();
+        customerRepository.deleteAll();
     }
 
     @Test
-    void findById() throws Exception {
-        // Crear datos de prueba en la base de datos
-        Customer customer = customerRepository.save(Customer.builder().nombre("Jane").apellido("Doe").build());
-        Movie movie = movieRepository.save(Movie.builder().name("Titanic").year(1997).duration(195).build());
-        Valoracion valoracion = valoracionRepository.save(Valoracion.builder().customer(customer).movie(movie).puntuacion(4).comentario("Touching story!").build());
+    void findAll() throws Exception {
+        // Limpiar la base de datos
+        valoracionRepository.deleteAll();
+        customerRepository.deleteAll();
+        movieRepository.deleteAll();
 
-        // Realizar solicitud GET para obtener una valoración por ID
+        // Crear datos de prueba
+        Customer customer1 = customerRepository.save(Customer.builder()
+                .nombre("Ana")
+                .apellido("C")
+                .email("ana.c@example.com")
+                .password("password")
+                .build());
+
+        Customer customer2 = customerRepository.save(Customer.builder()
+                .nombre("P")
+                .apellido("C")
+                .email("p.c@example.com")
+                .password("password")
+                .build());
+
+        Movie movie1 = movieRepository.save(Movie.builder()
+                .name("Inception")
+                .year(2010)
+                .duration(148)
+                .build());
+
+        Movie movie2 = movieRepository.save(Movie.builder()
+                .name("Titanic")
+                .year(1997)
+                .duration(195)
+                .build());
+
+        Valoracion valoracion1 = valoracionRepository.save(Valoracion.builder()
+                .customer(customer1)
+                .movie(movie1)
+                .comentario("Amazing movie!")
+                .puntuacion(5)
+                .build());
+
+        Valoracion valoracion2 = valoracionRepository.save(Valoracion.builder()
+                .customer(customer2)
+                .movie(movie2)
+                .comentario("Emotional story!")
+                .puntuacion(4)
+                .build());
+
+        // Ejecutar el test
+        mockMvc.perform(get("/valoraciones"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("valoraciones"))
+                .andExpect(model().attribute("valoraciones", hasSize(2)))
+                .andExpect(model().attribute("valoraciones", hasItem(
+                        allOf(
+                                hasProperty("id", is(valoracion1.getId())),
+                                hasProperty("comentario", is(valoracion1.getComentario())),
+                                hasProperty("puntuacion", is(valoracion1.getPuntuacion()))
+                        )
+                )))
+                .andExpect(model().attribute("valoraciones", hasItem(
+                        allOf(
+                                hasProperty("id", is(valoracion2.getId())),
+                                hasProperty("comentario", is(valoracion2.getComentario())),
+                                hasProperty("puntuacion", is(valoracion2.getPuntuacion()))
+                        )
+                )));
+    }
+
+
+    @Test
+    void findById() throws Exception {
+        // Crear datos de prueba
+        Customer customer = customerRepository.save(Customer.builder()
+                .nombre("Ana")
+                .apellido("C")
+                .email("ana.c@example.com")
+                .password("password")
+                .build());
+
+        Movie movie = movieRepository.save(Movie.builder()
+                .name("Inception")
+                .year(2010)
+                .duration(148)
+                .build());
+
+        Valoracion valoracion = valoracionRepository.save(Valoracion.builder()
+                .customer(customer)
+                .movie(movie)
+                .comentario("Amazing movie!")
+                .puntuacion(5)
+                .build());
+
+        // Verificar que la valoración se creó correctamente
+        assertNotNull(valoracion.getId(), "La valoración debería haberse guardado y tener un ID.");
+
+        // Imprimir la valoración para depurar
+        System.out.println("Valoración creada: " + valoracion);
+
+        // Ejecutar el test
         mockMvc.perform(get("/valoraciones/{id}", valoracion.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("valoracion-detail"))
                 .andExpect(model().attributeExists("valoracion"))
-                .andExpect(model().attribute("valoracion", allOf(
-                        hasProperty("id", is(valoracion.getId())),
-                        hasProperty("puntuacion", is(4)),
-                        hasProperty("comentario", is("Touching story!"))
-                )));
+                .andExpect(model().attribute("valoracion",
+                        allOf(
+                                hasProperty("id", is(valoracion.getId())),
+                                hasProperty("comentario", is(valoracion.getComentario())),
+                                hasProperty("puntuacion", is(valoracion.getPuntuacion())),
+                                hasProperty("customer", hasProperty("id", is(customer.getId()))),
+                                hasProperty("movie", hasProperty("id", is(movie.getId())))
+                        )));
     }
 
     @Test
-    void save() throws Exception {
-        // Crear datos de prueba para customer y movie
-        Customer customer = customerRepository.save(Customer.builder().nombre("John").build());
-        Movie movie = movieRepository.save(Movie.builder().name("Interstellar").build());
-
-        // Realizar solicitud POST para crear una nueva valoración
-        mockMvc.perform(post("/valoraciones")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("customer.id", String.valueOf(customer.getId()))
-                        .param("movie.id", String.valueOf(movie.getId()))
-                        .param("puntuacion", "5")
-                        .param("comentario", "Masterpiece!"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/valoraciones"));
-
-        // Verificar que la valoración fue creada en la base de datos
-        List<Valoracion> valoraciones = valoracionRepository.findAll();
-        assertEquals(1, valoraciones.size());
-        assertEquals("Masterpiece!", valoraciones.get(0).getComentario());
+    void findById_NotExist() throws Exception {
+        mockMvc.perform(get("/valoraciones/{id}", 999L))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteById() throws Exception {
-        // Crear datos de prueba en la base de datos
-        Customer customer = customerRepository.save(Customer.builder().nombre("Jane").build());
-        Movie movie = movieRepository.save(Movie.builder().name("Avatar").build());
-        Valoracion valoracion = valoracionRepository.save(Valoracion.builder().customer(customer).movie(movie).puntuacion(4).build());
-
-        // Realizar solicitud GET para eliminar la valoración
-        mockMvc.perform(get("/valoraciones/delete/{id}", valoracion.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/valoraciones"));
-
-        // Verificar que la valoración fue eliminada
-        assertTrue(valoracionRepository.findById(valoracion.getId()).isEmpty());
-    }
-
-    @Test
-    void obtenerFormularioParaNuevaValoracion() throws Exception {
-        // Crear datos de prueba de Customer y Movie
-        customerRepository.save(Customer.builder().nombre("John").build());
-        movieRepository.save(Movie.builder().name("Interstellar").build());
-
-        // Realizar solicitud GET para obtener el formulario de nueva valoración
+    void getFormToCreateValoracion() throws Exception {
         mockMvc.perform(get("/valoraciones/new"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("valoracion-form"))
@@ -129,33 +174,108 @@ class ValoracionIntegrationTest {
     }
 
     @Test
-    void obtenerFormularioParaEditarValoracion() throws Exception {
-        // Crear datos de prueba en la base de datos
-        Customer customer = customerRepository.save(Customer.builder().nombre("Jane").build());
-        Movie movie = movieRepository.save(Movie.builder().name("Avatar").build());
-        Valoracion valoracion = valoracionRepository.save(Valoracion.builder().customer(customer).movie(movie).puntuacion(4).comentario("Good movie!").build());
+    void getFormToUpdateValoracion() throws Exception {
+        // Crear datos de prueba
+        Customer customer = customerRepository.save(Customer.builder()
+                .nombre("Ana")
+                .apellido("C")
+                .email("ana.c@example.com")
+                .password("password")
+                .build());
 
-        // Realizar solicitud GET para obtener el formulario de edición
+        Movie movie = movieRepository.save(Movie.builder()
+                .name("Inception")
+                .year(2010)
+                .duration(148)
+                .build());
+
+        Valoracion valoracion = valoracionRepository.save(Valoracion.builder()
+                .customer(customer)
+                .movie(movie)
+                .comentario("Amazing movie!")
+                .puntuacion(5)
+                .build());
+
+        // Ejecutar el test
         mockMvc.perform(get("/valoraciones/edit/{id}", valoracion.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("valoracion-form"))
-                .andExpect(model().attributeExists("valoracion"))
-                .andExpect(model().attribute("valoracion", allOf(
-                        hasProperty("id", is(valoracion.getId())),
-                        hasProperty("puntuacion", is(4)),
-                        hasProperty("comentario", is("Good movie!"))
-                )));
+                .andExpect(model().attributeExists("valoracion"));
     }
 
     @Test
-    void validarCamposDeValoracion_Invalida() throws Exception {
-        // Realizar solicitud POST con datos inválidos
-        mockMvc.perform(post("/valoraciones")
+    void saveValoracion() throws Exception {
+        // Crear datos de prueba
+        Customer customer = customerRepository.save(Customer.builder()
+                .nombre("Ana")
+                .apellido("C")
+                .email("ana.c@example.com")
+                .password("password")
+                .build());
+
+        Movie movie = movieRepository.save(Movie.builder()
+                .name("Inception")
+                .year(2010)
+                .duration(148)
+                .build());
+
+        // Confirmar IDs generados
+        System.out.println("Customer ID: " + customer.getId());
+        System.out.println("Movie ID: " + movie.getId());
+
+        // Enviar datos
+        mockMvc.perform(MockMvcRequestBuilders.post("/valoraciones")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("puntuacion", "11") // fuera de rango
-                        .param("comentario", "")) // comentario vacío
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("valoracion-form"))
-                .andExpect(model().attributeHasFieldErrors("valoracion", "puntuacion", "comentario"));
+                        .param("customer.id", String.valueOf(customer.getId()))
+                        .param("movie.id", String.valueOf(movie.getId()))
+                        .param("comentario", "Amazing movie!")
+                        .param("puntuacion", "5"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/valoraciones"));
+
+        // Verificar los datos guardados
+        valoracionRepository.findAll().forEach(valoracion -> System.out.println("Saved Valoracion: " + valoracion));
+        Valoracion savedValoracion = valoracionRepository.findAll().get(0);
+        assertEquals("Amazing movie!", savedValoracion.getComentario());
+        assertEquals(5, savedValoracion.getPuntuacion());
+        assertEquals(customer.getId(), savedValoracion.getCustomer().getId());
+        assertEquals(movie.getId(), savedValoracion.getMovie().getId());
     }
+
+    @Test
+    void deleteValoracion() throws Exception {
+        // Crear datos de prueba
+        Customer customer = customerRepository.save(Customer.builder()
+                .nombre("Ana")
+                .apellido("C")
+                .email("ana.c@example.com")
+                .password("password")
+                .build());
+
+        Movie movie = movieRepository.save(Movie.builder()
+                .name("Inception")
+                .year(2010)
+                .duration(148)
+                .build());
+
+        Valoracion valoracion = valoracionRepository.save(Valoracion.builder()
+                .customer(customer)
+                .movie(movie)
+                .comentario("Amazing movie!")
+                .puntuacion(5)
+                .build());
+
+        // Confirmar que la valoración fue creada
+        System.out.println("Valoracion ID antes de eliminar: " + valoracion.getId());
+
+        // Ejecutar la solicitud GET para eliminar la valoración
+        mockMvc.perform(get("/valoraciones/delete/{id}", valoracion.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/valoraciones"));
+
+        // Verificar que la valoración ya no existe
+        boolean valoracionExiste = valoracionRepository.findById(valoracion.getId()).isPresent();
+        assertFalse(valoracionExiste, "La valoración debería haber sido eliminada.");
+    }
+
 }

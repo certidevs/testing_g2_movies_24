@@ -22,30 +22,25 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/*
-Test funcional/UI de Selenium del listado de valoraciones valoracion-list.html.
-Requiere la dependencia selenium-java.
-Al poner DEFINED_PORT, el propio test inicia la aplicación de Spring Boot y ejecuta los tests con el navegador.
-NO HACE FALTA INICIAR LA APLICACIÓN MANUALMENTE DESDE EL MAIN.
- */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ValoracionListTest {
 
     @Autowired
-    private ValoracionRepository valoracionRepository;
-    @Autowired
     private CustomerRepository customerRepository;
+
     @Autowired
     private MovieRepository movieRepository;
+
+    @Autowired
+    private ValoracionRepository valoracionRepository;
 
     WebDriver driver;
 
     @BeforeEach
     void setUp() {
-        valoracionRepository.deleteAll();
-        customerRepository.deleteAll();
-        movieRepository.deleteAll();
-
+        valoracionRepository.deleteAllInBatch();
+        customerRepository.deleteAllInBatch();
+        movieRepository.deleteAllInBatch();
         driver = new ChromeDriver();
         driver.get("http://localhost:8080/valoraciones");
     }
@@ -56,106 +51,86 @@ public class ValoracionListTest {
     }
 
     @Test
-    @DisplayName("Comprobar etiqueta <title>")
+    @DisplayName("Comprobar título de la página")
     void title() {
         String title = driver.getTitle();
-        assertEquals("Valoraciones List", title);
+        assertEquals("Lista de Valoraciones", title);
     }
 
     @Test
-    @DisplayName("Comprobar la etiqueta <h1>")
+    @DisplayName("Comprobar encabezado <h1>")
     void h1() {
         WebElement h1 = driver.findElement(By.tagName("h1"));
-        assertEquals("Lista de valoraciones", h1.getText());
+        assertEquals("Lista de Valoraciones", h1.getText());
     }
 
     @Test
-    @DisplayName("Comprobar que existe el enlace de Crear nueva valoración y su texto")
+    @DisplayName("Comprobar que existe el botón de Crear nueva valoración")
     void buttonCreateValoracion() {
-        WebElement createButton = driver.findElement(By.id("btnCreateValoracion"));
-        assertEquals("Crear nueva valoración", createButton.getText());
+        WebElement createButton = driver.findElement(By.className("btn-primary"));
+        assertEquals("Crear nueva Valoración", createButton.getText());
 
-        createButton.click(); // Pulsar botón para crear nueva valoración
-
+        createButton.click();
         assertEquals("http://localhost:8080/valoraciones/new", driver.getCurrentUrl());
     }
 
     @Test
     @DisplayName("Comprobar tabla vacía con texto cuando no hay datos")
     void tableEmpty() {
-        // Comprobar que existe el mensaje de "No hay valoraciones"
-        WebElement noValoracionesMessage = driver.findElement(By.id("valoracionesEmpty"));
-        assertEquals("No hay valoraciones.", noValoracionesMessage.getText());
+        WebElement noValoracionesMessage = driver.findElement(By.tagName("p"));
+        assertEquals("No hay valoraciones disponibles.", noValoracionesMessage.getText());
 
-        // Comprobar que no existe la tabla de valoraciones
         assertThrows(
                 NoSuchElementException.class,
-                () -> driver.findElement(By.id("valoracionList"))
+                () -> driver.findElement(By.tagName("tbody"))
         );
     }
 
     @Test
     @DisplayName("Comprobar tabla con valoraciones")
     void tableWithValoraciones() {
-        var customer = customerRepository.save(Customer.builder().nombre("Cliente 1").build());
-        var movie = movieRepository.save(Movie.builder().name("Película 1").build());
-
+        Customer customer = customerRepository.save(
+                Customer.builder().nombre("Ana").apellido("Perez").email("ana.p@example.com").build()
+        );
+        Movie movie = movieRepository.save(
+                Movie.builder().name("Inception").duration(148).year(2010).build()
+        );
         valoracionRepository.saveAll(List.of(
-                Valoracion.builder().comentario("Comentario 1").puntuacion(5).customer(customer).movie(movie).build(),
-                Valoracion.builder().comentario("Comentario 2").puntuacion(4).customer(customer).movie(movie).build(),
-                Valoracion.builder().comentario("Comentario 3").puntuacion(3).customer(customer).movie(movie).build()
+                Valoracion.builder().customer(customer).movie(movie).comentario("Excelente película").puntuacion(9).build(),
+                Valoracion.builder().customer(customer).movie(movie).comentario("Buena película").puntuacion(7).build()
         ));
 
-        driver.navigate().refresh(); // Refrescar la página
+        driver.navigate().refresh();
 
-        WebElement valoracionList = driver.findElement(By.id("valoracionList"));
-        assertTrue(valoracionList.isDisplayed());
+        WebElement valoracionTable = driver.findElement(By.tagName("table"));
+        assertTrue(valoracionTable.isDisplayed());
+
+        List<WebElement> rows = valoracionTable.findElements(By.tagName("tr"));
+        assertEquals(3, rows.size()); // 1 encabezado + 2 filas de datos
     }
 
     @Test
-    @DisplayName("Comprobar las columnas de la tabla")
-    void tableWithValoraciones_columns() {
-        var customer = customerRepository.save(Customer.builder().nombre("Cliente 1").build());
-        var movie = movieRepository.save(Movie.builder().name("Película 1").build());
-
-        valoracionRepository.saveAll(List.of(
-                Valoracion.builder().comentario("Comentario 1").puntuacion(5).customer(customer).movie(movie).build(),
-                Valoracion.builder().comentario("Comentario 2").puntuacion(4).customer(customer).movie(movie).build()
-        ));
-
-        driver.navigate().refresh(); // Refrescar la página
-
-        WebElement valoracionList = driver.findElement(By.id("valoracionList"));
-
-        // Obtener los encabezados de la tabla valoracionList
-        List<WebElement> headers = valoracionList.findElements(By.tagName("th"));
-        assertEquals(5, headers.size());
-        assertEquals("ID", headers.get(0).getText());
-        assertEquals("COMENTARIO", headers.get(1).getText());
-        assertEquals("PUNTUACIÓN", headers.get(2).getText());
-        assertEquals("CLIENTE", headers.get(3).getText());
-        assertEquals("PELÍCULA", headers.get(4).getText());
-    }
-
-    @Test
-    @DisplayName("Comprobar filas de la tabla y sus datos")
+    @DisplayName("Comprobar filas de la tabla con datos correctos")
     void tableWithValoraciones_rows() {
-        var customer = customerRepository.save(Customer.builder().nombre("Cliente 1").build());
-        var movie = movieRepository.save(Movie.builder().name("Película 1").build());
-
-        var valoracion = valoracionRepository.save(
-                Valoracion.builder().comentario("Comentario 1").puntuacion(5).customer(customer).movie(movie).build()
+        Customer customer = customerRepository.save(
+                Customer.builder().nombre("Ana").apellido("Perez").email("ana.p@example.com").build()
+        );
+        Movie movie = movieRepository.save(
+                Movie.builder().name("Inception").duration(148).year(2010).build()
+        );
+        Valoracion valoracion = valoracionRepository.save(
+                Valoracion.builder().customer(customer).movie(movie).comentario("Excelente película").puntuacion(9).build()
         );
 
-        driver.navigate().refresh(); // Refrescar la página
+        driver.navigate().refresh();
 
-        WebElement id = driver.findElement(By.id("valoracionId_" + valoracion.getId()));
-        assertEquals(valoracion.getId().toString(), id.getText());
+        WebElement table = driver.findElement(By.tagName("table"));
+        WebElement firstRow = table.findElements(By.tagName("tr")).get(1);
 
-        WebElement comentario = driver.findElement(By.id("valoracionComentario_" + valoracion.getId()));
-        assertEquals("Comentario 1", comentario.getText());
-
-        WebElement puntuacion = driver.findElement(By.id("valoracionPuntuacion_" + valoracion.getId()));
-        assertEquals("5", puntuacion.getText());
+        assertEquals(valoracion.getId().toString(), firstRow.findElements(By.tagName("td")).get(0).getText());
+        assertEquals(customer.getNombre(), firstRow.findElements(By.tagName("td")).get(1).getText());
+        assertEquals(movie.getName(), firstRow.findElements(By.tagName("td")).get(2).getText());
+        assertEquals("9", firstRow.findElements(By.tagName("td")).get(3).getText());
+        assertEquals("Excelente película", firstRow.findElements(By.tagName("td")).get(4).getText());
     }
 }

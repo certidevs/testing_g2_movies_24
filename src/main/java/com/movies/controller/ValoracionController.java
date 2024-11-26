@@ -1,38 +1,34 @@
 package com.movies.controller;
 
+import com.movies.model.Valoracion;
+import com.movies.repository.CustomerRepository;
+import com.movies.repository.MovieRepository;
+import com.movies.repository.ValoracionRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.movies.model.Valoracion;
-import com.movies.repository.ValoracionRepository;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @AllArgsConstructor
-//@RequestMapping("/valoraciones")
-
 public class ValoracionController {
 
-
-    private ValoracionRepository valoracionRepository;
+    private final ValoracionRepository valoracionRepository;
+    private final CustomerRepository customerRepository;
+    private final MovieRepository movieRepository;
 
     @GetMapping("valoraciones")
     public String findAll(Model model) {
         model.addAttribute("valoraciones", valoracionRepository.findAll());
         return "valoracion-list";
     }
+
     @GetMapping("valoraciones/{id}")
     public String findById(@PathVariable("id") Long id, Model model) {
         Valoracion valoracion = valoracionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Valoración no encontrada"));
         model.addAttribute("valoracion", valoracion);
         return "valoracion-detail";
     }
@@ -40,15 +36,18 @@ public class ValoracionController {
     @GetMapping("valoraciones/new")
     public String createValoracion(Model model) {
         model.addAttribute("valoracion", new Valoracion());
+        model.addAttribute("customers", customerRepository.findAll());
+        model.addAttribute("movies", movieRepository.findAll());
         return "valoracion-form";
     }
 
     @GetMapping("valoraciones/edit/{id}")
-    public String updateValoracion(Model model, @PathVariable Long id) {
+    public String updateValoracion(@PathVariable Long id, Model model) {
         Valoracion valoracion = valoracionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Valoración no encontrada"));
         model.addAttribute("valoracion", valoracion);
+        model.addAttribute("customers", customerRepository.findAll());
+        model.addAttribute("movies", movieRepository.findAll());
         return "valoracion-form";
     }
 
@@ -57,8 +56,6 @@ public class ValoracionController {
         valoracionRepository.save(valoracion);
         return "redirect:/valoraciones";
     }
-
-
 
     @GetMapping("valoraciones/delete/{id}")
     public String deleteValoracion(@PathVariable("id") Long id) {

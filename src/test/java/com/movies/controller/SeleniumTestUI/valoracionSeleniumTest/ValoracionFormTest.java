@@ -12,27 +12,25 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-/*
-Test de Selenium para probar: valoracion-form.html
- */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ValoracionFormTest {
 
     @Autowired
-    private ValoracionRepository valoracionRepository;
-    @Autowired
     private CustomerRepository customerRepository;
+
     @Autowired
     private MovieRepository movieRepository;
+
+    @Autowired
+    private ValoracionRepository valoracionRepository;
 
     WebDriver driver;
 
@@ -41,117 +39,95 @@ public class ValoracionFormTest {
         valoracionRepository.deleteAllInBatch();
         customerRepository.deleteAllInBatch();
         movieRepository.deleteAllInBatch();
-        driver = new ChromeDriver(); // Inicializa el driver de Selenium (Chrome)
+        driver = new ChromeDriver();
     }
 
     @AfterEach
     void tearDown() {
-        driver.quit(); // Cierra el navegador después de cada test
+        driver.quit();
     }
 
     @Test
     @DisplayName("Comprobar inputs vacíos si es CREACIÓN")
     void checkCreation_EmptyInputs() {
-        customerRepository.saveAll(List.of(
-                Customer.builder().nombre("cliente 1").build(),
-                Customer.builder().nombre("cliente 2").build()
-        ));
-        movieRepository.saveAll(List.of(
-                Movie.builder().name("pelicula 1").build(),
-                Movie.builder().name("pelicula 2").build()
-        ));
+        customerRepository.save(Customer.builder().nombre("Ana").apellido("Perez").email("ana.p@example.com").build());
+        movieRepository.save(Movie.builder().name("Inception").year(2010).build());
 
         driver.get("http://localhost:8080/valoraciones/new");
 
         var h1 = driver.findElement(By.tagName("h1"));
-        assertEquals("Crear Valoración", h1.getText());
+        assertEquals("Formulario de Valoración", h1.getText());
 
-        // Comprobar inputs vacíos
         var inputComentario = driver.findElement(By.id("comentario"));
         assertTrue(inputComentario.getAttribute("value").isEmpty());
 
         var inputPuntuacion = driver.findElement(By.id("puntuacion"));
         assertTrue(inputPuntuacion.getAttribute("value").isEmpty());
 
-        // Selector de customer
-        Select customerSelect = new Select(driver.findElement(By.id("customer")));
+        Select customerSelect = new Select(driver.findElement(By.id("usuarioId")));
         assertFalse(customerSelect.isMultiple());
-        assertEquals(3, customerSelect.getOptions().size());
-        assertEquals("", customerSelect.getOptions().get(0).getText());
-        assertEquals("CLIENTE 1", customerSelect.getOptions().get(1).getText());
-        assertEquals("CLIENTE 2", customerSelect.getOptions().get(2).getText());
+        assertEquals(2, customerSelect.getOptions().size());
 
-        // Selector de movie
-        Select movieSelect = new Select(driver.findElement(By.id("movie")));
+        Select movieSelect = new Select(driver.findElement(By.id("peliculaId")));
         assertFalse(movieSelect.isMultiple());
-        assertEquals(3, movieSelect.getOptions().size());
-        assertEquals("", movieSelect.getOptions().get(0).getText());
-        assertEquals("PELICULA 1", movieSelect.getOptions().get(1).getText());
-        assertEquals("PELICULA 2", movieSelect.getOptions().get(2).getText());
+        assertEquals(2, movieSelect.getOptions().size());
     }
 
     @Test
     @DisplayName("Comprobar que el formulario aparece relleno al editar una valoración")
     void checkEdition_FilledInputs() {
-        var customers = customerRepository.saveAll(List.of(
-                Customer.builder().nombre("cliente 1").build(),
-                Customer.builder().nombre("cliente 2").build()
-        ));
-        var movies = movieRepository.saveAll(List.of(
-                Movie.builder().name("pelicula 1").build(),
-                Movie.builder().name("pelicula 2").build()
-        ));
-        Customer customer2 = customers.get(1); // Cliente 2
-        Movie movie2 = movies.get(1); // Película 2
+        var customer = customerRepository.save(Customer.builder().nombre("Ana").apellido("Perez").email("ana.p@example.com").build());
+        var movie = movieRepository.save(Movie.builder().name("Inception").year(2010).build());
 
-        Valoracion valoracion = valoracionRepository.save(Valoracion.builder()
+        var valoracion = valoracionRepository.save(Valoracion.builder()
+                .customer(customer)
+                .movie(movie)
                 .comentario("Gran película")
-                .puntuacion(4)
-                .customer(customer2)
-                .movie(movie2)
+                .puntuacion(5)
                 .build());
 
         driver.get("http://localhost:8080/valoraciones/edit/" + valoracion.getId());
 
-        // Comprobar inputs rellenos
         var inputComentario = driver.findElement(By.id("comentario"));
         assertEquals("Gran película", inputComentario.getAttribute("value"));
 
         var inputPuntuacion = driver.findElement(By.id("puntuacion"));
-        assertEquals("4", inputPuntuacion.getAttribute("value"));
+        assertEquals("5", inputPuntuacion.getAttribute("value"));
 
-        // Selector de customer
-        Select customerSelect = new Select(driver.findElement(By.id("customer")));
-        assertFalse(customerSelect.isMultiple());
-        assertEquals(3, customerSelect.getOptions().size());
-        assertEquals(
-                String.valueOf(customer2.getId()),
-                customerSelect.getFirstSelectedOption().getAttribute("value")
-        );
-        assertEquals(customer2.getNombre(), customerSelect.getFirstSelectedOption().getText());
+        Select customerSelect = new Select(driver.findElement(By.id("usuarioId")));
+        assertEquals(String.valueOf(customer.getId()), customerSelect.getFirstSelectedOption().getAttribute("value"));
 
-        // Selector de movie
-        Select movieSelect = new Select(driver.findElement(By.id("movie")));
-        assertFalse(movieSelect.isMultiple());
-        assertEquals(3, movieSelect.getOptions().size());
-        assertEquals(
-                String.valueOf(movie2.getId()),
-                movieSelect.getFirstSelectedOption().getAttribute("value")
-        );
-        assertEquals(movie2.getName(), movieSelect.getFirstSelectedOption().getText());
+        Select movieSelect = new Select(driver.findElement(By.id("peliculaId")));
+        assertEquals(String.valueOf(movie.getId()), movieSelect.getFirstSelectedOption().getAttribute("value"));
     }
 
     @Test
     @DisplayName("Entrar en el formulario y crear una nueva valoración y enviar")
     void crearNuevaValoracionYEnviar() {
-        // Implementación pendiente...
-    }
+        var customer = customerRepository.save(Customer.builder().nombre("Ana").apellido("Perez").email("ana.p@example.com").build());
+        var movie = movieRepository.save(Movie.builder().name("Inception").year(2010).build());
 
-    @Test
-    @DisplayName("Entrar en el formulario y editar una valoración existente y enviar")
-    void editarValoracionYEnviar() {
-        // Implementación pendiente...
-    }
+        driver.get("http://localhost:8080/valoraciones/new");
 
-    // Casos límite y validaciones: qué pasa si pongo valores erróneos en todos los campos
+        var inputComentario = driver.findElement(By.id("comentario"));
+        inputComentario.sendKeys("Excelente película");
+
+        var inputPuntuacion = driver.findElement(By.id("puntuacion"));
+        inputPuntuacion.sendKeys("9");
+
+        Select customerSelect = new Select(driver.findElement(By.id("usuarioId")));
+        customerSelect.selectByVisibleText("Ana Perez");
+
+        Select movieSelect = new Select(driver.findElement(By.id("peliculaId")));
+        movieSelect.selectByVisibleText("Inception");
+
+        driver.findElement(By.id("btnSave")).click();
+
+        assertEquals("http://localhost:8080/valoraciones", driver.getCurrentUrl());
+
+        var valoracionGuardada = valoracionRepository.findAll().get(0);
+        assertEquals("Excelente película", valoracionGuardada.getComentario());
+        assertEquals(9, valoracionGuardada.getPuntuacion());
+        assertEquals("Ana Perez", valoracionGuardada.getCustomer().getNombre() + " " + valoracionGuardada.getCustomer().getApellido());
+    }
 }
