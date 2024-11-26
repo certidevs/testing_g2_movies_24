@@ -1,5 +1,7 @@
 package com.movies.controller;
 
+import com.movies.repository.CustomerRepository;
+import com.movies.repository.MovieRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 //@RequestMapping("/valoraciones")
 
 public class ValoracionController {
-
-
+    private MovieRepository movieRepository;
+    private CustomerRepository customerRepository;
     private ValoracionRepository valoracionRepository;
 
     @GetMapping("valoraciones")
@@ -34,12 +36,16 @@ public class ValoracionController {
         Valoracion valoracion = valoracionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid valoracion ID:" + id));
         model.addAttribute("valoracion", valoracion);
+        model.addAttribute("customers", customerRepository.findAll());
+        model.addAttribute("movies", movieRepository.findAll());
         return "valoracion-detail";
     }
 
     @GetMapping("valoraciones/new")
     public String createValoracion(Model model) {
         model.addAttribute("valoracion", new Valoracion());
+        model.addAttribute("customers", customerRepository.findAll());
+        model.addAttribute("movies", movieRepository.findAll());
         return "valoracion-form";
     }
 
@@ -47,8 +53,9 @@ public class ValoracionController {
     public String updateValoracion(Model model, @PathVariable Long id) {
         Valoracion valoracion = valoracionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
         model.addAttribute("valoracion", valoracion);
+        model.addAttribute("customers", customerRepository.findAll());
+        model.addAttribute("movies", movieRepository.findAll());
         return "valoracion-form";
     }
 
