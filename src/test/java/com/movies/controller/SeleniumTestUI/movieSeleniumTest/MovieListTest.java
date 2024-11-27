@@ -19,7 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest//(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class MovieListTest {
 
     @Autowired
@@ -43,11 +43,12 @@ public class MovieListTest {
     }
 
     @Test
-    public void testMovieListPageHeader() {
+    public void testMovieListPageTitleAndHeader() {
         movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).build());
         driver.get("http://localhost:8080/movies");
         driver.navigate().refresh();
-
+        String title = driver.getTitle();
+        assertEquals("Lista de Películas", title);
         String header = driver.findElement(By.id("h1_movie_list")).getText();
         assertEquals("Lista de Películas", header);
     }

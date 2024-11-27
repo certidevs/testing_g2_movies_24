@@ -2,6 +2,7 @@ package com.movies.controller.PartialIntegratedTest;
 
 import com.movies.model.Categoria;
 import com.movies.repository.CategoriaRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -70,15 +71,21 @@ public class CategoriaPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Obtener formulario para crear nueva categoria")
     void getFormCreateCategoria() throws Exception {
-        mockMvc.perform(post("/categorias")
-                        .param("id", "1")
-                        .param("nombre", "Categoria")
-                        .param("Descripcion", "Descripcion"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/categorias"));
 
-        verify(categoriaRepository).save(any(Categoria.class));
+        mockMvc.perform(get("/categorias/new"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("categoria"))
+                .andExpect(view().name("categoria-form"));
+//        mockMvc.perform(post("/categorias")
+//                        .param("id", "1")
+//                        .param("nombre", "Categoria")
+//                        .param("Descripcion", "Descripcion"))
+//                .andExpect(status().is3xxRedirection())
+//                .andExpect(redirectedUrl("/categorias"));
+//
+//        verify(categoriaRepository).save(any(Categoria.class));
     }
 
     @Test
@@ -104,7 +111,7 @@ public class CategoriaPartialIntegratedTest {
     @Test
     void saveCategoriaNew () throws Exception {
         mockMvc.perform(post("/categorias")
-                        .param("id", "1")
+//                        .param("id", "1")
                         .param("nombre", "Categoria")
                         .param("Descripcion", "Descripcion"))
                 .andExpect(status().is3xxRedirection())

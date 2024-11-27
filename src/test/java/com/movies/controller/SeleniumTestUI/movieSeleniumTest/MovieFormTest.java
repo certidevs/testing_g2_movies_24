@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest//(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class MovieFormTest {
 
     @Autowired
@@ -41,10 +41,11 @@ public class MovieFormTest {
     }
 
     @Test
-    public void testPageHeader() {
+    public void testPageTitleAndHeader() {
         driver.get("http://localhost:8080/movies/new");
         driver.navigate().refresh();
-
+        String title = driver.getTitle();
+        assertEquals("Formulario de Película", title);
         String header = driver.findElement(By.id("movie_form_h1")).getText();
         assertEquals("Formulario peliculas", header);
     }

@@ -15,7 +15,13 @@
     <div th:if="${valoracion != null}" class="card p-4 shadow-sm">
         <div class="mb-3">
             <p><strong>ID:</strong> <span id="valoracion_id" th:text="${valoracion.id}"></span></p>
-        </div>
+
+        <div th:if="${valoracion != null}" class="card p-4 shadow-sm">
+          
+            <div class="mb-3">
+                <p><strong>ID:</strong> <span th:text="${valoracion.id}"></span></p>
+            </div>
+
         <div class="mb-3">
             <p><strong>Usuario:</strong> <span id="valoracion_customer" th:text="${valoracion.customer.nombre}"></span></p>
         </div>
@@ -28,7 +34,7 @@
         <div class="mb-3">
             <p><strong>Comentario:</strong> <span id="valoracion_comentario" th:text="${valoracion.comentario}"></span></p>
         </div>
-
+ </div>
         <!-- Botones de acción con IDs únicos -->
         <div class="mt-4">
             <a id="editBtn_valoracion" th:href="@{/valoraciones/edit/{id}(id=${valoracion.id})}" class="btn btn-primary">

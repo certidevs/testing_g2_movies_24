@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
+@SpringBootTest//(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class customerFormTest {
     @Autowired
     private CustomerRepository customerRepository;
@@ -51,11 +51,12 @@ public class customerFormTest {
         driver.quit();
     }
     @Test
-    public void testPageHeader() {
+    public void testPageTitleAndHeader() {
         customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("c").email("ana@c.com").password("123").build());
         driver.get("http://localhost:8080/customers/new");
         driver.navigate().refresh();
-
+        String title = driver.getTitle();
+        assertEquals("Formulario de Cliente", title);
         String header = driver.findElement(By.id("customer_form_h1")).getText();
         assertEquals("Formulario Clientes", header);
     }

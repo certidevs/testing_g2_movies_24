@@ -37,8 +37,5 @@ public class Categoria {
     @ToString.Exclude
     private Set<Movie> movies = new HashSet<>();
 
-    public static Object Id() {
-        return null;
-    }
 }
 

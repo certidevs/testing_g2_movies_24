@@ -1,9 +1,12 @@
 package com.movies.controller;
 
+
 import com.movies.model.Valoracion;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
+import com.movies.repository.CustomerRepository;
+import com.movies.repository.MovieRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -15,9 +18,10 @@ import org.springframework.web.server.ResponseStatusException;
 @AllArgsConstructor
 public class ValoracionController {
 
-    private final ValoracionRepository valoracionRepository;
-    private final CustomerRepository customerRepository;
-    private final MovieRepository movieRepository;
+    private MovieRepository movieRepository;
+    private CustomerRepository customerRepository;
+    private ValoracionRepository valoracionRepository;
+
 
     @GetMapping("valoraciones")
     public String findAll(Model model) {
@@ -30,6 +34,8 @@ public class ValoracionController {
         Valoracion valoracion = valoracionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Valoración no encontrada"));
         model.addAttribute("valoracion", valoracion);
+        model.addAttribute("customers", customerRepository.findAll());
+        model.addAttribute("movies", movieRepository.findAll());
         return "valoracion-detail";
     }
 

@@ -38,6 +38,7 @@
                 <td th:if="${valoracion.movie}" th:text="${valoracion.movie.name}"></td>
                 <td th:unless="${valoracion.movie}">No hay película.</td>
 
+
                 <td th:text="${valoracion.puntuacion}"></td>
                 <td th:text="${valoracion.comentario}"></td>
                 <td>
@@ -52,6 +53,7 @@
                     </a>
                 </td>
             </tr>
+
             </tbody>
         </table>
     </div>
