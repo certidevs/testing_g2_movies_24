@@ -13,15 +13,13 @@
     <h1 id="valoracion_header" class="mb-4">Detalle de Valoración</h1>
 
     <div th:if="${valoracion != null}" class="card p-4 shadow-sm">
+
         <div class="mb-3">
             <p><strong>ID:</strong> <span id="valoracion_id" th:text="${valoracion.id}"></span></p>
-
-        <div th:if="${valoracion != null}" class="card p-4 shadow-sm">
-          
-            <div class="mb-3">
-                <p><strong>ID:</strong> <span th:text="${valoracion.id}"></span></p>
-            </div>
-
+        </div>
+        <div class="mb-3">
+            <p><strong>ID:</strong> <span th:text="${valoracion.id}"></span></p>
+        </div>
         <div class="mb-3">
             <p><strong>Usuario:</strong> <span id="valoracion_customer" th:text="${valoracion.customer.nombre}"></span></p>
         </div>
@@ -34,7 +32,7 @@
         <div class="mb-3">
             <p><strong>Comentario:</strong> <span id="valoracion_comentario" th:text="${valoracion.comentario}"></span></p>
         </div>
- </div>
+
         <!-- Botones de acción con IDs únicos -->
         <div class="mt-4">
             <a id="editBtn_valoracion" th:href="@{/valoraciones/edit/{id}(id=${valoracion.id})}" class="btn btn-primary">
@@ -46,7 +44,7 @@
                 <i class="fas fa-trash"></i> Borrar
             </a>
         </div>
-    </div>
+
 
     <div th:if="${valoracion == null}" class="alert alert-warning mt-4">
         No se encontró la valoración solicitada.
@@ -57,6 +55,7 @@
             <i class="fas fa-arrow-left"></i> Volver a la lista de valoraciones
         </a>
     </div>
+</div>
 </div>
 
 <div th:replace="~{footer :: footer1}"></div>
