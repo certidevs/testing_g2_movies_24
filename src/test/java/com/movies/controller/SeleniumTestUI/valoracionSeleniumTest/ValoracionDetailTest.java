@@ -23,7 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ValoracionDetailTest {
 
     @Autowired

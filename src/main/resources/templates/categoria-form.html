@@ -10,7 +10,7 @@
     <div th:replace="~{navbar :: nav1}"></div>
 
     <div class="container mt-4">
-        <h1 class="mb-4" th:text="${categoria.id == null} ? 'Crear Categoria' : 'Editar Categoria'"></h1>
+        <h1 id="categoria_form_h1" class="mb-4" th:text="${categoria.id == null} ? 'Crear Categoria' : 'Editar Categoria'"></h1>
         
         <form th:action="@{/categorias}" th:object="${categoria}" method="post" class="card p-4 shadow-sm">
             <input type="hidden" th:if="${categoria.id != null}" th:field="*{id}"/>

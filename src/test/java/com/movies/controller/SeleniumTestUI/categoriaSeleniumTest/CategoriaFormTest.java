@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest//(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CategoriaFormTest {
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -56,9 +56,9 @@ public class CategoriaFormTest {
         driver.get("http://localhost:8080/categorias/new");
         driver.navigate().refresh();
         String title = driver.getTitle();
-        assertEquals("Formulario de Categoria", title);
+        assertEquals("Formulario Categoria", title);
         String header = driver.findElement(By.id("categoria_form_h1")).getText();
-        assertEquals("Formulario Categoria", header);
+        assertEquals("Crear Categoria", header);
     }
 }
 
