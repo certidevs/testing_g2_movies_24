@@ -11,16 +11,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Test unitario para ValoracionController utilizando JUnit 5 y Mockito.
- */
 @ExtendWith(MockitoExtension.class)
 class ValoracionControllerUnitTest {
 
@@ -34,73 +34,105 @@ class ValoracionControllerUnitTest {
     private Model model;
 
     @Test
-    @DisplayName("findById que SÍ tiene valoración con id")
-    void findById_WhenValoracionExists() {
-        // 1. Configurar respuestas mocks
-        Customer mockUsuario = mock(Customer.class); // Simulación de Customer
-        Movie mockPelicula = mock(Movie.class);      // Simulación de Movie
-        Valoracion valoracion = Valoracion.builder()
-                .id(1L)
-                .customer(mockUsuario)
-                .movie(mockPelicula)
-                .comentario("Comentario de prueba")
-                .puntuacion(5)
-                .build();
-        Optional<Valoracion> valoracionOpt = Optional.of(valoracion);
+    void findAll() {
+        when(valoracionRepository.findAll()).thenReturn(List.of(
+                Valoracion.builder().id(1L).build()
+        ));
+        String view = valoracionController.findAll(model);
+        verify(valoracionRepository).findAll();
+        assertEquals("valoracion-list", view);
+    }
 
-        when(valoracionRepository.findById(1L)).thenReturn(valoracionOpt);
+    @Test
+    void findById() {
+        Valoracion valoracion = Valoracion.builder().id(1L).build();
 
-        // 2. Ejecutar método a testear
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
         String view = valoracionController.findById(1L, model);
-
-        // 3. Aserciones y verificaciones
         assertEquals("valoracion-detail", view);
         verify(valoracionRepository).findById(1L);
         verify(model).addAttribute("valoracion", valoracion);
     }
 
     @Test
-    @DisplayName("findById que NO tiene valoración")
-    void findById_WhenValoracionNotExists() {
-        // 1. Configurar respuestas mocks
+    void findById_ValoracionNotFound() {
         when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // 2. Ejecutar método a testear
-        String view = valoracionController.findById(1L, model);
-
-        // 3. Aserciones y verificaciones
-        assertEquals("valoracion-detail", view);
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            valoracionController.findById(1L, model);
+        });
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Valoración no encontrada", exception.getReason());
         verify(valoracionRepository).findById(1L);
-        verify(model, never()).addAttribute(anyString(), any());
+        verify(model, never()).addAttribute(eq("valoracion"), any());
     }
 
     @Test
-    @DisplayName("save cuando se crea una nueva valoración")
-    void save_NewValoracion() {
-        // 1. Preparar datos y mocks
-        Valoracion nuevaValoracion = Valoracion.builder()
-                .customer(mock(Customer.class))
-                .movie(mock(Movie.class))
+    void getFormCreateValoracion() {
+        Valoracion valoracion = new Valoracion();
+        String view = valoracionController.createValoracion(model);
+        assertEquals("valoracion-form", view);
+        verify(model).addAttribute(eq("valoracion"), any(Valoracion.class));
+    }
+
+    @Test
+    void getFormUpdateValoracion() {
+        Valoracion valoracion = Valoracion.builder().id(1L).build();
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
+        String view = valoracionController.updateValoracion(1L, model);
+        assertEquals("valoracion-form", view);
+        verify(model).addAttribute("valoracion", valoracion);
+        verify(valoracionRepository).findById(1L);
+    }
+
+    @Test
+    void getFormUpdateValoracion_NotFound() {
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            valoracionController.updateValoracion(1L, model);
+        });
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Valoración no encontrada", exception.getReason());
+        verify(valoracionRepository).findById(1L);
+        verify(model, never()).addAttribute(eq("valoracion"), any());
+    }
+
+    @Test
+    void saveValoracionNew() {
+        Valoracion valoracion = Valoracion.builder()
+                .customer(Customer.builder().id(1L).build())
+                .movie(Movie.builder().id(1L).build())
                 .comentario("Nueva valoración")
                 .puntuacion(4)
                 .build();
-
-        // 2. Ejecutar método a testear
-        String view = valoracionController.save(nuevaValoracion);
-
-        // 3. Verificaciones
+        String view = valoracionController.save(valoracion);
         assertEquals("redirect:/valoraciones", view);
-        verify(valoracionRepository).save(nuevaValoracion);
+        verify(valoracionRepository).save(valoracion);
     }
 
     @Test
-    @DisplayName("deleteById elimina valoración por id")
-    void deleteById() {
-        // 1. Ejecutar método a testear
-        String view = valoracionController.deleteValoracion(1L);
+    void saveValoracionUpdate() {
+        Valoracion valoracion = Valoracion.builder().id(1L).comentario("Comentario actualizado").puntuacion(8).build();
+        String result = valoracionController.save(valoracion);
+        verify(valoracionRepository, times(1)).save(valoracion);
+        assertEquals("redirect:/valoraciones", result);
+    }
 
-        // 2. Verificaciones
+    @Test
+    void deleteValoracion() {
+        String view = valoracionController.deleteValoracion(1L);
         assertEquals("redirect:/valoraciones", view);
         verify(valoracionRepository).deleteById(1L);
+    }
+
+    @Test
+    void findById_IdNotFound() {
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            valoracionController.findById(1L, model);
+        });
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Valoración no encontrada", exception.getReason());
+        verify(valoracionRepository).findById(1L);
+        verify(model, never()).addAttribute(eq("valoracion"), any());
     }
 }

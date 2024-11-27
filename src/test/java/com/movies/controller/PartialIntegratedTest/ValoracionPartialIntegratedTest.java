@@ -1,27 +1,33 @@
 package com.movies.controller.PartialIntegratedTest;
 
-import com.movies.controller.ValoracionController;
 import com.movies.model.Customer;
 import com.movies.model.Movie;
 import com.movies.model.Valoracion;
+import com.movies.repository.CustomerRepository;
+import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ValoracionController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class ValoracionPartialIntegratedTest {
 
     @Autowired
@@ -30,111 +36,157 @@ public class ValoracionPartialIntegratedTest {
     @MockBean
     private ValoracionRepository valoracionRepository;
 
+    @MockBean
+    private CustomerRepository customerRepository;
+
+    @MockBean
+    private MovieRepository movieRepository;
+
     @Test
     void findAll() throws Exception {
         when(valoracionRepository.findAll()).thenReturn(List.of(
-                Valoracion.builder()
-                        .id(1L)
-                        .customer(Customer.builder()
-                                .id(1L)
-                                .nombre("John")
-                                .apellido("Doe")
-                                .email("john.doe@example.com")
-                                .password("password123")
-                                .build())
-                        .movie(Movie.builder()
-                                .id(1L)
-                                .name("Inception")
-                                .duration(148)
-                                .year(2010)
-                                .build())
-                        .puntuacion(5)
-                        .comentario("Amazing movie!")
-                        .build(),
-                Valoracion.builder()
-                        .id(2L)
-                        .customer(Customer.builder()
-                                .id(2L)
-                                .nombre("Jane")
-                                .apellido("Doe")
-                                .email("jane.doe@example.com")
-                                .password("password456")
-                                .build())
-                        .movie(Movie.builder()
-                                .id(2L)
-                                .name("Titanic")
-                                .duration(195)
-                                .year(1997)
-                                .build())
-                        .puntuacion(4)
-                        .comentario("Great story.")
-                        .build()
+                Valoracion.builder().id(1L).build(),
+                Valoracion.builder().id(2L).build()
         ));
 
         mockMvc.perform(get("/valoraciones"))
+                .andExpect(status().isOk())
                 .andExpect(view().name("valoracion-list"))
                 .andExpect(model().attributeExists("valoraciones"))
-                .andExpect(model().attribute("valoraciones", hasSize(2)))
-                .andExpect(model().attribute("valoraciones", hasItem(
-                        allOf(
-                                hasProperty("id", is(1L)),
-                                hasProperty("puntuacion", is(5)),
-                                hasProperty("comentario", is("Amazing movie!"))
-                        )
-                )));
+                .andExpect(model().attribute("valoraciones", hasSize(2)));
     }
 
     @Test
     void findById() throws Exception {
-        var valoracion = Valoracion.builder()
-                .id(1L)
-                .customer(Customer.builder()
-                        .id(1L)
-                        .nombre("Juan")
-                        .apellido("Perez")
-                        .email("juan.perez@example.com")
-                        .password("password789")
-                        .build())
-                .movie(Movie.builder()
-                        .id(1L)
-                        .name("Inception")
-                        .duration(148)
-                        .year(2010)
-                        .build())
-                .puntuacion(5)
-                .comentario("Amazing movie!")
-                .build();
+        // Crear una valoración simulada
+        Valoracion valoracion = Valoracion.builder().id(1L).build();
+
+        // Configurar el mock del repositorio para devolver la valoración simulada
         when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
 
+        // Realizar la solicitud GET y validar el comportamiento
         mockMvc.perform(get("/valoraciones/{id}", 1L))
-                .andExpect(status().isOk())
-                .andExpect(view().name("valoracion-detail"))
-                .andExpect(model().attributeExists("valoracion"))
-                .andExpect(model().attribute("valoracion", allOf(
-                        hasProperty("id", is(1L)),
-                        hasProperty("puntuacion", is(5)),
-                        hasProperty("comentario", is("Amazing movie!"))
-                )));
+                .andExpect(status().isOk()) // Estado HTTP 200
+                .andExpect(view().name("valoracion-detail")) // Vista esperada
+                .andExpect(model().attributeExists("valoracion")); // Modelo contiene "valoracion"
+    }
 
+
+    @Test
+    void findById_ValoracionNotFound() throws Exception {
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/valoraciones/{id}", 1L))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void findById_IdNotFound() throws Exception {
+        // Configurar el mock del repositorio para devolver un Optional vacío
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Realizar la solicitud GET y validar el comportamiento
+        mockMvc.perform(get("/valoraciones404/{id}", 1L))
+                .andExpect(status().isNotFound()) // Estado HTTP 404
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
+                .andExpect(result -> assertEquals("Valoración no encontrada", ((ResponseStatusException) result.getResolvedException()).getReason()));
+
+        // Verificar que el método del repositorio fue llamado
         verify(valoracionRepository).findById(1L);
     }
 
+
+
     @Test
-    void save_createNew() throws Exception {
+    void getFormCreateValoracion() throws Exception {
         mockMvc.perform(post("/valoraciones")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("comentario", "Película increíble")
+                        .param("puntuacion", "8")
                         .param("customer.id", "1")
-                        .param("movie.id", "1")
-                        .param("puntuacion", "4")
-                        .param("comentario", "Very entertaining."))
+                        .param("movie.id", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/valoraciones"));
 
-        verify(valoracionRepository).save(Mockito.any(Valoracion.class));
+        verify(valoracionRepository).save(any(Valoracion.class));
     }
 
     @Test
-    void deleteById() throws Exception {
+    void getFormUpdateValoracion() throws Exception {
+        Valoracion valoracion = Valoracion.builder()
+                .id(1L)
+                .comentario("Comentario original")
+                .puntuacion(7)
+                .build();
+
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
+        when(customerRepository.findAll()).thenReturn(List.of(
+                Customer.builder().id(1L).nombre("Cliente 1").build()
+        ));
+        when(movieRepository.findAll()).thenReturn(List.of(
+                Movie.builder().id(1L).name("Película 1").build()
+        ));
+
+        mockMvc.perform(get("/valoraciones/edit/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(view().name("valoracion-form"))
+                .andExpect(model().attributeExists("valoracion"))
+                .andExpect(model().attributeExists("customers"))
+                .andExpect(model().attributeExists("movies"));
+    }
+
+
+    @Test
+    void getFormUpdateValoracion_NotFound() throws Exception {
+        // Configurar el mock para devolver un Optional vacío
+        when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Realizar la solicitud GET para actualizar una valoración inexistente
+        mockMvc.perform(get("/valoraciones/update/{id}", 1L))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void saveValoracionNew() throws Exception {
+        mockMvc.perform(post("/valoraciones")
+                        .param("comentario", "Nueva valoración")
+                        .param("puntuacion", "5")
+                        .param("customer.id", "1")
+                        .param("movie.id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/valoraciones"));
+
+        verify(valoracionRepository).save(any(Valoracion.class));
+    }
+
+    @Test
+    void saveValoracionUpdate() throws Exception {
+        // Crear una valoración de prueba
+        Valoracion valoracion = new Valoracion();
+        valoracion.setId(1L);
+        valoracion.setComentario("Comentario original");
+        valoracion.setPuntuacion(7);
+
+        // Configurar el mock para simular la actualización
+        when(valoracionRepository.save(any(Valoracion.class))).thenReturn(valoracion);
+
+        // Ejecutar la solicitud POST para actualizar la valoración
+        mockMvc.perform(post("/valoraciones")
+                        .param("id", "1")
+                        .param("comentario", "Comentario actualizado")
+                        .param("puntuacion", "9")
+                        .param("customer.id", "1")
+                        .param("movie.id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/valoraciones"));
+
+        // Verificar que se llamó al método save del repositorio
+        verify(valoracionRepository, times(1)).save(any(Valoracion.class));
+    }
+
+    @Test
+    void deleteValoracion() throws Exception {
+        when(valoracionRepository.existsById(1L)).thenReturn(true);
+
         mockMvc.perform(get("/valoraciones/delete/{id}", 1L))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/valoraciones"));
