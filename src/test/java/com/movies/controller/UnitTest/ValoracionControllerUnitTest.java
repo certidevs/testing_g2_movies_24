@@ -4,6 +4,8 @@ import com.movies.controller.ValoracionController;
 import com.movies.model.Customer;
 import com.movies.model.Movie;
 import com.movies.model.Valoracion;
+import com.movies.repository.CustomerRepository;
+import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +33,11 @@ class ValoracionControllerUnitTest {
     private ValoracionRepository valoracionRepository;
 
     @Mock
+    private CustomerRepository customerRepository;
+    @Mock
+    private MovieRepository movieRepository;
+
+    @Mock
     private Model model;
 
     @Test
@@ -47,6 +54,8 @@ class ValoracionControllerUnitTest {
     void findById() {
         Valoracion valoracion = Valoracion.builder().id(1L).build();
 
+        when(customerRepository.findAll()).thenReturn(List.of());
+        when(movieRepository.findAll()).thenReturn(List.of());
         when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
         String view = valoracionController.findById(1L, model);
         assertEquals("valoracion-detail", view);
