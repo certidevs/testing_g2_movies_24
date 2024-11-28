@@ -117,12 +117,14 @@ public class MovieController {
     //public String getFormCreateMovie(Model model) {return "";}//ya tenemos 1
 
     @GetMapping("movies404/{id}")
-    public String findById_NotExist(Model model, long id) {
+    public String findById_NotExist(Model model, @PathVariable Long id) {
         return movieRepository.findById(id)
-                .map(movie->{model.addAttribute("movie", movie);
+                .map(movie -> {
+                    model.addAttribute("movie", movie);
                     return "movie-detail";
                 })
-                .orElseThrow(()->
-                        new NoSuchElementException("Pelicula no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pelicula no encontrada"));
     }
-}//
+
+
+}
