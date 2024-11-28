@@ -58,8 +58,24 @@ public class ValoracionPartialIntegratedTest {
 
     @Test
     void findById() throws Exception {
-        // Crear una valoración simulada
-        Valoracion valoracion = Valoracion.builder().id(1L).build();
+        // Crear un objeto Customer simulado
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setNombre("Juan Perez");
+
+        // Crear un objeto Movie simulado
+        Movie movie = new Movie();
+        movie.setId(1L);
+        movie.setName("Inception");
+
+        // Crear una valoración simulada con el customer y la movie asociados
+        Valoracion valoracion = Valoracion.builder()
+                .id(1L)
+                .customer(customer) // Asociar el customer
+                .movie(movie) // Asociar la película
+                .comentario("Excelente película")
+                .puntuacion(5)
+                .build();
 
         // Configurar el mock del repositorio para devolver la valoración simulada
         when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
@@ -68,8 +84,11 @@ public class ValoracionPartialIntegratedTest {
         mockMvc.perform(get("/valoraciones/{id}", 1L))
                 .andExpect(status().isOk()) // Estado HTTP 200
                 .andExpect(view().name("valoracion-detail")) // Vista esperada
-                .andExpect(model().attributeExists("valoracion")); // Modelo contiene "valoracion"
+                .andExpect(model().attributeExists("valoracion")) // Modelo contiene "valoracion"
+                .andExpect(model().attribute("valoracion", valoracion)); // Validar el modelo
     }
+
+
 
 
     @Test
@@ -86,14 +105,17 @@ public class ValoracionPartialIntegratedTest {
         when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Realizar la solicitud GET y validar el comportamiento
-        mockMvc.perform(get("/valoraciones404/{id}", 1L))
+        mockMvc.perform(get("/valoraciones/{id}", 1L))
                 .andExpect(status().isNotFound()) // Estado HTTP 404
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                .andExpect(result -> assertEquals("Valoración no encontrada", ((ResponseStatusException) result.getResolvedException()).getReason()));
+                .andExpect(result -> assertEquals("Valoración no encontrada",
+                        ((ResponseStatusException) result.getResolvedException()).getReason()));
 
         // Verificar que el método del repositorio fue llamado
         verify(valoracionRepository).findById(1L);
     }
+
+
 
 
 
