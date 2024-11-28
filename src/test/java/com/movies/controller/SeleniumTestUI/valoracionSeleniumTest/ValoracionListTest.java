@@ -75,62 +75,174 @@ public class ValoracionListTest {
     }
 
     @Test
-    @DisplayName("Comprobar tabla vacía con texto cuando no hay datos")
+    @DisplayName("Comprobar mensaje de tabla vacía cuando no hay datos")
     void tableEmpty() {
-        WebElement noValoracionesMessage = driver.findElement(By.tagName("p"));
-        assertEquals("No hay valoraciones disponibles.", noValoracionesMessage.getText());
+        List<WebElement> noValoracionesMessages = driver.findElements(By.tagName("p"));
+        assertFalse(noValoracionesMessages.isEmpty(), "El mensaje de 'No hay valoraciones' no se encontró.");
+        assertEquals("No hay valoraciones disponibles.", noValoracionesMessages.get(0).getText());
 
-        assertThrows(
-                NoSuchElementException.class,
-                () -> driver.findElement(By.tagName("tbody"))
-        );
+        // Verificar que la tabla no está presente
+        List<WebElement> tables = driver.findElements(By.tagName("table"));
+        assertTrue(tables.isEmpty(), "La tabla no debería estar presente si no hay valoraciones.");
     }
 
     @Test
     @DisplayName("Comprobar tabla con valoraciones")
     void tableWithValoraciones() {
+        // Crear un cliente con todos los campos necesarios
         Customer customer = customerRepository.save(
-                Customer.builder().nombre("Ana").apellido("Perez").email("ana.p@example.com").build()
+                Customer.builder()
+                        .nombre("Ana")
+                        .apellido("Perez")
+                        .email("ana.p@example.com")
+                        .password("securePassword123") // Agregamos un password válido
+                        .build()
         );
+
+        // Crear una película con los campos requeridos
         Movie movie = movieRepository.save(
-                Movie.builder().name("Inception").duration(148).year(2010).build()
+                Movie.builder()
+                        .name("Inception")
+                        .duration(148)
+                        .year(2010)
+                        .build()
         );
+
+        // Crear valoraciones asociadas al cliente y película
         valoracionRepository.saveAll(List.of(
-                Valoracion.builder().customer(customer).movie(movie).comentario("Excelente película").puntuacion(9).build(),
-                Valoracion.builder().customer(customer).movie(movie).comentario("Buena película").puntuacion(7).build()
+                Valoracion.builder()
+                        .customer(customer)
+                        .movie(movie)
+                        .comentario("Excelente película")
+                        .puntuacion(9)
+                        .build(),
+                Valoracion.builder()
+                        .customer(customer)
+                        .movie(movie)
+                        .comentario("Buena película")
+                        .puntuacion(7)
+                        .build()
         ));
 
+        // Refrescar la página para cargar los nuevos datos
         driver.navigate().refresh();
 
+        // Localizar la tabla y verificar que esté visible
         WebElement valoracionTable = driver.findElement(By.tagName("table"));
         assertTrue(valoracionTable.isDisplayed());
 
+        // Verificar el número de filas (encabezado + 2 filas de datos)
         List<WebElement> rows = valoracionTable.findElements(By.tagName("tr"));
-        assertEquals(3, rows.size()); // 1 encabezado + 2 filas de datos
+        assertEquals(3, rows.size());
     }
+
 
     @Test
-    @DisplayName("Comprobar filas de la tabla con datos correctos")
+    @DisplayName("Comprobar contenido de las filas de la tabla con valoraciones")
     void tableWithValoraciones_rows() {
+        // Crear un cliente con todos los campos requeridos
         Customer customer = customerRepository.save(
-                Customer.builder().nombre("Ana").apellido("Perez").email("ana.p@example.com").build()
-        );
-        Movie movie = movieRepository.save(
-                Movie.builder().name("Inception").duration(148).year(2010).build()
-        );
-        Valoracion valoracion = valoracionRepository.save(
-                Valoracion.builder().customer(customer).movie(movie).comentario("Excelente película").puntuacion(9).build()
+                Customer.builder()
+                        .nombre("Ana")
+                        .apellido("Perez")
+                        .email("ana.p@example.com")
+                        .password("securePassword123") // Añadimos un password válido
+                        .build()
         );
 
+        // Crear una película con los campos necesarios
+        Movie movie = movieRepository.save(
+                Movie.builder()
+                        .name("Inception")
+                        .duration(148)
+                        .year(2010)
+                        .build()
+        );
+
+        // Crear una valoración asociada al cliente y a la película
+        Valoracion valoracion = valoracionRepository.save(
+                Valoracion.builder()
+                        .customer(customer)
+                        .movie(movie)
+                        .comentario("Excelente película")
+                        .puntuacion(9)
+                        .build()
+        );
+
+        // Refrescar la página para que los datos se reflejen en la tabla
         driver.navigate().refresh();
 
+        // Localizar la tabla y sus filas
         WebElement table = driver.findElement(By.tagName("table"));
-        WebElement firstRow = table.findElements(By.tagName("tr")).get(1);
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
 
-        assertEquals(valoracion.getId().toString(), firstRow.findElements(By.tagName("td")).get(0).getText());
-        assertEquals(customer.getNombre(), firstRow.findElements(By.tagName("td")).get(1).getText());
-        assertEquals(movie.getName(), firstRow.findElements(By.tagName("td")).get(2).getText());
-        assertEquals("9", firstRow.findElements(By.tagName("td")).get(3).getText());
-        assertEquals("Excelente película", firstRow.findElements(By.tagName("td")).get(4).getText());
+        // Verificar contenido de la primera fila de datos
+        List<WebElement> cells = rows.get(1).findElements(By.tagName("td"));
+
+        assertEquals(valoracion.getId().toString(), cells.get(0).getText());
+        assertEquals(customer.getNombre(), cells.get(1).getText());
+        assertEquals(movie.getName(), cells.get(2).getText());
+        assertEquals("9", cells.get(3).getText());
+        assertEquals("Excelente película", cells.get(4).getText());
     }
+
+
+    @Test
+    @DisplayName("Comprobar botones de acción en las filas de la tabla")
+    void actionButtons() {
+        // Crear un cliente con todos los campos necesarios
+        Customer customer = customerRepository.save(
+                Customer.builder()
+                        .nombre("Ana")
+                        .apellido("Perez")
+                        .email("ana.p@example.com")
+                        .password("securePassword123") // Aseguramos un password válido
+                        .build()
+        );
+
+        // Crear una película con los campos requeridos
+        Movie movie = movieRepository.save(
+                Movie.builder()
+                        .name("Inception")
+                        .duration(148)
+                        .year(2010)
+                        .build()
+        );
+
+        // Crear una valoración asociada al cliente y película
+        Valoracion valoracion = valoracionRepository.save(
+                Valoracion.builder()
+                        .customer(customer)
+                        .movie(movie)
+                        .comentario("Buena película")
+                        .puntuacion(8)
+                        .build()
+        );
+
+        // Refrescar la página para cargar los nuevos datos
+        driver.navigate().refresh();
+
+        // Localizar la tabla y verificar los botones de acción
+        WebElement table = driver.findElement(By.tagName("table"));
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+
+        // Seleccionar la celda de acciones en la primera fila de datos
+        WebElement actionCell = rows.get(1).findElements(By.tagName("td")).get(5);
+
+        // Verificar el botón "Ver"
+        WebElement viewButton = actionCell.findElement(By.className("btn-info"));
+        assertTrue(viewButton.isDisplayed());
+        assertTrue(viewButton.getText().contains("Ver"));
+
+        // Verificar el botón "Editar"
+        WebElement editButton = actionCell.findElement(By.className("btn-warning"));
+        assertTrue(editButton.isDisplayed());
+        assertTrue(editButton.getText().contains("Editar"));
+
+        // Verificar el botón "Eliminar"
+        WebElement deleteButton = actionCell.findElement(By.className("btn-danger"));
+        assertTrue(deleteButton.isDisplayed());
+        assertTrue(deleteButton.getText().contains("Eliminar"));
+    }
+
 }
