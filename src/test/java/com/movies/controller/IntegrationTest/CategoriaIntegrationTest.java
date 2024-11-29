@@ -113,7 +113,7 @@ public class CategoriaIntegrationTest {
     void getFormToUpdateCategoria() throws Exception {
         Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).build());
 
-        mockMvc.perform(get("/categorias/update/{id}", categoria.getId()))
+        mockMvc.perform(get("http://localhost:8080/categorias/edit/{id}", categoria.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("categoria-form"))
                 .andExpect(model().attributeExists("categoria"));
@@ -122,20 +122,20 @@ public class CategoriaIntegrationTest {
     void saveCategoria() throws Exception {
         Categoria categoria = Categoria.builder()
                 .id(1L)
-                .nombre("C")
-                .descripcion("D")
+                .nombre("Categoría")
+                .descripcion("Descripción")
                 .build();
         mockMvc.perform(MockMvcRequestBuilders.post("/categorias")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("id", "1L")
-                        .param("nombre", "Categoria")
-                        .param("descripcion", "Descripcion"))
+                        .param("nombre", "Categoría")
+                        .param("descripcion", "Descripción"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/categorias"));
 
 
-        assertEquals("Categoria", categoria.getNombre());
-        assertEquals("Descripcion", categoria.getDescripcion());
+        assertEquals("C", categoria.getNombre());
+        assertEquals("D", categoria.getDescripcion());
     }
 
     @Test

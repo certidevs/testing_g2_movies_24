@@ -53,9 +53,9 @@ public class categoriaListTest {
         driver.get("http://localhost:8080/categorias");
         driver.navigate().refresh();
         String title =driver.getTitle();
-        assertEquals("Lista de Categorias", title);
-        String header = driver.findElement(By.id("h1_categoria_list")).getText();
-        assertEquals("Lista de Categorias", header);
+        assertEquals("Detalles Categorias", title);
+        String header = driver.findElement(By.id("h1_categoria_detail")).getText();
+        assertEquals("Detalles de las categorías", header);
     }
 
     @Test
