@@ -37,6 +37,10 @@ public class Customer {
     @ToString.Exclude
     private Set<Valoracion> valoraciones = new HashSet<>();
 
+    @OneToMany(mappedBy = "customer")
+    @ToString.Exclude
+    private Set<Rental> rentals = new HashSet<>();
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

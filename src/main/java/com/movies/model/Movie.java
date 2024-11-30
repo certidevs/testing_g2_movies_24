@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -53,6 +54,13 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     @ToString.Exclude
     private Set<Valoracion> valoraciones = new HashSet<>();
+
+    private boolean available = true;
+    private Double rentalPricePerDay;
+
+    @OneToMany(mappedBy = "movie")
+    @ToString.Exclude
+    private Set<Rental> rentals = new HashSet<>();
 
     @Override
     public final boolean equals(Object o) {
