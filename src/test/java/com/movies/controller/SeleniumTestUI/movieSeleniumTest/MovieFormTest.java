@@ -71,7 +71,7 @@ public class MovieFormTest {
     public void testFillAndSubmitFormForExistingMovie() {
         Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).nombre("Acción").build());
 
-        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Matrix").duration(136).year(1999).categoria(categoria).build());
+        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Matrix").duration(136).year(1999).rentalPricePerDay(5.00).categoria(categoria).build());
 
         driver.get("http://localhost:8080/movies/update/" + movie.getId());
         driver.navigate().refresh();

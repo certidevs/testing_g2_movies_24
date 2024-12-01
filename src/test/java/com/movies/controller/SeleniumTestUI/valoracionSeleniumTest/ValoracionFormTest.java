@@ -67,6 +67,7 @@ public class ValoracionFormTest {
                 .name("Inception")
                 .year(2010)
                 .duration(120) // Asigna un valor para 'duration'
+                .rentalPricePerDay(5.00)
                 .build());
 
         // Navegar a la página
@@ -111,6 +112,7 @@ public class ValoracionFormTest {
                 .name("Inception")
                 .year(2010)
                 .duration(120) // Asegúrate de establecer una duración
+                .rentalPricePerDay(5.00)
                 .build());
 
         var valoracion = valoracionRepository.save(Valoracion.builder()
@@ -155,6 +157,7 @@ public class ValoracionFormTest {
                 .name("Inception")
                 .year(2010)
                 .duration(120) // Establecer duración
+                .rentalPricePerDay(5.00)
                 .build());
 
         // Navegar al formulario de creación

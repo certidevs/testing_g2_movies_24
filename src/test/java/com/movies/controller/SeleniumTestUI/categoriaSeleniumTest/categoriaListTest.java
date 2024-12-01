@@ -53,9 +53,9 @@ public class categoriaListTest {
         driver.get("http://localhost:8080/categorias");
         driver.navigate().refresh();
         String title =driver.getTitle();
-        assertEquals("Detalles Categorias", title);
-        String header = driver.findElement(By.id("h1_categoria_detail")).getText();
-        assertEquals("Detalles de las categorías", header);
+        assertEquals("Lista Categorias", title);
+        String header = driver.findElement(By.id("h1_categoria_list")).getText();
+        assertEquals("Lista de Categorías", header);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class categoriaListTest {
         driver.navigate().refresh();
         WebElement createButton = driver.findElement(By.id("btnCreate_categoria"));
         assertTrue(createButton.isDisplayed());
-        assertEquals("Nuevo Cliente", createButton.getText());
+        assertEquals("Nueva Categoría", createButton.getText());
 
         String createButtonHref = createButton.getAttribute("href");
         assertTrue(createButtonHref.endsWith("/categorias/new"));
@@ -80,10 +80,10 @@ public class categoriaListTest {
         assertTrue(categoriaTable.isDisplayed());
 
         List<WebElement> headers = categoriaTable.findElements(By.tagName("th"));
-        assertEquals(3, headers.size());
-        assertEquals("id", headers.get(0).getText());
+        assertEquals(4, headers.size());
+        assertEquals("ID", headers.get(0).getText());
         assertEquals("Nombre", headers.get(1).getText());
-        assertEquals("Descripcion", headers.get(2).getText());
+        assertEquals("Descripción", headers.get(2).getText());
 
         List<WebElement> rows = categoriaTable.findElements(By.tagName("tr"));
         assertTrue(rows.size() > 1);
@@ -108,7 +108,7 @@ public class categoriaListTest {
 
         WebElement editButton = driver.findElement(By.id("categoria_update"));
         String editHref = editButton.getAttribute("href");
-        assertTrue(editHref.contains("/categorias/update/"));
+        assertTrue(editHref.contains("/categorias/edit/"));
 
         WebElement deleteButton = driver.findElement(By.id("categoria_delete"));
         String deleteHref = deleteButton.getAttribute("href");
@@ -123,7 +123,7 @@ public class categoriaListTest {
         List<WebElement> noCategoriasMessage = driver.findElements(By.id("noCategorias"));
         if (!noCategoriasMessage.isEmpty()) {
             assertTrue(noCategoriasMessage.get(0).isDisplayed());
-            assertEquals("No hay clientes.", noCategoriasMessage.get(0).getText());
+            assertEquals("No hay Categorias.", noCategoriasMessage.get(0).getText());
         }
     }
 }

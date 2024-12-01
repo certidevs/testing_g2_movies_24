@@ -46,6 +46,7 @@ public class MovieIntegrationTest {
                 .duration(120)
                 .year(2022)
                 .categoria(categoria)
+                .rentalPricePerDay(5.00)
                 .build());
 
         Movie movie2 = movieRepository.save(Movie.builder()
@@ -53,6 +54,7 @@ public class MovieIntegrationTest {
                 .duration(90)
                 .year(2021)
                 .categoria(categoria)
+                .rentalPricePerDay(5.00)
                 .build());
 
         mockMvc.perform(get("/movies"))
@@ -90,6 +92,7 @@ public class MovieIntegrationTest {
                 .name("Movie 1")
                 .duration(130)
                 .year(2020)
+                .rentalPricePerDay(5.00)
                 .categoria(categoria)
                 .build());
 
@@ -133,6 +136,7 @@ public class MovieIntegrationTest {
                 .name("Movie 1")
                 .duration(120)
                 .year(2023)
+                .rentalPricePerDay(5.00)
                 .categoria(categoria)
                 .build());
 
@@ -154,12 +158,21 @@ public class MovieIntegrationTest {
                 .nombre("Thriller")
                 .build());
 
+        Movie movie = movieRepository.save(Movie.builder()
+                .name("Movie 1")
+                .duration(110)
+                .year(2021)
+                .rentalPricePerDay(5.00)
+                .categoria(categoria)
+                .build());
+
         // Envía la solicitud para guardar la película
         mockMvc.perform(post("/movies")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("name", "Movie 1")
-                        .param("duration", "150")
+                        .param("duration", "110")
                         .param("year", "2021")
+                        .param("rentalPricePerDay", "5.00")
                         .param("categoria.id", String.valueOf(categoria.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/movies"));
@@ -167,7 +180,7 @@ public class MovieIntegrationTest {
         // Verifica que la película se haya guardado correctamente
         Movie savedMovie = movieRepository.findAll().get(0);
         assertEquals("Movie 1", savedMovie.getName());
-        assertEquals(150, savedMovie.getDuration());
+        assertEquals(110, savedMovie.getDuration());
         assertEquals(2021, savedMovie.getYear());
         assertEquals(categoria.getId(), savedMovie.getCategoria().getId());
     }
@@ -184,6 +197,7 @@ public class MovieIntegrationTest {
                 .name("Movie 1")
                 .duration(110)
                 .year(2019)
+                .rentalPricePerDay(5.00)
                 .categoria(categoria)
                 .build());
 

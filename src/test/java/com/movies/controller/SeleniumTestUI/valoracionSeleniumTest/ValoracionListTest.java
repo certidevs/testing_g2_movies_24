@@ -105,6 +105,7 @@ public class ValoracionListTest {
                         .name("Inception")
                         .duration(148)
                         .year(2010)
+                        .rentalPricePerDay(5.00)
                         .build()
         );
 
@@ -156,6 +157,7 @@ public class ValoracionListTest {
                         .name("Inception")
                         .duration(148)
                         .year(2010)
+                        .rentalPricePerDay(5.00)
                         .build()
         );
 
@@ -206,6 +208,7 @@ public class ValoracionListTest {
                         .name("Inception")
                         .duration(148)
                         .year(2010)
+                        .rentalPricePerDay(5.00)
                         .build()
         );
 

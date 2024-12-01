@@ -2,6 +2,7 @@ package com.movies.controller.UnitTest;
 
 import com.movies.controller.MovieController;
 import com.movies.model.Movie;
+import com.movies.repository.CategoriaRepository;
 import com.movies.repository.MovieRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,9 @@ public class MovieControllerUnitTest {
 
     @Mock
     private MovieRepository movieRepository;
+
+    @Mock
+    private CategoriaRepository categoriaRepository;
 
     @Mock
     Model model;
@@ -69,7 +73,7 @@ public class MovieControllerUnitTest {
             movieController.findById_NotExist(model, 1L);
         });
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("movie not found", exception.getReason());
+        assertEquals("Pelicula no encontrada", exception.getReason());
         verify(movieRepository).findById(1L);
         verify(model, never()).addAttribute(eq("movie"), any());
     }

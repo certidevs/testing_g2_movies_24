@@ -52,14 +52,14 @@ public class CategoriaController {
 
 
     @GetMapping("categorias/new")
-    public String getFormCreatecategoria(Model model) {
+    public String getFormCreateCategoria(Model model) {
         Categoria categoria = new Categoria();
         model.addAttribute("categoria", categoria);
         return "categoria-form";
     }
 
     @GetMapping("categorias/edit/{id}")
-    public String getFormUpdatecategoria(Model model, @PathVariable Long id) {
+    public String getFormUpdateCategoria(Model model, @PathVariable Long id) {
         categoriaRepository.findById(id)
                 .ifPresentOrElse(categoria -> {
                             model.addAttribute("categoria", categoria);
@@ -71,7 +71,7 @@ public class CategoriaController {
     }
 
     @PostMapping("categorias")
-    public String savecategoria(@ModelAttribute Categoria categoria) {
+    public String saveCategoria(@ModelAttribute Categoria categoria) {
         if (categoria.getId() == null) {
             categoriaRepository.save(categoria);
         } else {
@@ -87,7 +87,7 @@ public class CategoriaController {
     }
 
     @GetMapping("categorias/delete/{id}")
-    public String deleteCustomer(@PathVariable("id") Long id) {
+    public String deleteCategoria(@PathVariable("id") Long id) {
         if (!categoriaRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "categoria no encontrada");
         }
@@ -95,7 +95,7 @@ public class CategoriaController {
         return "redirect:/categorias";
     }
 
-    public String getFormCreateCategoria(Model model) {
+   /* public String getFormCreateCategoria(Model model) {
         return "categoria-form";
     }
 
@@ -109,5 +109,5 @@ public class CategoriaController {
 
     public String deleteCategoria(long l) {
         return "redirect:/categorias";
-    }
+    }*/
 }

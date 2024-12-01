@@ -44,7 +44,7 @@ public class MovieListTest {
 
     @Test
     public void testMovieListPageTitleAndHeader() {
-        movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).build());
+        movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).build());
         driver.get("http://localhost:8080/movies");
         driver.navigate().refresh();
         String title = driver.getTitle();
@@ -68,7 +68,7 @@ public class MovieListTest {
     @Test
     public void testMovieTableContent() {
         Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).nombre("Acción").build());
-        movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).categoria(categoria).build());
+        movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).categoria(categoria).build());
 
         driver.get("http://localhost:8080/movies");
         driver.navigate().refresh();
@@ -89,7 +89,7 @@ public class MovieListTest {
 
     @Test
     public void testMovieActions() {
-        movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).build());
+        movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).build());
         driver.get("http://localhost:8080/movies");
         driver.navigate().refresh();
         List<WebElement> actionButtons = driver.findElements(By.cssSelector("td a"));

@@ -64,7 +64,7 @@ public class categoriaDetailTest {
         driver.navigate().refresh();
 
         String header = driver.findElement(By.id("h1_categoria_detail")).getText();
-        assertEquals("Lista de Categorías", header);
+        assertEquals("Detalle de la Categoría", header);
 
         String categoriaId = driver.findElement(By.id("categoria_id")).getText();
         assertTrue(categoriaId.matches("\\d+"), "El ID de las categorias debe ser numérico");

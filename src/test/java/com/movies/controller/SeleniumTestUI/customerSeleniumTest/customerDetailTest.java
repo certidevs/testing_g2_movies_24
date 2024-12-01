@@ -47,10 +47,10 @@ public class customerDetailTest {
 
     @BeforeEach
     void setUp() {
+        valoracionRepository.deleteAllInBatch();
        customerRepository.deleteAllInBatch();
        movieRepository.deleteAllInBatch();
        categoriaRepository.deleteAllInBatch();
-       valoracionRepository.deleteAllInBatch();
         driver = new ChromeDriver();
     }
     @AfterEach
@@ -94,7 +94,7 @@ public class customerDetailTest {
 
     @Test
     public void testCustomerMovies() {
-        Movie movie = movieRepository.save(Movie.builder().name("Inception").duration(148).year(2010).build());
+        Movie movie = movieRepository.save(Movie.builder().name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).build());
         Set<Movie> movies = new HashSet<>();
         movies.add(movie);
         Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).build());
@@ -112,7 +112,7 @@ public class customerDetailTest {
     public void testCustomerValoraciones() {
         Categoria categoria = Categoria.builder().id(1L).nombre("Acción").descripcion("Películas de acción").build();
         categoria = categoriaRepository.save(categoria);
-        Movie movie = Movie.builder().id(1L).name("Inception").duration(148).year(2010).categoria(categoria).build();
+        Movie movie = Movie.builder().id(1L).name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).categoria(categoria).build();
         movie = movieRepository.save(movie);
         Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
         Valoracion valoracion = Valoracion.builder().id(1L).puntuacion(5).comentario("Muy buena película").customer(customer).movie(movie).build();

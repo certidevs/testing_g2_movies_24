@@ -37,10 +37,10 @@ public class customerListTest {
 
     @BeforeEach
     void setUp() {
+        valoracionRepository.deleteAllInBatch();
         customerRepository.deleteAllInBatch();
         movieRepository.deleteAllInBatch();
         categoriaRepository.deleteAllInBatch();
-        valoracionRepository.deleteAllInBatch();
         driver = new ChromeDriver();
     }
     @AfterEach

@@ -59,7 +59,7 @@ public class MovieDetailTest {
     public void testMovieDetailPage() {
         Categoria categoria = categoriaRepository.save(Categoria.builder().nombre("Acción").build());
         Customer customer = customerRepository.save(Customer.builder().nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
-        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).categoria(categoria).build());
+        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).categoria(categoria).build());
         Valoracion valoracion = Valoracion.builder().puntuacion(5).comentario("Excelente película").customer(customer).movie(movie).build();
         valoracionRepository.save(valoracion);
 
@@ -101,7 +101,7 @@ public class MovieDetailTest {
     public void testMovieValoraciones() {
         Categoria categoria = categoriaRepository.save(Categoria.builder().nombre("Acción").build());
         Customer customer = customerRepository.save(Customer.builder().nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
-        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).categoria(categoria).build());
+        Movie movie = movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).categoria(categoria).build());
         Valoracion valoracion = Valoracion.builder().puntuacion(5).comentario("Excelente película").customer(customer).movie(movie).build();
         valoracionRepository.save(valoracion);
 

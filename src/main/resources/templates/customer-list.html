@@ -11,7 +11,7 @@
     <div class="container mt-4">
         <h1 id="h1_customer_list" class="mb-4">Lista de Clientes</h1>
 
-        <a id="btnCreate_customer" href="/customers/new" class="btn btn-primary mb-3">
+        <a id="btnCreate_customer" th:href="@{/customers/new}" class="btn btn-primary mb-3">
             <i class="fas fa-plus"></i> Nuevo Cliente
         </a>
         <div th:if="${customers.size() > 0}" class="row row-cols-1 row-cols-md-3 g-4">

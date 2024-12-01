@@ -53,7 +53,7 @@ public class CategoriaFormTest {
     @Test
     public void testPageTitleAndHeader() {
         categoriaRepository.save(Categoria.builder().id(1L).nombre("Categoria").descripcion("Descripcion").build());
-        driver.get("/categorias/new");
+        driver.get("http://localhost:8080/categorias/new");
         driver.navigate().refresh();
         String title = driver.getTitle();
         assertEquals("Formulario Categoria", title);

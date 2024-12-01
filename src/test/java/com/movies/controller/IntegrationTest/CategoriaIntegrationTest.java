@@ -111,31 +111,28 @@ public class CategoriaIntegrationTest {
     }
     @Test
     void getFormToUpdateCategoria() throws Exception {
-        Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).build());
+        Categoria categoria = categoriaRepository.save(Categoria.builder().nombre("Categoría").descripcion("Descripción").build());
 
-        mockMvc.perform(get("http://localhost:8080/categorias/edit/{id}", categoria.getId()))
+        mockMvc.perform(get("/categorias/edit/" + categoria.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("categoria-form"))
                 .andExpect(model().attributeExists("categoria"));
     }
     @Test
     void saveCategoria() throws Exception {
-        Categoria categoria = Categoria.builder()
-                .id(1L)
-                .nombre("Categoría")
-                .descripcion("Descripción")
-                .build();
+    categoriaRepository.deleteAll();
         mockMvc.perform(MockMvcRequestBuilders.post("/categorias")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("id", "1L")
                         .param("nombre", "Categoría")
                         .param("descripcion", "Descripción"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/categorias"));
+        List<Categoria> categorias = categoriaRepository.findAll();
+        assertEquals(1, categorias.size(), "Debe haber exactamente una categoría en la base de datos");
+        Categoria categoria = categorias.get(0);
+        assertEquals("Categoría", categoria.getNombre());
+        assertEquals("Descripción", categoria.getDescripcion());
 
-
-        assertEquals("C", categoria.getNombre());
-        assertEquals("D", categoria.getDescripcion());
     }
 
     @Test

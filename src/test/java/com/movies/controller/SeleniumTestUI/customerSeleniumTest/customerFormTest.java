@@ -40,10 +40,10 @@ public class customerFormTest {
 
     @BeforeEach
     void setUp() {
+        valoracionRepository.deleteAllInBatch();
         customerRepository.deleteAllInBatch();
         movieRepository.deleteAllInBatch();
         categoriaRepository.deleteAllInBatch();
-        valoracionRepository.deleteAllInBatch();
         driver = new ChromeDriver();
     }
     @AfterEach
@@ -64,7 +64,7 @@ public class customerFormTest {
     @Test
     public void testFillAndSubmitFormForNewCustomer() {
         Set<Movie> movies = new HashSet<>();
-        Movie.MovieBuilder movieBuilder = Movie.builder().id(1L).name("Inception").duration(60).year(2025);
+        Movie.MovieBuilder movieBuilder = Movie.builder().id(1L).name("Inception").duration(60).year(2025).rentalPricePerDay(5.00);
         Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").movies(movies).build());
         driver.get("http://localhost:8080/customers/new");
         driver.navigate().refresh();
@@ -82,7 +82,7 @@ public class customerFormTest {
         Set <Categoria> categorias = new HashSet<>();
         categorias.add(Categoria.builder().id(1L).nombre("Acción").build());
         Set<Movie> movies = new HashSet<>();
-        Movie.MovieBuilder movieBuilder = Movie.builder().id(1L).name("Inception").duration(60).year(2025);
+        Movie.MovieBuilder movieBuilder = Movie.builder().id(1L).name("Inception").duration(60).year(2025).rentalPricePerDay(5.00);
         for (Categoria categoria : categorias) {
             movieBuilder.categoria(categoria);
         }
@@ -106,7 +106,7 @@ public class customerFormTest {
         Set <Categoria> categorias = new HashSet<>();
         categorias.add(Categoria.builder().id(1L).nombre("Acción").build());
         Set<Movie> movies = new HashSet<>();
-        Movie.MovieBuilder movieBuilder = Movie.builder().id(1L).name("Inception").duration(60).year(2025);
+        Movie.MovieBuilder movieBuilder = Movie.builder().id(1L).name("Inception").duration(60).year(2025).rentalPricePerDay(5.00);
         for (Categoria categoria : categorias) {
             movieBuilder.categoria(categoria);
         }

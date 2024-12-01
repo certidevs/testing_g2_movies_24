@@ -71,12 +71,14 @@ public class ValoracionIntegrationTest {
                 .name("Inception")
                 .year(2010)
                 .duration(148)
+                .rentalPricePerDay(5.00)
                 .build());
 
         Movie movie2 = movieRepository.save(Movie.builder()
                 .name("Titanic")
                 .year(1997)
                 .duration(195)
+                .rentalPricePerDay(5.00)
                 .build());
 
         Valoracion valoracion1 = valoracionRepository.save(Valoracion.builder()
@@ -129,6 +131,7 @@ public class ValoracionIntegrationTest {
                 .name("Inception")
                 .year(2010)
                 .duration(148)
+                .rentalPricePerDay(5.00)
                 .build());
 
         Valoracion valoracion = valoracionRepository.save(Valoracion.builder()
@@ -187,6 +190,7 @@ public class ValoracionIntegrationTest {
                 .name("Inception")
                 .year(2010)
                 .duration(148)
+                .rentalPricePerDay(5.00)
                 .build());
 
         Valoracion valoracion = valoracionRepository.save(Valoracion.builder()
@@ -217,6 +221,7 @@ public class ValoracionIntegrationTest {
                 .name("Inception")
                 .year(2010)
                 .duration(148)
+                .rentalPricePerDay(5.00)
                 .build());
 
         // Confirmar IDs generados
@@ -256,6 +261,7 @@ public class ValoracionIntegrationTest {
                 .name("Inception")
                 .year(2010)
                 .duration(148)
+                .rentalPricePerDay(5.00)
                 .build());
 
         Valoracion valoracion = valoracionRepository.save(Valoracion.builder()

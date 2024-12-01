@@ -9,6 +9,7 @@ import com.movies.repository.CategoriaRepository;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@Transactional
+//@Transactional
 public class CustomerIntegrationTest {
 
     @Autowired
@@ -47,11 +48,16 @@ public class CustomerIntegrationTest {
     @Autowired
     private ValoracionRepository valoracionRepository;
 
+    @BeforeEach
+    void setUp() {
+        valoracionRepository.deleteAll();
+        movieRepository.deleteAll();
+        categoriaRepository.deleteAll();
+        customerRepository.deleteAll();
+    }
     @Test
     void findAll() throws Exception {
-        customerRepository.deleteAll();
         Customer customer1 = customerRepository.save(Customer.builder()
-                .id(1L)
                 .nombre("Ana")
                 .apellido("C")
                 .email("ana.c@example.com")
@@ -59,7 +65,6 @@ public class CustomerIntegrationTest {
                 .build());
 
         Customer customer2 = customerRepository.save(Customer.builder()
-                .id(2L)
                 .nombre("P")
                 .apellido("C")
                 .email("p.c@example.com")
