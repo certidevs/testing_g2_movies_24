@@ -33,6 +33,7 @@ public class Movie {
     @NotNull(message = "El año es obligatorio")
     @Min(value = 1888, message = "El año debe ser mayor a 1888")
     @Max(value = 2100, message = "El año debe ser menor a 2100")
+    @Column(name = "\"year\"")
     private Integer year;
 
 //    @ManyToMany
@@ -53,6 +54,7 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     @ToString.Exclude
+    @Builder.Default
     private Set<Valoracion> valoraciones = new HashSet<>();
 
     private boolean available = true;
@@ -60,6 +62,7 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie")
     @ToString.Exclude
+    @Builder.Default
     private Set<Rental> rentals = new HashSet<>();
 
     @Override

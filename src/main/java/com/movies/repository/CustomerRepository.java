@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,9 +26,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query("SELECT c FROM Customer c WHERE SIZE(c.rentals) > :rentalCount")
     List<Customer> findByRentalCountGreaterThan(@Param("rentalCount") int rentalCount);
 
-    @Query("SELECT DISTINCT c FROM Customer c JOIN c.rentals r WHERE r.rentalDate BETWEEN :startDate AND :endDate")
-    List<Customer> findByRentalsInDateRange(@Param("startDate") String startDate, @Param("endDate") String endDate);
+    @Query("SELECT c FROM Customer c JOIN c.rentals r WHERE r.rentalDate BETWEEN :startDate AND :endDate")
+    List<Customer> findByRentalsInDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT DISTINCT c FROM Customer c JOIN c.rentals r JOIN c.valoraciones v WHERE r.movie.id = v.movie.id")
+    @Query("SELECT c FROM Customer c JOIN c.rentals r JOIN c.valoraciones v WHERE r.movie = v.movie ")
     List<Customer> findByRentedAndRatedMovies();
+
 }

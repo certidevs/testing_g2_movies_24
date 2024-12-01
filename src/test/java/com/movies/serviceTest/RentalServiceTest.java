@@ -106,6 +106,7 @@ class RentalServiceTest {
     @Test
     @DisplayName("Prueba del método returnMovie - Devolución exitosa")
     void testReturnMovie_Success() {
+        movie.setAvailable(false);
         when(rentalRepository.findById(rental.getId())).thenReturn(Optional.of(rental));
         when(movieRepository.save(any(Movie.class))).thenAnswer(invocation -> invocation.getArgument(0));
 

@@ -35,10 +35,12 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @ToString.Exclude
+    @Builder.Default
     private Set<Valoracion> valoraciones = new HashSet<>();
 
     @OneToMany(mappedBy = "customer")
     @ToString.Exclude
+    @Builder.Default
     private Set<Rental> rentals = new HashSet<>();
 
     @Override

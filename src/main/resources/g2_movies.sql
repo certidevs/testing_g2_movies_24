@@ -81,6 +81,8 @@ CREATE TABLE `movie` (
   `name` VARCHAR(255) NOT NULL,
   `duration` INT NOT NULL,
   `year` INT NOT NULL,
+  `Available` BOOLEAN DEFAULT TRUE,	
+  `rental_price_per_day` INT NOT NULL,
   `categoria_id` INT DEFAULT NULL,
   PRIMARY KEY (`id`), -- Solo una PRIMARY KEY
   KEY `categoria_id` (`categoria_id`),
@@ -88,6 +90,19 @@ CREATE TABLE `movie` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `rental`;
+CREATE TABLE rental (
+    id INT NOT NULL AUTO_INCREMENT,                
+    movie_id INT DEFAULT NULL,                            
+    customer_id INT DEFAULT NULL,                         
+    rental_date DATETIME NOT NULL,                       
+    return_due_date DATETIME DEFAULT NULL,               
+    returned_date DATETIME DEFAULT NULL,                 
+    rental_price DOUBLE DEFAULT NULL,        
+    PRIMARY KEY (id),            
+    CONSTRAINT fk_rental_movie FOREIGN KEY (movie_id) REFERENCES movie (id) ON DELETE CASCADE,  -- Relación con 'movie'
+    CONSTRAINT fk_rental_customer FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE -- Relación con 'customer'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `movie`
