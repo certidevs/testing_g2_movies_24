@@ -18,7 +18,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    services: selenium/standalone-chrome
+    services:
+      selenium:
+    image: selenium/standalone-chrome
     ports:
       - 4444:4444
     options: --shm-size=2g
