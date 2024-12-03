@@ -42,9 +42,9 @@ public class MovieDetailTest {
 
     @BeforeEach
     void setUp() {
+        valoracionRepository.deleteAllInBatch();
         movieRepository.deleteAllInBatch();
         categoriaRepository.deleteAllInBatch();
-        valoracionRepository.deleteAllInBatch();
         customerRepository.deleteAllInBatch();
         //driver = new ChromeDriver();
         ChromeOptions options = new ChromeOptions();

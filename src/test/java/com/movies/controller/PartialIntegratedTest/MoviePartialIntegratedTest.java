@@ -1,4 +1,4 @@
-package com.movies.controller;
+package com.movies.controller.PartialIntegratedTest;
 
 import com.movies.model.Categoria;
 import com.movies.model.Movie;

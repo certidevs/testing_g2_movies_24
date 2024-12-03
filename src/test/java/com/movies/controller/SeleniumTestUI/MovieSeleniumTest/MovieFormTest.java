@@ -3,7 +3,9 @@ package com.movies.controller.SeleniumTestUI.MovieSeleniumTest;
 import com.movies.model.Categoria;
 import com.movies.model.Movie;
 import com.movies.repository.CategoriaRepository;
+import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
+import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,12 +30,20 @@ public class MovieFormTest {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    @Autowired
+    private ValoracionRepository valoracionRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
     private WebDriver driver;
 
     @BeforeEach
     void setUp() {
+        valoracionRepository.deleteAllInBatch();
         movieRepository.deleteAllInBatch();
         categoriaRepository.deleteAllInBatch();
+        customerRepository.deleteAllInBatch();
         //driver = new ChromeDriver();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless"); // para que no se abra el navegador
