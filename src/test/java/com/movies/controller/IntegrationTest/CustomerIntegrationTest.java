@@ -10,21 +10,16 @@ import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -56,6 +51,7 @@ public class CustomerIntegrationTest {
         customerRepository.deleteAll();
     }
     @Test
+    @DisplayName("Test de integración findAll de customerController")
     void findAll() throws Exception {
         Customer customer1 = customerRepository.save(Customer.builder()
                 .nombre("Ana")
@@ -93,6 +89,7 @@ public class CustomerIntegrationTest {
                 )));
     }
     @Test
+    @DisplayName("Test de integración findById de customerController")
     void findById() throws Exception {
         Customer customer = customerRepository.save(Customer.builder()
                 .id(1L)
@@ -108,11 +105,13 @@ public class CustomerIntegrationTest {
                 .andExpect(model().attributeExists("customer"));
     }
     @Test
+    @DisplayName("Test de integración findById, id no existente, de customerController")
     void findById_NotExist() throws Exception {
         mockMvc.perform(get("/customers404/{id}", 999L))
                 .andExpect(status().isNotFound());
     }
         @Test
+        @DisplayName("Test de integración ir al formulario, crear cliente nuevo, de customerController")
     void getFormToCreateCustomer() throws Exception {
         mockMvc.perform(get("/customers/new"))
                .andExpect(status().isOk())
@@ -120,6 +119,7 @@ public class CustomerIntegrationTest {
                .andExpect(model().attributeExists("customer"));
     }
     @Test
+    @DisplayName("Test de integración ir al formulario, editar cliente existente, de customerController")
     void getFormToUpdateCustomer() throws Exception {
         Customer customer = customerRepository.save(Customer.builder().id(1L).build());
 
@@ -129,6 +129,7 @@ public class CustomerIntegrationTest {
                .andExpect(model().attributeExists("customer"));
     }
     @Test
+    @DisplayName("Test de integración guardar cliente nuevo, de customerController")
     void saveCustomer() throws Exception {
         Customer customer = Customer.builder()
                 .id(1L)
@@ -154,6 +155,7 @@ public class CustomerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración borrar cliente, de customerController")
     void deleteCustomer() throws Exception {
         Customer customer = customerRepository.save(Customer.builder()
                 .id(1L)

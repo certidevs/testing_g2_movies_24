@@ -4,6 +4,8 @@ import com.movies.controller.MovieController;
 import com.movies.model.Movie;
 import com.movies.repository.CategoriaRepository;
 import com.movies.repository.MovieRepository;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,6 +37,7 @@ public class MovieControllerUnitTest {
     Model model;
 
     @Test
+    @DisplayName("Test unitario findAll de movieController")
     void findAll(){
         when (movieRepository.findAll()).thenReturn(List.of(
                 Movie.builder().id(1L).build()));
@@ -46,6 +47,7 @@ public class MovieControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario find por id de movieController")
     void findById(){
         Movie movie = Movie.builder().id(1L).build();
 
@@ -56,6 +58,7 @@ public class MovieControllerUnitTest {
         verify(model).addAttribute("movie", movie);
     }
     @Test
+    @DisplayName("Test unitario find por id, pelicula no existente, de movieController")
     void findById_MovieNotFound(){
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
@@ -67,6 +70,7 @@ public class MovieControllerUnitTest {
         verify(model, never()).addAttribute(eq("movie"), any());
     }
     @Test
+    @DisplayName("Test unitario find por id, id no existente, de movieController")
     void findById_IdNotFound(){
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
@@ -79,6 +83,7 @@ public class MovieControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario ir al formulario, crear pelicula nueva, de movieController")
     void getFormCreateMovie(){
         Movie movie = new Movie();
         String view = movieController.createForm(model);
@@ -87,6 +92,7 @@ public class MovieControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario ir al formulario, editar pelicula existente, de movieController")
     void getFormUpdateMovie(){
         Movie movie = Movie.builder().id(1L).build();
         when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
@@ -96,6 +102,7 @@ public class MovieControllerUnitTest {
         verify(movieRepository).findById(1L);
     }
     @Test
+    @DisplayName("Test unitario editar pelicula, id no encontrado, de movieController")
     void getFormUpdateMovie_NotFound(){
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
@@ -108,6 +115,7 @@ public class MovieControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario guardar nuevo de movieController")
     void saveMovieNew(){
         Movie movie = new Movie();
         String view = movieController.saveMovie(movie);
@@ -116,6 +124,7 @@ public class MovieControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario guardar existente de movieController")
     void saveMovieUpdate(){
         Movie movie = Movie.builder().id(1L).build();
         Movie movieUpdate = Movie.builder().id(1L).name("Editado").build();
@@ -130,6 +139,7 @@ public class MovieControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario borrar de movieController")
     void deleteMovie(){
         when(movieRepository.existsById(1L)).thenReturn(true);
         String view = movieController.deleteById(1L);

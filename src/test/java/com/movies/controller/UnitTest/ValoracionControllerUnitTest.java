@@ -41,6 +41,7 @@ class ValoracionControllerUnitTest {
     private Model model;
 
     @Test
+    @DisplayName("Test unitario findAll de valoraciónController")
     void findAll() {
         when(valoracionRepository.findAll()).thenReturn(List.of(
                 Valoracion.builder().id(1L).build()
@@ -51,6 +52,7 @@ class ValoracionControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario findById de valoraciónController")
     void findById() {
         Valoracion valoracion = Valoracion.builder().id(1L).build();
 
@@ -64,6 +66,7 @@ class ValoracionControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario findById de valoraciónController, valoración no encontrada")
     void findById_ValoracionNotFound() {
         when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
@@ -76,6 +79,7 @@ class ValoracionControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario ir al formulario, crear valoración nueva, de valoraciónController")
     void getFormCreateValoracion() {
         Valoracion valoracion = new Valoracion();
         String view = valoracionController.createValoracion(model);
@@ -84,6 +88,7 @@ class ValoracionControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario ir al formulario, actualizar valoración existente, de valoraciónController")
     void getFormUpdateValoracion() {
         Valoracion valoracion = Valoracion.builder().id(1L).build();
         when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
@@ -94,6 +99,7 @@ class ValoracionControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario ir al formulario, actualizar valoración existente, valoración no encontrada, de valoraciónController")
     void getFormUpdateValoracion_NotFound() {
         when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
@@ -106,6 +112,7 @@ class ValoracionControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario guardar valoración nueva, de valoraciónController")
     void saveValoracionNew() {
         Valoracion valoracion = Valoracion.builder()
                 .customer(Customer.builder().id(1L).build())
@@ -119,6 +126,7 @@ class ValoracionControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario guardar valoración existente, de valoraciónController")
     void saveValoracionUpdate() {
         Valoracion valoracion = Valoracion.builder().id(1L).comentario("Comentario actualizado").puntuacion(8).build();
         String result = valoracionController.save(valoracion);
@@ -127,6 +135,7 @@ class ValoracionControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario borrar valoración, de valoraciónController")
     void deleteValoracion() {
         String view = valoracionController.deleteValoracion(1L);
         assertEquals("redirect:/valoraciones", view);

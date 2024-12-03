@@ -1,4 +1,4 @@
-package com.movies.controller.SeleniumTestUI.valoracionSeleniumTest;
+package com.movies.controller.SeleniumTestUI.ValoracionSeleniumTest;
 
 import com.movies.model.Customer;
 import com.movies.model.Movie;
@@ -11,6 +11,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -21,7 +22,7 @@ import java.time.Duration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-@Disabled
+//@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ValoracionFormTest {
 
@@ -41,7 +42,14 @@ public class ValoracionFormTest {
         valoracionRepository.deleteAllInBatch();
         customerRepository.deleteAllInBatch();
         movieRepository.deleteAllInBatch();
-        driver = new ChromeDriver();
+        //driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // para que no se abra el navegador
+        options.addArguments("--disable-gpu"); // Deshabilita la aceleración de hardware
+        options.addArguments("--window-size=1920,1080"); // Tamaño de la ventana
+        options.addArguments("--no-sandbox"); // Bypass OS security model, requerido en entornos sin GUI
+        options.addArguments("--disable-dev-shm-usage"); // Deshabilita el uso de /dev/shm manejo de memoria compartida
+        driver = new ChromeDriver(options);
     }
 
     @AfterEach

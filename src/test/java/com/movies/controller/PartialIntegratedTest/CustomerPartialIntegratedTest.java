@@ -1,19 +1,16 @@
 package com.movies.controller.PartialIntegratedTest;
 
-import com.movies.model.Categoria;
 import com.movies.model.Customer;
-import com.movies.model.Movie;
-import com.movies.model.Valoracion;
 import com.movies.repository.CategoriaRepository;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,12 +20,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,6 +47,7 @@ public class CustomerPartialIntegratedTest {
     private ValoracionRepository valoracionRepository;
 
     @Test
+    @DisplayName("test de integración parcial de encontrar todas los clientes, de customerController")
     void findAll() throws Exception {
         when (customerRepository.findAll()).thenReturn(List.of(
                 Customer.builder().id(1L).build(),
@@ -66,6 +61,7 @@ public class CustomerPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("test de integración parcial de encontrar un cliente por id, de customerController")
     void findById() throws Exception {
         Customer customer = Customer.builder().id(1L).build();
 
@@ -78,6 +74,7 @@ public class CustomerPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("test de integración parcial de encontrar un cliente por id, de customerController, cliente no encontrado")
     void findById_CustomerNotFound() throws Exception{
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -90,6 +87,7 @@ public class CustomerPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("test de integración parcial de encontrar un cliente por id, de customerController, id no encontrado")
     void findById_IdNotFound() throws Exception {
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -102,6 +100,7 @@ public class CustomerPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial para Obtener formulario para crear nuevo cliente, de customerController")
     void getFormCreateCustomer() throws Exception {
         mockMvc.perform(post("/customers")
                 .param("nombre", "Cliente")
@@ -115,6 +114,7 @@ public class CustomerPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial para Obtener formulario para actualizar un cliente, de customerController")
     void getFormUpdateCustomer() throws Exception {
         Customer customer = Customer.builder().id(1L).build();
 
@@ -128,6 +128,7 @@ public class CustomerPartialIntegratedTest {
     }
 
      @Test
+        @DisplayName("Test de integración parcial para Obtener formulario para actualizar un cliente, de customerController, cliente no encontrado")
      void getFormUpdateCustomer_NotFound() throws Exception{
          when(customerRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -135,6 +136,7 @@ public class CustomerPartialIntegratedTest {
                  .andExpect(status().isNotFound());
      }
     @Test
+    @DisplayName("Test de integración parcial para guardar nuevo cliente, de customerController")
     void saveCustomerNew () throws Exception {
         mockMvc.perform(post("/customers")
                         .param("nombre", "Cliente")
@@ -147,6 +149,7 @@ public class CustomerPartialIntegratedTest {
         verify(customerRepository).save(any(Customer.class));
     }
     @Test
+    @DisplayName("Test de integración parcial para guardar cliente actualizado, de customerController")
     void saveCustomerUpdate() throws Exception {
         Customer customer = new Customer();
         customer.setId(1L);
@@ -168,6 +171,7 @@ public class CustomerPartialIntegratedTest {
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
     @Test
+    @DisplayName("Test de integración parcial para eliminar un cliente, de customerController")
     void deleteCustomer() throws Exception{
         when(customerRepository.existsById(1L)).thenReturn(true);
         mockMvc.perform(get("/customers/delete/{id}", 1L))
@@ -176,73 +180,5 @@ public class CustomerPartialIntegratedTest {
 
         verify(customerRepository).deleteById(1L);
     }
-/*    @Test
-    void addMovieToCustomer() throws Exception {
-        Customer customer = Customer.builder().id(1L).movies(new HashSet<>()).build();
-        //Movie movie = Movie.builder().id(1L).build();
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        List<Long> movieIds = List.of(1L, 2L);
-        List<Movie> movies = List.of(
-                Movie.builder().id(1L).build(),
-                Movie.builder().id(2L).build()
-        );
-        when(movieRepository.findAllById(movieIds)).thenReturn(movies);
-        mockMvc.perform(post("/customers/1/add-movie")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("customerId", "1L")
-                //.param(String.valueOf(movies), "1L", "2L"))
-                .param("customer", "customer")
-                .param("movieIds", "1L", "2L"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/customers/1"));
 
-        verify(customerRepository).findById(1L);
-        verify(movieRepository).findAllById(movieIds);
-        //verify(movieRepository).save(any(Movie.class));
-        verify(customerRepository).save(any(Customer.class));
-    }
-
-    @Test
-    void removeMovieFromCustomer() throws Exception {
-        Customer customer = Customer.builder().id(1L).build();
-        Movie movie = Movie.builder().id(1L).build();
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
-        mockMvc.perform(post("/customers/1/remove-movie/1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/customers/1"));
-
-        verify(customerRepository).findById(1L);
-        verify(movieRepository).findById(1L);
-        verify(customerRepository).save(any(Customer.class));
-    }
-
-    @Test
-    void addValoracionToCustomer() throws Exception {
-        Customer customer = Customer.builder().id(1L).build();
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-
-        mockMvc.perform(post("/customers/1/add-valoracion")
-                        .param("puntuacion", "5")
-                        .param("comentario", "Buen servicio"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/customers/1"));
-
-        verify(customerRepository).findById(1L);
-        verify(valoracionRepository).save(any(Valoracion.class));
-    }
-    @Test
-    void removeValoracionFromCustomer() throws Exception {
-        Customer customer = Customer.builder().id(1L).build();
-        Valoracion valoracion = Valoracion.builder().id(1L).build();
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
-        mockMvc.perform(post("/customers/1/remove-valoracion/{valoracionId}", 1L))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/customers/1"));
-
-        verify(customerRepository).findById(1L);
-        verify(valoracionRepository).findById(1L);
-        verify(customerRepository).save(any(Customer.class));
-    }*/
 }

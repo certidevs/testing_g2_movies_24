@@ -1,4 +1,4 @@
-package com.movies.serviceTest;
+package com.movies.ServiceTest;
 
 import com.movies.model.Customer;
 import com.movies.model.Movie;

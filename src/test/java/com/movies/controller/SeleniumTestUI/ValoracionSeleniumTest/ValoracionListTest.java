@@ -1,4 +1,4 @@
-package com.movies.controller.SeleniumTestUI.valoracionSeleniumTest;
+package com.movies.controller.SeleniumTestUI.ValoracionSeleniumTest;
 
 import com.movies.model.Customer;
 import com.movies.model.Movie;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;

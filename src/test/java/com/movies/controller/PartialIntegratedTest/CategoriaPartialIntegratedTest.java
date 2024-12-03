@@ -9,18 +9,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.server.ResponseStatusException;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
-import static org.hamcrest.Matchers.*;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +32,7 @@ public class CategoriaPartialIntegratedTest {
     private CategoriaRepository categoriaRepository;
 
     @Test
+    @DisplayName("test de integración parcial de encontrar todas las categorías, de categoriaController")
     void findAll() throws Exception {
         when (categoriaRepository.findAll()).thenReturn(List.of(
                 Categoria.builder().id(1L).build(),
@@ -49,6 +46,7 @@ public class CategoriaPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("test de integración parcial de encontrar una categoría por id, de categoriaController")
     void findById() throws Exception {
         Categoria categoria = Categoria.builder().id(1L).build();
 
@@ -61,6 +59,7 @@ public class CategoriaPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("test de integración parcial de encontrar una categoría por id, de categoriaController, categoria no encontrada")
     void findById_CategoriaNotFound() throws Exception{
         when(categoriaRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -71,7 +70,7 @@ public class CategoriaPartialIntegratedTest {
     }
 
     @Test
-    @DisplayName("Obtener formulario para crear nueva categoria")
+    @DisplayName("Test de integración parcial para Obtener formulario para crear nueva categoria, de categoriaController")
     void getFormCreateCategoria() throws Exception {
 
         mockMvc.perform(get("/categorias/new"))
@@ -89,6 +88,7 @@ public class CategoriaPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial para Obtener formulario para actualizar una categoria, de categoriaController")
     void getFormUpdateCategoria() throws Exception {
         Categoria categoria = Categoria.builder().id(1L).build();
 
@@ -102,6 +102,7 @@ public class CategoriaPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial para Obtener formulario para actualizar una categoria, de categoriaController, categoria no encontrada")
     void getFormUpdateCategoria_NotFound() throws Exception{
         when(categoriaRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -120,6 +121,7 @@ public class CategoriaPartialIntegratedTest {
         verify(categoriaRepository).save(any(Categoria.class));
     }
     @Test
+    @DisplayName("Test de integración parcial para guardar una categoria actualizada, de categoriaController")
     void saveCategoriaUpdate() throws Exception {
         Categoria categoria = Categoria.builder().id(1L).nombre("Categoria").build();
         when(categoriaRepository.existsById(1L)).thenReturn(true);
@@ -137,6 +139,7 @@ public class CategoriaPartialIntegratedTest {
         verify(categoriaRepository).save(any(Categoria.class));
     }
     @Test
+    @DisplayName("Test de integración parcial para borrar una categoria de categoriaController")
     void deleteCategoria() throws Exception{
         when(categoriaRepository.existsById(1L)).thenReturn(true);
         mockMvc.perform(get("/categorias/delete/{id}", 1L))

@@ -4,6 +4,7 @@ import com.movies.model.Categoria;
 import com.movies.model.Movie;
 import com.movies.repository.CategoriaRepository;
 import com.movies.repository.MovieRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,6 +34,7 @@ public class MovieIntegrationTest {
     private CategoriaRepository categoriaRepository;
 
     @Test
+    @DisplayName("Test de integración findAll de movieController")
     void findAll() throws Exception {
         movieRepository.deleteAll();
 
@@ -82,6 +84,7 @@ public class MovieIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración findById de movieController")
     void findById() throws Exception {
         Categoria categoria = categoriaRepository.save(Categoria.builder()
                 .id(1L)
@@ -110,6 +113,7 @@ public class MovieIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración findById de movieController, id no existente")
     void findById_NotExist() throws Exception {
         mockMvc.perform(get("/movies404/{id}", 999L))
                 .andExpect(status().isNotFound());
@@ -117,6 +121,7 @@ public class MovieIntegrationTest {
 
 
     @Test
+    @DisplayName("Test de integración ir al formulario, crear pelicula nueva, de movieController")
     void getFormToCreateMovie() throws Exception {
         mockMvc.perform(get("/movies/new"))
                 .andExpect(status().isOk())
@@ -126,6 +131,7 @@ public class MovieIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración ir al formulario, editar pelicula existente, de movieController")
     void getFormToUpdateMovie() throws Exception {
         Categoria categoria = categoriaRepository.save(Categoria.builder()
                 .id(1L)
@@ -148,6 +154,7 @@ public class MovieIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración guardar película nueva, de movieController")
     void saveMovie() throws Exception {
         // Limpia los datos previos
         movieRepository.deleteAll();
@@ -187,6 +194,7 @@ public class MovieIntegrationTest {
 
 
     @Test
+    @DisplayName("Test de integración borrar película, de movieController")
     void deleteMovie() throws Exception {
         Categoria categoria = categoriaRepository.save(Categoria.builder()
                 .id(1L)

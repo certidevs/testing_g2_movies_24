@@ -1,4 +1,4 @@
-package com.movies.controller.SeleniumTestUI.movieSeleniumTest;
+package com.movies.controller.SeleniumTestUI.MovieSeleniumTest;
 
 import com.movies.model.Categoria;
 import com.movies.model.Movie;
@@ -6,12 +6,13 @@ import com.movies.repository.CategoriaRepository;
 import com.movies.repository.MovieRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,7 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-@Disabled
+//@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class MovieListTest {
 
@@ -35,7 +36,14 @@ public class MovieListTest {
     void setUp() {
         movieRepository.deleteAllInBatch();
         categoriaRepository.deleteAllInBatch();
-        driver = new ChromeDriver();
+        //driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // para que no se abra el navegador
+        options.addArguments("--disable-gpu"); // Deshabilita la aceleración de hardware
+        options.addArguments("--window-size=1920,1080"); // Tamaño de la ventana
+        options.addArguments("--no-sandbox"); // Bypass OS security model, requerido en entornos sin GUI
+        options.addArguments("--disable-dev-shm-usage"); // Deshabilita el uso de /dev/shm manejo de memoria compartida
+        driver = new ChromeDriver(options);
     }
 
     @AfterEach
@@ -44,6 +52,7 @@ public class MovieListTest {
     }
 
     @Test
+    @DisplayName("Test Movie List Page Titulo y cabecera")
     public void testMovieListPageTitleAndHeader() {
         movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).build());
         driver.get("http://localhost:8080/movies");
@@ -55,6 +64,7 @@ public class MovieListTest {
     }
 
     @Test
+    @DisplayName("Test Movie List Page Boton crear")
     public void testCreateNewMovieButton() {
         driver.get("http://localhost:8080/movies");
         driver.navigate().refresh();
@@ -67,6 +77,7 @@ public class MovieListTest {
     }
 
     @Test
+    @DisplayName("Test Movie Tabla contenido")
     public void testMovieTableContent() {
         Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).nombre("Acción").build());
         movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).categoria(categoria).build());
@@ -89,6 +100,7 @@ public class MovieListTest {
     }
 
     @Test
+    @DisplayName("Test acciones de pelicula")
     public void testMovieActions() {
         movieRepository.save(Movie.builder().id(1L).name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).build());
         driver.get("http://localhost:8080/movies");
@@ -115,6 +127,7 @@ public class MovieListTest {
     }
 
     @Test
+    @DisplayName("Test mensaje no hay peliculas")
     public void testNoMoviesMessage() {
         driver.get("http://localhost:8080/movies");
         driver.navigate().refresh();

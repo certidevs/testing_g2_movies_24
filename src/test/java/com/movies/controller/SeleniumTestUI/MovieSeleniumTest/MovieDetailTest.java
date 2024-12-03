@@ -1,4 +1,4 @@
-package com.movies.controller.SeleniumTestUI.movieSeleniumTest;
+package com.movies.controller.SeleniumTestUI.MovieSeleniumTest;
 
 import com.movies.model.Categoria;
 import com.movies.model.Customer;
@@ -10,21 +10,19 @@ import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.openqa.selenium.WebDriver;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-@Disabled
+//@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class MovieDetailTest {
 
@@ -48,7 +46,14 @@ public class MovieDetailTest {
         categoriaRepository.deleteAllInBatch();
         valoracionRepository.deleteAllInBatch();
         customerRepository.deleteAllInBatch();
-        driver = new ChromeDriver();
+        //driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // para que no se abra el navegador
+        options.addArguments("--disable-gpu"); // Deshabilita la aceleración de hardware
+        options.addArguments("--window-size=1920,1080"); // Tamaño de la ventana
+        options.addArguments("--no-sandbox"); // Bypass OS security model, requerido en entornos sin GUI
+        options.addArguments("--disable-dev-shm-usage"); // Deshabilita el uso de /dev/shm manejo de memoria compartida
+        driver = new ChromeDriver(options);
     }
 
     @AfterEach
@@ -57,6 +62,7 @@ public class MovieDetailTest {
     }
 
     @Test
+    @DisplayName("Test Movie Detail titulo y cabecera, acciones, y datos pelicula")
     public void testMovieDetailPage() {
         Categoria categoria = categoriaRepository.save(Categoria.builder().nombre("Acción").build());
         Customer customer = customerRepository.save(Customer.builder().nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
@@ -99,6 +105,7 @@ public class MovieDetailTest {
     }
 
     @Test
+    @DisplayName("Test añadir Valoraciones a la movie")
     public void testMovieValoraciones() {
         Categoria categoria = categoriaRepository.save(Categoria.builder().nombre("Acción").build());
         Customer customer = customerRepository.save(Customer.builder().nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());

@@ -6,12 +6,12 @@ import com.movies.model.Valoracion;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -43,6 +43,7 @@ public class ValoracionPartialIntegratedTest {
     private MovieRepository movieRepository;
 
     @Test
+    @DisplayName("Test de integración parcial: listar valoraciones de valoracionController")
     void findAll() throws Exception {
         when(valoracionRepository.findAll()).thenReturn(List.of(
                 Valoracion.builder().id(1L).build(),
@@ -57,6 +58,7 @@ public class ValoracionPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial: encontrar valoraciones por id de valoracionController ")
     void findById() throws Exception {
         // Crear un objeto Customer simulado
         Customer customer = new Customer();
@@ -89,9 +91,8 @@ public class ValoracionPartialIntegratedTest {
     }
 
 
-
-
     @Test
+    @DisplayName("Test de integración parcial: encontrar valoraciones por id, valoracion no existe, de valoracionController")
     void findById_ValoracionNotFound() throws Exception {
         when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -100,6 +101,7 @@ public class ValoracionPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial: encontrar valoraciones por id, id no existe, de valoracionController")
     void findById_IdNotFound() throws Exception {
         // Configurar el mock del repositorio para devolver un Optional vacío
         when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
@@ -116,10 +118,8 @@ public class ValoracionPartialIntegratedTest {
     }
 
 
-
-
-
     @Test
+    @DisplayName("Test de integración parcial: obtener formulario de creación de valoración nueva, de valoracionController")
     void getFormCreateValoracion() throws Exception {
         mockMvc.perform(post("/valoraciones")
                         .param("comentario", "Película increíble")
@@ -133,6 +133,7 @@ public class ValoracionPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial: obtener formulario de edición de valoración existente, de valoracionController")
     void getFormUpdateValoracion() throws Exception {
         Valoracion valoracion = Valoracion.builder()
                 .id(1L)
@@ -158,6 +159,7 @@ public class ValoracionPartialIntegratedTest {
 
 
     @Test
+    @DisplayName("Test de integración parcial: obtener formulario de edición de valoración, valoración no existe, de valoracionController")
     void getFormUpdateValoracion_NotFound() throws Exception {
         // Configurar el mock para devolver un Optional vacío
         when(valoracionRepository.findById(1L)).thenReturn(Optional.empty());
@@ -168,6 +170,7 @@ public class ValoracionPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial: guardar valoración nueva, de valoracionController")
     void saveValoracionNew() throws Exception {
         mockMvc.perform(post("/valoraciones")
                         .param("comentario", "Nueva valoración")
@@ -181,6 +184,7 @@ public class ValoracionPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial: guardar valoración actualizada, de valoracionController")
     void saveValoracionUpdate() throws Exception {
         // Crear una valoración de prueba
         Valoracion valoracion = new Valoracion();
@@ -206,6 +210,7 @@ public class ValoracionPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("Test de integración parcial: eliminar valoración, de valoracionController")
     void deleteValoracion() throws Exception {
         when(valoracionRepository.existsById(1L)).thenReturn(true);
 

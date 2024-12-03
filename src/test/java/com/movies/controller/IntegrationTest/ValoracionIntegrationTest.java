@@ -7,6 +7,7 @@ import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -46,6 +47,7 @@ public class ValoracionIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración findAll de valoracionController")
     void findAll() throws Exception {
         // Limpiar la base de datos
         valoracionRepository.deleteAll();
@@ -118,6 +120,7 @@ public class ValoracionIntegrationTest {
 
 
     @Test
+    @DisplayName("Test de integración findById de valoracionController")
     void findById() throws Exception {
         // Crear datos de prueba
         Customer customer = customerRepository.save(Customer.builder()
@@ -163,12 +166,14 @@ public class ValoracionIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración findById de valoracionController, id no existente")
     void findById_NotExist() throws Exception {
         mockMvc.perform(get("/valoraciones/{id}", 999L))
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @DisplayName("Test de integración ir al formulario, crear valoracion nueva, de valoracionController")
     void getFormToCreateValoracion() throws Exception {
         mockMvc.perform(get("/valoraciones/new"))
                 .andExpect(status().isOk())
@@ -177,6 +182,7 @@ public class ValoracionIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración ir al formulario, editar valoracion existente, de valoracionController")
     void getFormToUpdateValoracion() throws Exception {
         // Crear datos de prueba
         Customer customer = customerRepository.save(Customer.builder()
@@ -208,6 +214,7 @@ public class ValoracionIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración guardar valoracion nueva, de valoracionController")
     void saveValoracion() throws Exception {
         // Crear datos de prueba
         Customer customer = customerRepository.save(Customer.builder()
@@ -248,6 +255,7 @@ public class ValoracionIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración borrar valoracion, de valoracionController")
     void deleteValoracion() throws Exception {
         // Crear datos de prueba
         Customer customer = customerRepository.save(Customer.builder()

@@ -1,4 +1,4 @@
-package com.movies.controller.SeleniumTestUI.customerSeleniumTest;
+package com.movies.controller.SeleniumTestUI.CustomerSeleniumTest;
 
 import com.movies.model.Categoria;
 import com.movies.model.Customer;
@@ -10,27 +10,25 @@ import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.openqa.selenium.WebDriver;
 
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled
+//@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class customerDetailTest {
+public class CustomerDetailTest {
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -48,17 +46,25 @@ public class customerDetailTest {
 
     @BeforeEach
     void setUp() {
-        valoracionRepository.deleteAllInBatch();
+       valoracionRepository.deleteAllInBatch();
        customerRepository.deleteAllInBatch();
        movieRepository.deleteAllInBatch();
        categoriaRepository.deleteAllInBatch();
-        driver = new ChromeDriver();
+       //driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // para que no se abra el navegador
+        options.addArguments("--disable-gpu"); // Deshabilita la aceleración de hardware
+        options.addArguments("--window-size=1920,1080"); // Tamaño de la ventana
+        options.addArguments("--no-sandbox"); // Bypass OS security model, requerido en entornos sin GUI
+        options.addArguments("--disable-dev-shm-usage"); // Deshabilita el uso de /dev/shm manejo de memoria compartida
+        driver = new ChromeDriver(options);
     }
     @AfterEach
     void tearDown() {
         driver.quit();
     }
     @Test
+    @DisplayName("Test Selenium UI, Customer Detail Pagina y acciones de customer detail")
     public void testCustomerDetailPage() {
 
         Customer customer = customerRepository.save(Customer.builder().id(1L).nombre("Ana").apellido("C").email("ana.c@example.com").password("123").build());
@@ -94,6 +100,7 @@ public class customerDetailTest {
     }
 
     @Test
+    @DisplayName("Test añadir pelicula al customer")
     public void testCustomerMovies() {
         Movie movie = movieRepository.save(Movie.builder().name("Inception").duration(148).year(2010).rentalPricePerDay(5.00).build());
         Set<Movie> movies = new HashSet<>();
@@ -110,6 +117,7 @@ public class customerDetailTest {
     }
 
     @Test
+    @DisplayName("Test añadir valoracion al customer")
     public void testCustomerValoraciones() {
         Categoria categoria = Categoria.builder().id(1L).nombre("Acción").descripcion("Películas de acción").build();
         categoria = categoriaRepository.save(categoria);

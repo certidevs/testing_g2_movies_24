@@ -1,4 +1,4 @@
-package com.movies.repositoryTest;
+package com.movies.RepositoryTest;
 
 import com.movies.model.*;
 import com.movies.repository.*;
@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @Transactional
 @DataJpaTest

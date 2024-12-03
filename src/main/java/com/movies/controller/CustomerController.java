@@ -42,7 +42,6 @@ public class CustomerController {
         model.addAttribute("customers", customerRepository.findAll());
         return "customer-list";
     }
-    //TODO: Bug-> ver si la bbdd sigue borrando los datos de las tablas cliente-CAMBIADO A UPDATE APP PROPERTIES
 
     @GetMapping("customers/{id}")
     public String findById(@PathVariable("id") Long id, Model model) {
@@ -98,59 +97,5 @@ public class CustomerController {
         customerRepository.deleteById(id);
         return "redirect:/customers";
     }
-/*   @PostMapping("customers/{customerId}/add-movie")
-    public String addMovieToCustomer(@PathVariable Long customerId,@ModelAttribute Customer customer, @RequestParam("movies") List<Long> movieIds) {
-       customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
-       List<Movie> movies = movieRepository.findAllById(movieIds);
-       customer.getMovies().addAll(movies);
-           customerRepository.save(customer);
 
-        return "redirect:/customers/" + customerId;
-    }
-
-
-    @PostMapping("customers/{customerId}/remove-movie/{movieId}")
-    public String removeMovieFromCustomer(@PathVariable Long customerId, @PathVariable Long movieId) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
-        if (customer.getMovies() == null) {
-            customer.setMovies(new HashSet<>());
-        }
-        customer.getMovies().remove(movie);
-        customerRepository.save(customer);
-
-        return "redirect:/customers/" + customerId;
-    }
-    @PostMapping("customers/{customerId}/add-valoracion")
-    public String addValoracionToCustomer(@PathVariable Long customerId, @RequestParam int puntuacion, @RequestParam String comentario, Model model) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
-        Valoracion valoracion = new Valoracion();
-        valoracion.setPuntuacion(puntuacion);
-        valoracion.setComentario(comentario);
-        valoracion.setCustomer(customer);
-        valoracionRepository.save(valoracion);
-        model.addAttribute("customer", customer);
-        return "redirect:/customers/" + customerId;
-    }
-    //TODO: Bug-> ver si funciona
-    @PostMapping("customers/{customerId}/remove-valoracion/{valoracionId}")
-    public String removeValoracionFromCustomer(@PathVariable Long customerId, @PathVariable Long valoracionId) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
-        Valoracion valoracion = valoracionRepository.findById(valoracionId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Valoracion not found"));
-        if (customer.getValoraciones() == null) {
-            customer.setValoraciones(new ArrayList<>());
-        }
-        customer.getValoraciones().remove(valoracion);
-        customerRepository.save(customer);
-
-        return "redirect:/customers/" + customerId;
-    }
-    //TODO: Bug-> ver si funciona
-*/
 }

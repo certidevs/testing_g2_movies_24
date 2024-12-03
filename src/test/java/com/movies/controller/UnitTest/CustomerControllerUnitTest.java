@@ -1,14 +1,12 @@
 package com.movies.controller.UnitTest;
 
 import com.movies.controller.CustomerController;
-import com.movies.model.Categoria;
 import com.movies.model.Customer;
-import com.movies.model.Movie;
-import com.movies.model.Valoracion;
 import com.movies.repository.CategoriaRepository;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,6 +43,7 @@ public class CustomerControllerUnitTest {
     Model model;
 
     @Test
+    @DisplayName("Test unitario findall controlador customer")
     void findAll(){
         when (customerRepository.findAll()).thenReturn(List.of(
                 Customer.builder().id(1L).build()));
@@ -54,6 +53,7 @@ public class CustomerControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario find por id controlador customer")
     void findById(){
         Customer customer = Customer.builder().id(1L).build();
 
@@ -64,6 +64,7 @@ public class CustomerControllerUnitTest {
         verify(model).addAttribute("customer", customer);
     }
     @Test
+    @DisplayName("Test unitario find por id, cliente no encontrado, controlador customer")
     void findById_CustomerNotFound(){
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
@@ -75,6 +76,7 @@ public class CustomerControllerUnitTest {
         verify(model, never()).addAttribute(eq("customer"), any());
     }
     @Test
+    @DisplayName("Test unitario find por id, id no encontrado, controlador customer")
     void findById_IdNotFound(){
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
@@ -87,6 +89,7 @@ public class CustomerControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario ir al formulario, crear cliente nuevo, controlador customer")
     void getFormCreateCustomer(){
         Customer customer = new Customer();
         String view = customerController.getFormCreateCustomer(model);
@@ -95,6 +98,7 @@ public class CustomerControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario ir al formulario, editar cliente existente, controlador customer")
     void getFormUpdateCustomer(){
         Customer customer = Customer.builder().id(1L).build();
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
@@ -104,6 +108,7 @@ public class CustomerControllerUnitTest {
         verify(customerRepository).findById(1L);
     }
     @Test
+    @DisplayName("Test unitario guardar cliente, cliente no encontrado, controlador customer")
     void getFormUpdateCustomer_NotFound(){
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
@@ -116,6 +121,7 @@ public class CustomerControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario guardar cliente nuevo, controlador customer")
     void saveCustomerNew(){
         Customer customer = new Customer();
         String view = customerController.saveCustomer(customer);
@@ -124,6 +130,7 @@ public class CustomerControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario guardar cliente editado controlador customer")
     void saveCustomerUpdate(){
         Customer customer = new Customer();
         customer.setId(1L);
@@ -137,6 +144,7 @@ public class CustomerControllerUnitTest {
     }
 
     @Test
+    @DisplayName("Test unitario borrar cliente controlador customer")
     void deleteCustomer(){
         when(customerRepository.existsById(1L)).thenReturn(true);
         String view = customerController.deleteCustomer(1L);
@@ -144,60 +152,5 @@ public class CustomerControllerUnitTest {
         verify(customerRepository).deleteById(1L);
     }
 
-  /*  @Test
-    void addMovieToCustomer(){
-        Customer customer = Customer.builder().id(1L).movies(new HashSet<>()).build();
-        //Movie movie = Movie.builder().id(1L).build();
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-
-        List<Long> ids = List.of(1L, 2L);
-        List<Movie> movies = List.of(
-                Movie.builder().id(1L).build(),
-                Movie.builder().id(2L).build()
-        );
-        when(movieRepository.findAllById(ids)).thenReturn(movies);
-
-        String view = customerController.addMovieToCustomer(1L, customer, ids);
-        assertEquals("redirect:/customers/1", view);
-        verify(customerRepository).findById(1L);
-        verify(movieRepository).findAllById(ids);
-        verify(customerRepository).save(any(Customer.class));
-    }
-    @Test
-    void removeMovieFromCustomer(){
-        Customer customer = Customer.builder().id(1L).build();
-        Movie movie = Movie.builder().id(1L).build();
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
-        String view = customerController.removeMovieFromCustomer(1L, 1L);
-        assertEquals("redirect:/customers/1", view);
-        verify(movieRepository).findById(1L);
-        verify(customerRepository).save(customer);
-        assertFalse(customer.getMovies().contains(movie));
-    }
-    @Test
-    void addValoracionToCustomer(){
-        Customer customer = Customer.builder().id(1L).build();
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        String view = customerController.addValoracionToCustomer(1L, 5, "Buen servicio", model);
-        assertEquals("redirect:/customers/1", view);
-        verify(customerRepository).findById(1L);
-        verify(model).addAttribute("customer", customer);
-        verify(valoracionRepository).save(any(Valoracion.class));
-    }
-    @Test
-    void removeValoracionFromCustomer(){
-        Customer customer = Customer.builder().id(1L).valoraciones(new ArrayList<>()).build();
-        Valoracion valoracion = Valoracion.builder().id(1L).build();
-        customer.getValoraciones().add(valoracion);
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(valoracionRepository.findById(1L)).thenReturn(Optional.of(valoracion));
-        String view = customerController.removeValoracionFromCustomer(1L, 1L);
-        assertEquals("redirect:/customers/1", view);
-        verify(customerRepository).findById(1L);
-        verify(valoracionRepository).findById(1L);
-        verify(customerRepository).save(customer);
-        assertFalse(customer.getValoraciones().contains(valoracion));
-    }*/
 
 }

@@ -95,19 +95,4 @@ public class CategoriaController {
         return "redirect:/categorias";
     }
 
-   /* public String getFormCreateCategoria(Model model) {
-        return "categoria-form";
-    }
-
-    public String getFormUpdateCategoria(Model model, long l) {
-        return "categoria-form";
-    }
-
-    public String saveCategoria(Categoria categoria) {
-        return "redirect:/categorias";
-    }
-
-    public String deleteCategoria(long l) {
-        return "redirect:/categorias";
-    }*/
 }

@@ -1,4 +1,4 @@
-package com.movies.controller.SeleniumTestUI.valoracionSeleniumTest;
+package com.movies.controller.SeleniumTestUI.ValoracionSeleniumTest;
 
 import com.movies.model.Categoria;
 import com.movies.model.Customer;
@@ -10,7 +10,7 @@ import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -19,11 +19,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashSet;
-@Disabled
+//@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ValoracionDetailTest {
 
@@ -47,7 +47,14 @@ public class ValoracionDetailTest {
         customerRepository.deleteAllInBatch();
         movieRepository.deleteAllInBatch();
         categoriaRepository.deleteAllInBatch();
-        driver = new ChromeDriver();
+        //driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // para que no se abra el navegador
+        options.addArguments("--disable-gpu"); // Deshabilita la aceleración de hardware
+        options.addArguments("--window-size=1920,1080"); // Tamaño de la ventana
+        options.addArguments("--no-sandbox"); // Bypass OS security model, requerido en entornos sin GUI
+        options.addArguments("--disable-dev-shm-usage"); // Deshabilita el uso de /dev/shm manejo de memoria compartida
+        driver = new ChromeDriver(options);
     }
 
     @AfterEach
@@ -56,6 +63,7 @@ public class ValoracionDetailTest {
     }
 
     @Test
+    @DisplayName("Test Valoracion Detail Page Titulo y cabecera")
     public void testValoracionDetailPage() {
         // Crear datos de prueba
         Customer customer = customerRepository.save(
@@ -110,10 +118,8 @@ public class ValoracionDetailTest {
     }
 
 
-
-
-
     @Test
+    @DisplayName("Test Valoracion Detail añadir pelicula")
     public void testValoracionMovie() {
         // Crear datos necesarios
         Categoria categoria = categoriaRepository.save(
@@ -139,6 +145,7 @@ public class ValoracionDetailTest {
     }
 
     @Test
+    @DisplayName("Test Valoracion Detail añadir cliente")
     public void testValoracionCustomer() {
         // Crear datos necesarios
         Customer customer = customerRepository.save(

@@ -7,11 +7,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.hasItem;
 
 import com.movies.model.Categoria;
-import com.movies.model.Customer;
 import com.movies.repository.CategoriaRepository;
-import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,11 +21,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,6 +47,7 @@ public class CategoriaIntegrationTest {
     private ValoracionRepository valoracionRepository;
 
     @Test
+    @DisplayName("Test de integración findAll de categoriaController")
     void findAll() throws Exception {
         categoriaRepository.deleteAll();
         Categoria categoria1 = categoriaRepository.save(Categoria.builder()
@@ -85,6 +82,7 @@ public class CategoriaIntegrationTest {
                 )));
     }
     @Test
+    @DisplayName("Test de integración findById de categoriaController")
     void findById() throws Exception {
         Categoria categoria = categoriaRepository.save(Categoria.builder()
                 .id(1L)
@@ -98,11 +96,13 @@ public class CategoriaIntegrationTest {
                 .andExpect(model().attributeExists("categoria"));
     }
     @Test
+    @DisplayName("Test de integración findById de categoriaController, id no existente")
     void findById_NotExist() throws Exception {
         mockMvc.perform(get("/categorias404/{id}", 999L))
                 .andExpect(status().isNotFound());
     }
     @Test
+    @DisplayName("Test de integración ir al formulario, crear categoría nueva, de categoriaController")
     void getFormToCreateCategoria() throws Exception {
         mockMvc.perform(get("/categorias/new"))
                 .andExpect(status().isOk())
@@ -110,6 +110,7 @@ public class CategoriaIntegrationTest {
                 .andExpect(model().attributeExists("categoria"));
     }
     @Test
+    @DisplayName("Test de integración ir al formulario, editar categoría existente, de categoriaController")
     void getFormToUpdateCategoria() throws Exception {
         Categoria categoria = categoriaRepository.save(Categoria.builder().nombre("Categoría").descripcion("Descripción").build());
 
@@ -119,6 +120,7 @@ public class CategoriaIntegrationTest {
                 .andExpect(model().attributeExists("categoria"));
     }
     @Test
+    @DisplayName("Test de integración guardar categoría, de categoriaController")
     void saveCategoria() throws Exception {
     categoriaRepository.deleteAll();
         mockMvc.perform(MockMvcRequestBuilders.post("/categorias")
@@ -136,6 +138,7 @@ public class CategoriaIntegrationTest {
     }
 
     @Test
+    @DisplayName("Test de integración borrar categoría, de categoriaController")
     void deleteCategoria() throws Exception {
         Categoria categoria = categoriaRepository.save(Categoria.builder()
                 .id(1L)
