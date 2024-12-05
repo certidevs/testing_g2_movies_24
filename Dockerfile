@@ -6,7 +6,7 @@ COPY target/*.jar app.jar
 CMD ["java", "-jar", "app.jar"]
 
 # Construir la imagen
-# docker build -t certidevs/testing_g2_movies_24 .
+# docker build -t testing_g2_movies_24:1.0.0 .
 
 # Ejecutar la imagen
-# docker run -p 8080:8080 certidevs/testing_g2_movies_24
+# docker run -p 8080:8080 testing_g2_movies_24
