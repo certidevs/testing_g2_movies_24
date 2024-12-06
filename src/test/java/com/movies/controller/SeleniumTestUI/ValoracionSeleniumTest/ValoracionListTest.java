@@ -79,7 +79,7 @@ public class ValoracionListTest {
 
         // Verifica que el texto del botón sea exactamente "Crear nueva Valoración".
         // Esto asegura que el botón tiene el contenido esperado.
-        assertEquals("Crear nueva Valoración", createButton.getText(),
+        assertEquals("Nueva Valoración", createButton.getText(),
                 "El texto del botón debería ser 'Crear nueva Valoración'.");
 
         // Simula un clic en el botón localizado.

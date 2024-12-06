@@ -71,7 +71,7 @@ public class MovieFormTest {
     }
 
     @Test
-    @DisplayName("Test Movie Form Page llenado y submit")
+    @DisplayName("Test Movie Form Page llenado y submit pelicula nueva")
     public void testFillAndSubmitFormForNewMovie() {
         Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).nombre("Acción").build());
 
@@ -84,7 +84,7 @@ public class MovieFormTest {
         WebElement categorySelect = driver.findElement(By.id("movie_categoria"));
         categorySelect.findElement(By.xpath("//option[text()='Acción']")).click();
 
-        driver.findElement(By.id("movie_save_new")).click();
+        driver.findElement(By.id("movie_save")).click();
 
     }
 
@@ -109,7 +109,7 @@ public class MovieFormTest {
         yearInput.clear();
         yearInput.sendKeys("2000");
 
-        driver.findElement(By.id("movie_save_update")).click();
+        driver.findElement(By.id("movie_save")).click();
 
     }
 
@@ -120,7 +120,7 @@ public class MovieFormTest {
         driver.navigate().refresh();
         WebElement backButton = driver.findElement(By.id("backBtn_movies_list"));
         assertTrue(backButton.isDisplayed());
-        assertEquals("Cancelar", backButton.getText());
+        assertEquals("Volver atrás", backButton.getText());
 
         backButton.click();
         assertEquals("http://localhost:8080/movies", driver.getCurrentUrl());

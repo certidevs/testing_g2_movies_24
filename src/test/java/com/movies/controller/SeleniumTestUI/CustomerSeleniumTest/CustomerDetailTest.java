@@ -96,7 +96,7 @@ public class CustomerDetailTest {
 
         WebElement backButton = driver.findElement(By.id("backBtn_customer_list"));
         assertTrue(backButton.isDisplayed());
-        assertEquals("Volver a la lista", backButton.getText());
+        assertEquals("Volver a la lista de clientes", backButton.getText());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class CustomerDetailTest {
         driver.get("http://localhost:8080/customers/" + customer.getId());
         driver.navigate().refresh();
         WebElement moviesHeader = driver.findElement(By.id("customer_movie"));
-        assertEquals("Ver Películas del usuario", moviesHeader.getText());
+        assertEquals("Ver películas del usuario", moviesHeader.getText());
 
         WebElement firstMovie = driver.findElement(By.id("customer_movie_name"));
         assertTrue(firstMovie.isDisplayed());

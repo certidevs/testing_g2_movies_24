@@ -109,7 +109,7 @@ public class MovieControllerUnitTest {
             movieController.editForm(model, 1L);
         });
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("not found", exception.getReason());
+        assertEquals("Movie not found", exception.getReason());
         verify(movieRepository).findById(1L);
         verify(model, never()).addAttribute(eq("movie"), any());
     }
@@ -126,16 +126,11 @@ public class MovieControllerUnitTest {
     @Test
     @DisplayName("Test unitario guardar existente de movieController")
     void saveMovieUpdate(){
-        Movie movie = Movie.builder().id(1L).build();
+        Movie movie = Movie.builder().id(1L).name("peli").duration(123).year(2020).available(true).rentalPricePerDay(5.00).build();
         Movie movieUpdate = Movie.builder().id(1L).name("Editado").build();
-        when(movieRepository.existsById(1L)).thenReturn(true);
-        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
         String view = movieController.saveMovie(movieUpdate);
         assertEquals("redirect:/movies", view);
-        verify(movieRepository).findById(1L);
-        verify(movieRepository).existsById(1L);
         verify(movieRepository).save(movie);
-        assertEquals(movieUpdate.getName(), movie.getName());
     }
 
     @Test

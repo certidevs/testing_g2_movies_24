@@ -87,7 +87,7 @@ public class CategoriaDetailTest {
 
         WebElement backButton = driver.findElement(By.id("backBtn_categoria_list"));
         assertTrue(backButton.isDisplayed());
-        assertEquals("Volver a la lista", backButton.getText());
+        assertEquals("Volver a la lista de categorías", backButton.getText());
     }
 }
 

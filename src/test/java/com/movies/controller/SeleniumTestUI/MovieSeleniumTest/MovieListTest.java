@@ -98,12 +98,12 @@ public class MovieListTest {
         assertTrue(movieTable.isDisplayed());
 
         List<WebElement> headers = movieTable.findElements(By.tagName("th"));
-        assertEquals(5, headers.size());
+        assertEquals(7, headers.size());
         assertEquals("ID", headers.get(0).getText());
         assertEquals("Nombre", headers.get(1).getText());
         assertEquals("Duración (min)", headers.get(2).getText());
         assertEquals("Año", headers.get(3).getText());
-        assertEquals("Acciones", headers.get(4).getText());
+        assertEquals("Disponible", headers.get(4).getText());
 
         List<WebElement> rows = movieTable.findElements(By.tagName("tr"));
         assertTrue(rows.size() > 1);
