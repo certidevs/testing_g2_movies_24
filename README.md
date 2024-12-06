@@ -6,6 +6,7 @@ Fundación Adecco + Escuela Certidevs + Agile Training Thinking of you + Mentore
 Proyecto Alquiler de películas.
 
 Equipo: 
+
     -Ginés Ochoa    
     
         -Linkedin: www.linkedin.com/in/ginés-ochoa
