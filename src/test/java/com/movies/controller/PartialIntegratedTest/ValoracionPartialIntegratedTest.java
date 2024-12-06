@@ -45,17 +45,21 @@ public class ValoracionPartialIntegratedTest {
     @Test
     @DisplayName("Test de integración parcial: listar valoraciones de valoracionController")
     void findAll() throws Exception {
+        // Configurar el comportamiento simulado del repositorio.
+        // Usando Mockito, se configura el método `findAll` para que devuelva una lista simulada de valoraciones.
         when(valoracionRepository.findAll()).thenReturn(List.of(
-                Valoracion.builder().id(1L).build(),
-                Valoracion.builder().id(2L).build()
+                Valoracion.builder().id(1L).build(), // Valoración simulada con ID 1.
+                Valoracion.builder().id(2L).build()  // Valoración simulada con ID 2.
         ));
 
-        mockMvc.perform(get("/valoraciones"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("valoracion-list"))
-                .andExpect(model().attributeExists("valoraciones"))
-                .andExpect(model().attribute("valoraciones", hasSize(2)));
+        // Ejecutar el test llamando al endpoint del controlador.
+        mockMvc.perform(get("/valoraciones")) // Realiza una petición GET al endpoint "/valoraciones".
+                .andExpect(status().isOk()) // Valida que el estado HTTP sea 200 (OK).
+                .andExpect(view().name("valoracion-list")) // Verifica que la vista retornada se llama "valoracion-list".
+                .andExpect(model().attributeExists("valoraciones")) // Confirma que el modelo incluye un atributo llamado "valoraciones".
+                .andExpect(model().attribute("valoraciones", hasSize(2))); // Comprueba que hay exactamente dos elementos en "valoraciones".
     }
+
 
     @Test
     @DisplayName("Test de integración parcial: encontrar valoraciones por id de valoracionController ")

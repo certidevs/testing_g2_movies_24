@@ -1,1 +1,11 @@
-Probando conexión
+GitHub Actions
+Se utiliza para ejecutar pipelines automáticos que:
+Compilan el proyecto.
+Ejecutan los tests.
+Generan reportes con los resultados.
+
+SonarCloud
+Permite analizar el código en busca de:
+Cobertura de pruebas.
+Problemas de diseño.
+Vulnerabilidades.

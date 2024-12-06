@@ -36,38 +36,61 @@ public class CustomerRepositoryTest {
     private CategoriaRepository categoriaRepository;
 
     @Test
-    @DisplayName("Prueba del método findByRentedMovie ")
+    @DisplayName("Prueba del método findByRentedMovie")
     void testFindByRentedMovie() {
+        // Crear una lista de películas simuladas para el test.
+        // Se configuran con datos básicos como ID, nombre, año y duración.
         List<Movie> movies = Arrays.asList(
                 Movie.builder().id(1L).name("Película 1").year(2024).duration(120).build(),
                 Movie.builder().id(2L).name("Película 2").year(2025).duration(60).build()
         );
+        // Guardar las películas en el repositorio para que estén disponibles en la base de datos.
         movieRepository.saveAll(movies);
 
+        // Crear una lista de clientes simulados para el test.
+        // Cada cliente tiene un ID y un nombre configurados.
         List<Customer> customers = Arrays.asList(
                 Customer.builder().id(1L).nombre("Cliente 1").build(),
                 Customer.builder().id(2L).nombre("Cliente 2").build()
         );
+        // Guardar los clientes en el repositorio.
         customerRepository.saveAll(customers);
 
+        // Crear una lista de alquileres simulados que asocian películas y clientes.
+        // Se asignan clientes y películas a cada alquiler.
         List<Rental> rentals = Arrays.asList(
-                Rental.builder().id(1L).movie(movies.get(0)).customer(customers.get(0)).build(),
-                Rental.builder().id(2L).movie(movies.get(0)).customer(customers.get(1)).build()
+                Rental.builder().id(1L).movie(movies.get(0)).customer(customers.get(0)).build(), // Cliente 1 alquila Película 1.
+                Rental.builder().id(2L).movie(movies.get(0)).customer(customers.get(1)).build()  // Cliente 2 alquila Película 1.
         );
+        // Guardar los alquileres en el repositorio.
         rentalRepository.saveAll(rentals);
 
+        // ID de la película cuyo historial de clientes que la alquilaron queremos comprobar.
         Long movieId = movies.get(0).getId();
+
+        // Llamar al método personalizado del repositorio para obtener los clientes que han alquilado la película con ID específico.
         List<Customer> result = customerRepository.findByRentedMovie(movieId);
 
+        // Validaciones:
+        // Asegurarse de que la lista de resultados no sea nula.
         assertNotNull(result, "La lista de clientes no debería ser nula.");
-        assertEquals(2, result.size(), "2 clientes han alquilado peliculas");
-        assertTrue(result.contains(customers.get(0)), "La lista debería contener al Cliente 1 alquilando la pelicula 1");
-        assertTrue(result.contains(customers.get(1)), "La lista debería contener al Cliente 2 alquilando la pelicula2.");
+
+        // Comprobar que hay exactamente 2 clientes que han alquilado la película especificada.
+        assertEquals(2, result.size(), "2 clientes han alquilado la película.");
+
+        // Verificar que la lista incluye al Cliente 1.
+        assertTrue(result.contains(customers.get(0)), "La lista debería contener al Cliente 1.");
+
+        // Verificar que la lista incluye al Cliente 2.
+        assertTrue(result.contains(customers.get(1)), "La lista debería contener al Cliente 2.");
+
+        // Comprobar que cada alquiler en la lista está asociado a la película especificada.
         for (Rental rental : rentals) {
             assertTrue(rental.getMovie().getId().equals(movieId),
                     "El cliente debería haber alquilado la película especificada.");
         }
     }
+
 
     @Test
     @DisplayName("Prueba del método findByNombre ")

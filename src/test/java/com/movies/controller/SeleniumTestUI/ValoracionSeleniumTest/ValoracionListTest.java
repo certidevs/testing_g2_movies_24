@@ -73,12 +73,25 @@ public class ValoracionListTest {
     @Test
     @DisplayName("Comprobar que existe el botón de Crear nueva valoración")
     void buttonCreateValoracion() {
+        // Localiza el botón de "Crear nueva valoración" en la página utilizando su clase CSS.
+        // Aquí se usa Selenium para buscar el elemento en el DOM por su clase CSS "btn-primary".
         WebElement createButton = driver.findElement(By.className("btn-primary"));
-        assertEquals("Crear nueva Valoración", createButton.getText());
 
+        // Verifica que el texto del botón sea exactamente "Crear nueva Valoración".
+        // Esto asegura que el botón tiene el contenido esperado.
+        assertEquals("Crear nueva Valoración", createButton.getText(),
+                "El texto del botón debería ser 'Crear nueva Valoración'.");
+
+        // Simula un clic en el botón localizado.
+        // Esto emula el comportamiento del usuario al interactuar con el botón en la interfaz.
         createButton.click();
-        assertEquals("http://localhost:8080/valoraciones/new", driver.getCurrentUrl());
+
+        // Verifica que, tras hacer clic, el navegador redirige correctamente a la URL esperada.
+        // En este caso, la URL debería ser la correspondiente al formulario para crear una nueva valoración.
+        assertEquals("http://localhost:8080/valoraciones/new", driver.getCurrentUrl(),
+                "La URL actual debería ser la del formulario para crear una nueva valoración.");
     }
+
 
     @Test
     @DisplayName("Comprobar mensaje de tabla vacía cuando no hay datos")

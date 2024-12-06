@@ -49,74 +49,83 @@ public class ValoracionIntegrationTest {
     @Test
     @DisplayName("Test de integración findAll de valoracionController")
     void findAll() throws Exception {
-        // Limpiar la base de datos
+        // Limpiar la base de datos antes de comenzar el test.
+        // Esto garantiza que no haya datos residuales que puedan afectar los resultados del test.
         valoracionRepository.deleteAll();
         customerRepository.deleteAll();
         movieRepository.deleteAll();
 
-        // Crear datos de prueba
+        // Crear datos de prueba en la base de datos.
+
+        // Crear y guardar un cliente en el repositorio.
         Customer customer1 = customerRepository.save(Customer.builder()
                 .nombre("Ana")
                 .apellido("C")
                 .email("ana.c@example.com")
-                .password("password")
+                .password("password") // Se define una contraseña ficticia.
                 .build());
 
+        // Crear y guardar un segundo cliente en el repositorio.
         Customer customer2 = customerRepository.save(Customer.builder()
                 .nombre("P")
                 .apellido("C")
                 .email("p.c@example.com")
-                .password("password")
+                .password("password") // Se define una contraseña ficticia.
                 .build());
 
+        // Crear y guardar una película en el repositorio.
         Movie movie1 = movieRepository.save(Movie.builder()
-                .name("Inception")
-                .year(2010)
-                .duration(148)
-                .rentalPricePerDay(5.00)
+                .name("Inception") // Nombre de la película.
+                .year(2010) // Año de estreno.
+                .duration(148) // Duración en minutos.
+                .rentalPricePerDay(5.00) // Precio de alquiler por día.
                 .build());
 
+        // Crear y guardar una segunda película en el repositorio.
         Movie movie2 = movieRepository.save(Movie.builder()
-                .name("Titanic")
-                .year(1997)
-                .duration(195)
-                .rentalPricePerDay(5.00)
+                .name("Titanic") // Nombre de la película.
+                .year(1997) // Año de estreno.
+                .duration(195) // Duración en minutos.
+                .rentalPricePerDay(5.00) // Precio de alquiler por día.
                 .build());
 
+        // Crear y guardar una valoración asociada al primer cliente y la primera película.
         Valoracion valoracion1 = valoracionRepository.save(Valoracion.builder()
-                .customer(customer1)
-                .movie(movie1)
-                .comentario("Amazing movie!")
-                .puntuacion(5)
+                .customer(customer1) // Cliente que realizó la valoración.
+                .movie(movie1) // Película valorada.
+                .comentario("Amazing movie!") // Comentario del cliente.
+                .puntuacion(5) // Puntuación otorgada.
                 .build());
 
+        // Crear y guardar una segunda valoración asociada al segundo cliente y la segunda película.
         Valoracion valoracion2 = valoracionRepository.save(Valoracion.builder()
-                .customer(customer2)
-                .movie(movie2)
-                .comentario("Emotional story!")
-                .puntuacion(4)
+                .customer(customer2) // Cliente que realizó la valoración.
+                .movie(movie2) // Película valorada.
+                .comentario("Emotional story!") // Comentario del cliente.
+                .puntuacion(4) // Puntuación otorgada.
                 .build());
 
-        // Ejecutar el test
-        mockMvc.perform(get("/valoraciones"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("valoraciones"))
-                .andExpect(model().attribute("valoraciones", hasSize(2)))
-                .andExpect(model().attribute("valoraciones", hasItem(
+        // Ejecutar el test llamando al endpoint del controlador y validando el resultado.
+        mockMvc.perform(get("/valoraciones")) // Realiza una petición GET al endpoint "/valoraciones".
+                .andExpect(status().isOk()) // Valida que el estado HTTP sea 200 (OK).
+                .andExpect(model().attributeExists("valoraciones")) // Verifica que el modelo incluye un atributo "valoraciones".
+                .andExpect(model().attribute("valoraciones", hasSize(2))) // Valida que hay dos valoraciones en el modelo.
+                .andExpect(model().attribute("valoraciones", hasItem( // Comprueba que el modelo contiene la primera valoración.
                         allOf(
-                                hasProperty("id", is(valoracion1.getId())),
-                                hasProperty("comentario", is(valoracion1.getComentario())),
-                                hasProperty("puntuacion", is(valoracion1.getPuntuacion()))
+                                hasProperty("id", is(valoracion1.getId())), // Verifica que el ID coincide.
+                                hasProperty("comentario", is(valoracion1.getComentario())), // Verifica el comentario.
+                                hasProperty("puntuacion", is(valoracion1.getPuntuacion())) // Verifica la puntuación.
                         )
                 )))
-                .andExpect(model().attribute("valoraciones", hasItem(
+                .andExpect(model().attribute("valoraciones", hasItem( // Comprueba que el modelo contiene la segunda valoración.
                         allOf(
-                                hasProperty("id", is(valoracion2.getId())),
-                                hasProperty("comentario", is(valoracion2.getComentario())),
-                                hasProperty("puntuacion", is(valoracion2.getPuntuacion()))
+                                hasProperty("id", is(valoracion2.getId())), // Verifica que el ID coincide.
+                                hasProperty("comentario", is(valoracion2.getComentario())), // Verifica el comentario.
+                                hasProperty("puntuacion", is(valoracion2.getPuntuacion())) // Verifica la puntuación.
                         )
                 )));
     }
+
 
 
     @Test

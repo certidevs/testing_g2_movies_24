@@ -43,13 +43,25 @@ class ValoracionControllerUnitTest {
     @Test
     @DisplayName("Test unitario findAll de valoraciónController")
     void findAll() {
+        // Configuración de comportamiento simulado del repositorio.
+        // Aquí se utiliza Mockito para simular que el método `findAll` del repositorio devuelve una lista de objetos `Valoracion`.
         when(valoracionRepository.findAll()).thenReturn(List.of(
-                Valoracion.builder().id(1L).build()
+                Valoracion.builder().id(1L).build() // Se devuelve una lista con una sola valoración de ejemplo.
         ));
+
+        // Ejecución del método `findAll` del controlador.
+        // Este método es el que se está probando. También recibe el modelo para pasar datos a la vista.
         String view = valoracionController.findAll(model);
+
+        // Verificación de que el método `findAll` del repositorio fue llamado una vez durante la ejecución.
+        // Esto asegura que el controlador interactúa con el repositorio como se esperaba.
         verify(valoracionRepository).findAll();
+
+        // Validación del resultado devuelto por el controlador.
+        // Aquí se asegura que la vista devuelta es la correcta, en este caso, "valoracion-list".
         assertEquals("valoracion-list", view);
     }
+
 
     @Test
     @DisplayName("Test unitario findById de valoraciónController")

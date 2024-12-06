@@ -67,24 +67,59 @@ class RentalServiceTest {
     @Test
     @DisplayName("Prueba del método rentMovie - Alquiler exitoso")
     void testRentMovie_Success() {
+        // Simula la búsqueda de una película por ID en el repositorio de películas.
+        // Mockito devuelve el objeto `movie` cuando se llama al método `findById` con el ID de la película.
         when(movieRepository.findById(movie.getId())).thenReturn(Optional.of(movie));
+
+        // Simula la búsqueda de un cliente por ID en el repositorio de clientes.
+        // Mockito devuelve el objeto `customer` cuando se llama al método `findById` con el ID del cliente.
         when(customerRepository.findById(customer.getId())).thenReturn(Optional.of(customer));
+
+        // Simula el guardado de un alquiler en el repositorio de alquileres.
+        // Mockito devuelve el mismo objeto `Rental` que fue pasado al método `save`.
         when(rentalRepository.save(any(Rental.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
+        // Llamada al método del servicio que se está probando.
+        // Se realiza un alquiler para el cliente con el ID de la película y la duración del alquiler en días.
         Rental result = rentalService.rentMovie(customer.getId(), movie.getId(), 5);
 
-        assertNotNull(result, "El alquiler no debería ser nulo.");
-        assertEquals(movie, result.getMovie(), "La película del alquiler debería coincidir.");
-        assertEquals(customer, result.getCustomer(), "El cliente del alquiler debería coincidir.");
-        assertEquals(50.0, result.getRentalPrice(), "El precio del alquiler debería ser 50.0.");
-        assertNotNull(result.getRentalDate(), "La fecha del alquiler no debería ser nula.");
-        assertEquals(LocalDateTime.now().plusDays(5).getDayOfMonth(), result.getReturnDueDate().getDayOfMonth(), "La fecha de devolución debería ser en 5 días.");
+        // Validaciones del resultado:
 
+        // Asegurarse de que el alquiler no sea nulo.
+        assertNotNull(result, "El alquiler no debería ser nulo.");
+
+        // Validar que la película asociada al alquiler es la correcta.
+        assertEquals(movie, result.getMovie(), "La película del alquiler debería coincidir.");
+
+        // Validar que el cliente asociado al alquiler es el correcto.
+        assertEquals(customer, result.getCustomer(), "El cliente del alquiler debería coincidir.");
+
+        // Comprobar que el precio del alquiler fue calculado correctamente (5 días x 10.0 por día).
+        assertEquals(50.0, result.getRentalPrice(), "El precio del alquiler debería ser 50.0.");
+
+        // Verificar que la fecha de alquiler no sea nula.
+        assertNotNull(result.getRentalDate(), "La fecha del alquiler no debería ser nula.");
+
+        // Validar que la fecha de devolución es 5 días después de la fecha actual.
+        assertEquals(LocalDateTime.now().plusDays(5).getDayOfMonth(),
+                result.getReturnDueDate().getDayOfMonth(),
+                "La fecha de devolución debería ser en 5 días.");
+
+        // Verificaciones de las interacciones con los repositorios:
+
+        // Asegurarse de que se llamó al método `findById` del repositorio de películas.
         verify(movieRepository).findById(movie.getId());
+
+        // Asegurarse de que se llamó al método `findById` del repositorio de clientes.
         verify(customerRepository).findById(customer.getId());
+
+        // Verificar que la película fue guardada en el repositorio después de actualizar su estado.
         verify(movieRepository).save(movie);
+
+        // Asegurarse de que el alquiler fue guardado en el repositorio.
         verify(rentalRepository).save(any(Rental.class));
     }
+
 
     @Test
     @DisplayName("Prueba del método rentMovie - Película no disponible")
