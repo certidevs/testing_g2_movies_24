@@ -12,12 +12,10 @@ Ginés Ochoa
         -Github: https://github.com/GinesOchoa
         
 Daniel Miranda 
-       -Linkedin: www.linkedin.com/in/daniel-miranda-alba-30bb4b28a/  
-       -Github: https://github.com/Daniel-Miranda-Alba/ 
+-Linkedin: www.linkedin.com/in/daniel-miranda-alba-30bb4b28a/         -Github: https://github.com/Daniel-Miranda-Alba/ 
        
 Ana Cascante 
-        -Linkedin: www.linkedin.com/in/ana-cascante-rodriguez 
-        -Github: https://github.com/anaacr91/Proyectos_Ana_Cascante_Github
+-Linkedin: www.linkedin.com/in/ana-cascante-rodriguez          -Github: https://github.com/anaacr91/Proyectos_Ana_Cascante_Github
 
 Github kanvan-> https://github.com/users/anaacr91/projects/2
 
