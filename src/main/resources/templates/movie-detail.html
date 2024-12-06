@@ -27,6 +27,12 @@
             <div class="mb-3">
                 <p ><strong>Categoría:</strong> <span id="movie_category" th:text="${movie.categoria.nombre}"></span></p>
             </div>
+            <div class="mb-3">
+                <p><strong>Precio de Alquiler por Día:</strong> <span id="rental_price_per_day" th:text="${movie.rentalPricePerDay}"></span> €</p>
+            </div>
+            <div class="mb-3">
+                <p><strong>Disponible:</strong> <span id="available" th:text="${movie.available} ? 'Sí' : 'No'"></span></p>
+            </div>
             <!-- Botón de añadir a películas del usuario autenticado, necesario Spring security -->
             <h2 id="movie_valoracion">Ver valoraciones pelicula</h2>
             <ul class="list-group">

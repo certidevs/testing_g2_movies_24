@@ -52,6 +52,8 @@ public class Main {
 				.name("Pelicula")
 				.duration(60)
 				.year(2021)
+				.available(true)
+				.rentalPricePerDay(5.00)
 				.categoria(categoria)
 				.build();
 
@@ -70,5 +72,3 @@ public class Main {
 	}
 
 }
-//TODO: BUG : LA TABLA CUSTOMER_MOVIES SE DUPLICA EN MYSQL AL ARRANCAR LA APP
-//todo: SE DUPLICA CUSTOMER_ID Y MOVIES_ID

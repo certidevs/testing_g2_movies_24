@@ -58,6 +58,7 @@ public class Movie {
     private Set<Valoracion> valoraciones = new HashSet<>();
 
     private boolean available = true;
+    //@Column(nullable = false)
     private Double rentalPricePerDay;
 
     @OneToMany(mappedBy = "movie")

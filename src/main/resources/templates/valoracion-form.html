@@ -13,8 +13,8 @@
 <div class="container mt-4">
     <h1 class="mb-4">Formulario de Valoración</h1>
 
-    <form th:action="@{/valoraciones}" th:object="${valoracion}" method="post" class="card p-4 shadow-sm">
-        <input type="hidden" th:field="*{id}"/>
+    <form th:action="@{/valoraciones}" th:object="${valoracion}" method="POST" class="card p-4 shadow-sm">
+        <input type="hidden" id="id" th:field="*{id}"/>
 
         <div class="mb-3">
             <label for="usuarioId" class="form-label">Cliente:</label>

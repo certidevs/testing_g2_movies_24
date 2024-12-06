@@ -110,8 +110,8 @@ CREATE TABLE rental (
 
 LOCK TABLES `movie` WRITE;
 /*!40000 ALTER TABLE `movie` DISABLE KEYS */;
-INSERT INTO `movie` (`id`, `name`, `duration`, `year`, `categoria_id`)
-VALUES (1,'Inception',148,2010,1),(2,'Matrix',136,1999,1),(3,'Mad Max: Fury Road',120,2015,2),(4,'The Godfather',175,1972,2),(5,'Pulp Fiction',154,1994,2);
+INSERT INTO `movie` (`id`, `name`, `duration`, `year`, `Available`, `rental_price_per_day`, `categoria_id`)
+VALUES (1,'Inception',148,2010,true,5.00,1),(2,'Matrix',136,1999,true,5.00,1),(3,'Mad Max: Fury Road',120,2015,true,5.00,2),(4,'The Godfather',175,1972,true,5.00,2),(5,'Pulp Fiction',154,1994,true,5.00,2);
 /*!40000 ALTER TABLE `movie` ENABLE KEYS */;
 UNLOCK TABLES;
 

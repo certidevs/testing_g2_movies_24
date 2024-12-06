@@ -32,13 +32,13 @@
                     <td id="customer_id" th:text="${customer.id}"></td>
                     <td id="customer_nombre" th:text="${customer.nombre}"></td>
                     <td id="customer_apellido" th:text="${customer.apellido}"></td>
-                    <td id="customer_email" th:text="${customer.email}"></td>
+                    <td id="customer_email" th:text="${customer.email}" ></td>
                     <td id="customer_password" th:text="${customer.password}"></td>
-                    <td>
-                        <a id="customer_view" th:href="@{/customers/{id}(id=${customer.id})}" class="btn btn-info btn-sm">
+                    <td style="display: flex; gap: 5px;">
+                        <a id="customer_view" th:href="@{/customers/{id}(id=${customer.id})}" class="btn btn-info btn-sm me-1">
                             <i class="fas fa-eye"></i>
                             Ver</a>
-                        <a id="customer_update" th:href="@{/customers/update/{id}(id=${customer.id})}" class="btn btn-sm btn-warning">
+                        <a id="customer_update" th:href="@{/customers/update/{id}(id=${customer.id})}" class="btn btn-sm btn-warning me-1">
                             <i class="fas fa-edit"></i> Editar
                         </a>
                         <a id="customer_delete" th:href="@{/customers/delete/{id}(id=${customer.id})}" class="btn btn-sm btn-danger ms-2">

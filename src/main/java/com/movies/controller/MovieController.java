@@ -1,6 +1,7 @@
 package com.movies.controller;
 
 import com.movies.model.Categoria;
+import com.movies.model.Customer;
 import com.movies.model.Movie;
 import com.movies.repository.CategoriaRepository;
 import com.movies.repository.MovieRepository;
@@ -56,38 +57,23 @@ public class MovieController {
         List <Categoria> categorias = categoriaRepository.findAll();
         model.addAttribute( "movie", movie);
        model.addAttribute("categorias", categorias);
-        //TODO AÑADIR CATEGORIAS AL CREATE FORM: PRIMERO HACER QUE FUNCIONE EL CREATE FORM
         return "movie-form";
     }
 
     @GetMapping("movies/update/{id}")
     public String editForm(Model model, @PathVariable Long id) {
-        movieRepository.findById(id)
-                .ifPresentOrElse(movie -> {
-                        model.addAttribute("movie", movie);
-                        model.addAttribute("categorias", categoriaRepository.findAll());
-    },
-            () -> {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "not found");
-    });
+        List <Categoria> categorias = categoriaRepository.findAll();
+        Movie movie = movieRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
+        model.addAttribute("movie", movie);
+        model.addAttribute("categorias", categorias);
         return "movie-form";
-
     }
 
     @PostMapping("movies")
     public String saveMovie(@ModelAttribute Movie movie) {
-       if (movie.getId() == null) {
-           movieRepository.save(movie);
-       }else {
-           if (movieRepository.existsById(movie.getId())) {
-               movieRepository.findById(movie.getId())
-                       .ifPresent(movieDB -> {
-                           BeanUtils.copyProperties(movie, movieDB);
-                           movieRepository.save(movieDB);
-                       });
-           }
-       }
-            return "redirect:/movies";
+       movieRepository.save(movie);
+        return "redirect:/movies";
     }
 
     @GetMapping("movies/delete/{id}")
@@ -98,23 +84,6 @@ public class MovieController {
         movieRepository.deleteById(id);
         return "redirect:/movies";
     }
-    @PostMapping("movies/{movieId}/add-categoria")
-    public String addCategoriaToMovie(@PathVariable Long movieId, @ModelAttribute Movie movie, @RequestParam Long categoriaId) {
-        movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movie not found"));
-        Categoria categoria = categoriaRepository.findById(categoriaId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
-        movie.setCategoria(categoria);
-        movieRepository.save(movie);
-        return "redirect:/movies/"+movieId;
-    }
-
-    //public String deleteMovie(long l) { return ""};//ya tenemos 1
-
-    //public String getFormUpdateMovie(Model model, long l) {return "";}//ya tenemos 1
-
-
-    //public String getFormCreateMovie(Model model) {return "";}//ya tenemos 1
 
     @GetMapping("movies404/{id}")
     public String findById_NotExist(Model model, @PathVariable Long id) {
