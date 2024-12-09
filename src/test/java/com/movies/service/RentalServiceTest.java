@@ -40,6 +40,8 @@ class RentalServiceTest {
     private Movie movie;
     private Customer customer;
     private Rental rental;
+    private Rental rental1;
+    private Rental rental2;
 
     @BeforeEach
     void setUp() {
@@ -61,6 +63,14 @@ class RentalServiceTest {
         rental.setRentalDate(LocalDateTime.now());
         rental.setReturnDueDate(LocalDateTime.now().plusDays(5));
         rental.setRentalPrice(50.0);
+
+        rental1 = new Rental();
+        rental1.setId(1L);
+        rental1.setRentalDate(LocalDateTime.of(2023, 12, 1, 10, 0));
+
+        rental2 = new Rental();
+        rental2.setId(2L);
+        rental2.setRentalDate(LocalDateTime.of(2023, 12, 5, 12, 0));
     }
 
     @Test
@@ -195,5 +205,50 @@ class RentalServiceTest {
         assertEquals(rental, result.get(0), "El alquiler de la lista debería coincidir con el de prueba.");
 
         verify(rentalRepository).findByMovieId(movie.getId());
+    }
+    @Test
+    @DisplayName("Prueba del método getRentalsBetweenDates - Alquileres encontrados")
+    void testGetRentalsBetweenDates_Success() {
+        // Configuración de fechas de búsqueda
+        LocalDateTime startDate = LocalDateTime.of(2023, 12, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 12, 10, 0, 0);
+
+        // Simulación del repositorio
+        when(rentalRepository.findByRentalDateBetween(startDate, endDate))
+                .thenReturn(Arrays.asList(rental1, rental2));
+
+        // Ejecución del método bajo prueba
+        List<Rental> result = rentalService.getRentalsBetweenDates(startDate, endDate);
+
+        // Verificaciones
+        assertNotNull(result, "La lista de alquileres no debería ser nula.");
+        assertEquals(2, result.size(), "Deberían encontrarse 2 alquileres.");
+        assertEquals(rental1, result.get(0), "El primer alquiler debería coincidir.");
+        assertEquals(rental2, result.get(1), "El segundo alquiler debería coincidir.");
+
+        // Verificación de interacción con el repositorio
+        verify(rentalRepository, times(1)).findByRentalDateBetween(startDate, endDate);
+    }
+
+    @Test
+    @DisplayName("Prueba del método getRentalsBetweenDates - Ningún alquiler encontrado")
+    void testGetRentalsBetweenDates_NoRentalsFound() {
+        // Configuración de fechas de búsqueda
+        LocalDateTime startDate = LocalDateTime.of(2023, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2023, 11, 10, 0, 0);
+
+        // Simulación del repositorio
+        when(rentalRepository.findByRentalDateBetween(startDate, endDate))
+                .thenReturn(Arrays.asList());
+
+        // Ejecución del método bajo prueba
+        List<Rental> result = rentalService.getRentalsBetweenDates(startDate, endDate);
+
+        // Verificaciones
+        assertNotNull(result, "La lista de alquileres no debería ser nula.");
+        assertEquals(0, result.size(), "No deberían encontrarse alquileres.");
+
+        // Verificación de interacción con el repositorio
+        verify(rentalRepository, times(1)).findByRentalDateBetween(startDate, endDate);
     }
 }
