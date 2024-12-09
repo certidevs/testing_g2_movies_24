@@ -1,9 +1,7 @@
-package com.movies.RepositoryTest;
+package com.movies.repository;
 
 import com.movies.model.Categoria;
 import com.movies.model.Movie;
-import com.movies.repository.CategoriaRepository;
-import com.movies.repository.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

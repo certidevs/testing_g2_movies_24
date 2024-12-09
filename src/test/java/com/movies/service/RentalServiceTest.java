@@ -1,4 +1,4 @@
-package com.movies.ServiceTest;
+package com.movies.service;
 
 import com.movies.model.Customer;
 import com.movies.model.Movie;
@@ -6,7 +6,6 @@ import com.movies.model.Rental;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.RentalRepository;
-import com.movies.service.RentalService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
