@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+@Transactional
 @ExtendWith(MockitoExtension.class)
 class RentalServiceTest {
 
@@ -132,7 +133,7 @@ class RentalServiceTest {
 
     @Test
     @DisplayName("Prueba del método rentMovie - Película no disponible")
-    void testRentMovie_MovieNotAvailable() {
+    void testRentMovie_MovieNotAvailable_message() {
         movie.setAvailable(false);
         when(movieRepository.findById(movie.getId())).thenReturn(Optional.of(movie));
 
@@ -251,4 +252,126 @@ class RentalServiceTest {
         // Verificación de interacción con el repositorio
         verify(rentalRepository, times(1)).findByRentalDateBetween(startDate, endDate);
     }
+    @Test
+    @DisplayName("Prueba del método rentMovie - Duración no válida")
+    void testRentMovie_InvalidDuration() {
+        int invalidDuration = 0; // Puedes probar también con valores negativos
+
+        // Usamos lenient para permitir stubbings innecesarios
+        lenient().when(movieRepository.findById(anyLong())).thenReturn(Optional.of(new Movie()));
+        lenient().when(customerRepository.findById(anyLong())).thenReturn(Optional.of(new Customer()));
+
+        // Ejecutamos el método y verificamos que se lance la excepción
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            rentalService.rentMovie(1L, 1L, invalidDuration);
+        });
+
+        // Verificamos que el mensaje de la excepción sea el esperado
+        assertEquals("La duración debe ser mayor a 0 días.", exception.getMessage(), "El mensaje de la excepción no es el esperado.");
+    }
+    @Test
+    @DisplayName("Prueba del método rentMovie - Película no encontrada")
+    void testRentMovie_MovieNotFound() {
+        Long movieId = 1L; // ID de la película que no existe
+
+        // Simulamos que el repositorio no devuelve nada cuando se busca por el ID de película.
+        when(movieRepository.findById(movieId)).thenReturn(Optional.empty());
+
+        // Ejecutamos el método y verificamos que se lance la excepción correspondiente.
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            rentalService.rentMovie(1L, movieId, 5); // Llamada con un ID de película que no existe.
+        });
+
+        // Verificamos que el mensaje de la excepción sea el esperado.
+        assertEquals("Película no encontrada.", exception.getMessage(), "El mensaje de la excepción no es el esperado.");
+    }
+    @Test
+    @DisplayName("Prueba del método rentMovie - Película no disponible")
+    void testRentMovie_MovieNotAvailable_exception() {
+        Long movieId = 1L; // ID de la película que vamos a probar
+
+        // Creamos una película y la marcamos como no disponible
+        Movie movie = new Movie();
+        movie.setId(movieId);
+        movie.setAvailable(false); // La película no está disponible
+
+        // Simulamos que el repositorio devuelve la película con el ID proporcionado
+        when(movieRepository.findById(movieId)).thenReturn(Optional.of(movie));
+
+        // Ejecutamos el metodo y verificamos que se lance la excepción correspondiente
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            rentalService.rentMovie(1L, movieId, 5); // Intentamos alquilar una película no disponible
+        });
+
+        // Verificamos que el mensaje de la excepción sea el esperado
+        assertEquals("La película no está disponible.", exception.getMessage(), "El mensaje de la excepción no es el esperado.");
+    }
+    @Test
+    @DisplayName("Prueba del método rentMovie - Cliente no encontrado")
+    void testRentMovie_CustomerNotFound() {
+        Long customerId = 1L; // ID de cliente que no existe
+        Long movieId = 1L; // ID de la película
+        int durationDays = 5; // Duración del alquiler
+
+        // Usamos lenient para permitir stubbings innecesarios
+        lenient().when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
+
+        // Ejecutamos el método y verificamos que se lance la excepción correspondiente
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            rentalService.rentMovie(customerId, movieId, durationDays); // Intentamos alquilar sin un cliente
+        });
+
+        // Verificamos que el mensaje de la excepción sea el esperado
+        assertEquals("Película no encontrada.", exception.getMessage(), "El mensaje de la excepción no es el esperado.");
+    }
+
+    @Test
+    @DisplayName("Prueba del método rentMovie - Cálculo del precio de alquiler")
+    void testRentMovie_CalculateRentalPrice() {
+        Long customerId = 1L; // ID de cliente
+        Long movieId = 1L; // ID de película
+        int durationDays = 5; // Duración del alquiler
+
+        // Creamos un objeto de película con un precio por día de 10.0
+        Movie movie = new Movie();
+        movie.setId(movieId);
+        movie.setRentalPricePerDay(10.0); // Precio por día
+        movie.setAvailable(true); // Marcamos la película como disponible
+
+        // Creamos un cliente válido
+        Customer customer = new Customer();
+        customer.setId(customerId);
+        customer.setNombre("Cliente Test");
+        customer.setEmail("cliente@example.com");
+
+        // Simulamos que el repositorio de clientes y películas devuelven estos objetos
+        when(movieRepository.findById(movieId)).thenReturn(Optional.of(movie));
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+
+        // Simulamos que el repositorio de alquileres guarda y devuelve el alquiler creado
+        Rental rental = new Rental();
+        rental.setMovie(movie);
+        rental.setCustomer(customer);
+        rental.setRentalDate(LocalDateTime.now());
+        rental.setReturnDueDate(LocalDateTime.now().plusDays(durationDays));
+        rental.setRentalPrice(10.0 * durationDays); // Calculamos el precio del alquiler
+
+        when(rentalRepository.save(any(Rental.class))).thenReturn(rental); // Simulamos que se guarda correctamente
+
+        // Ejecutamos el método rentMovie
+        Rental rentalResult = rentalService.rentMovie(customerId, movieId, durationDays);
+
+        // Verificamos que el precio del alquiler se haya calculado correctamente
+        Double expectedPrice = 10.0 * durationDays; // 10.0 por día x 5 días = 50.0
+        assertEquals(expectedPrice, rentalResult.getRentalPrice(), "El precio del alquiler no es el esperado.");
+
+        // Verificamos que la película fue marcada como no disponible
+        assertFalse(movie.isAvailable(), "La película debería estar marcada como no disponible después de alquilarla.");
+
+        // Verificamos que el alquiler fue guardado con los valores correctos
+        assertNotNull(rentalResult.getRentalDate(), "La fecha de alquiler no debería ser nula.");
+        assertEquals(LocalDateTime.now().plusDays(durationDays).getDayOfMonth(),
+                rentalResult.getReturnDueDate().getDayOfMonth(), "La fecha de devolución debería ser en 5 días.");
+    }
+
 }
