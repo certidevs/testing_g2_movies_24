@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title >Formulario de Película</title>
+    <title >Formulario películas</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
 </head>
@@ -9,7 +9,7 @@
 <div th:replace="~{navbar :: nav1}"></div>
 
 <div class="container mt-4">
-    <h1 id="movie_form_h1">Formulario Películas</h1>
+    <h1 id="movie_form_h1">Formulario de Película</h1>
 
     <form method="POST" th:object="${movie}" th:action="@{/movies}" class="card p-4 shadow-sm">
         <input type="hidden" id="id" th:field="*{id}"/>
@@ -25,7 +25,7 @@
 
         <div class="mb-3">
             <label for="year" class="form-label">Año:</label>
-            <input type="number" id="year" th:field="*{year}" class="form-control" placeholder="Año de lanzamiento" required />
+            <input type="number" id="year" th:field="*{year}" class="form-control" placeholder="Año de lanzamiento" required min="1888" th:max="${T(java.time.Year).now().getValue()}"/>
         </div>
 
         <div>

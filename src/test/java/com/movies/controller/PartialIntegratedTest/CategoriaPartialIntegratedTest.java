@@ -10,14 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -77,14 +77,6 @@ public class CategoriaPartialIntegratedTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("categoria"))
                 .andExpect(view().name("categoria-form"));
-//        mockMvc.perform(post("/categorias")
-//                        .param("id", "1")
-//                        .param("nombre", "Categoria")
-//                        .param("Descripcion", "Descripcion"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/categorias"));
-//
-//        verify(categoriaRepository).save(any(Categoria.class));
     }
 
     @Test
@@ -124,7 +116,7 @@ public class CategoriaPartialIntegratedTest {
     @DisplayName("Test de integración parcial para guardar una categoria actualizada, de categoriaController")
     void saveCategoriaUpdate() throws Exception {
         Categoria categoria = Categoria.builder().id(1L).nombre("Categoria").build();
-        when(categoriaRepository.existsById(1L)).thenReturn(true);
+        when(categoriaRepository.findByNombre("Categoria Actualizada")).thenReturn(Optional.empty());
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
 
         mockMvc.perform(post("/categorias")
@@ -134,7 +126,7 @@ public class CategoriaPartialIntegratedTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/categorias"));
 
-        verify(categoriaRepository).existsById(1L);
+        verify(categoriaRepository).findByNombre("Categoria Actualizada");
         verify(categoriaRepository).findById(1L);
         verify(categoriaRepository).save(any(Categoria.class));
     }
