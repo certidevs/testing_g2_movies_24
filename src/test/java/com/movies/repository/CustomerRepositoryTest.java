@@ -1,7 +1,6 @@
-package com.movies.RepositoryTest;
+package com.movies.repository;
 
 import com.movies.model.*;
-import com.movies.repository.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -15,5 +15,13 @@ public interface ValoracionRepository extends JpaRepository<Valoracion, Long> {
         @Query("SELECT v FROM Valoracion v WHERE v.customer.id = :customerId")
         List<Valoracion> findByCustomerId(@Param("customerId") Long customerId);
 
+        @Query("SELECT v FROM Valoracion v WHERE v.movie.id = :movieId")
+        List<Valoracion> findByMovieId(@Param("movieId") Long movieId);
+
+        @Query("SELECT AVG(v.puntuacion) FROM Valoracion v WHERE v.movie.id = :movieId")
+        Double findAveragePuntuacionByMovieId(@Param("movieId") Long movieId);
+
+        @Query("SELECT v FROM Valoracion v WHERE v.puntuacion >= :minPuntuacion")
+        List<Valoracion> findByMinPuntuacion(@Param("minPuntuacion") int minPuntuacion);
 
 }
