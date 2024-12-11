@@ -113,7 +113,7 @@ public class CategoriaControllerUnitTest {
     @DisplayName("Test unitario guardar categoria nueva de categoriaController")
     void saveCategoriaNew(){
         Categoria categoria = new Categoria();
-        String view = categoriaController.saveCategoria(categoria);
+        String view = categoriaController.saveCategoria(categoria, model);
         assertEquals("redirect:/categorias", view);
         verify(categoriaRepository).save(categoria);
     }
@@ -123,12 +123,12 @@ public class CategoriaControllerUnitTest {
     void saveCategoriaUpdate(){
         Categoria categoria = Categoria.builder().id(1L).build();
         Categoria categoriaUpdate = Categoria.builder().id(1L).nombre("Editado").build();
-        when(categoriaRepository.existsById(1L)).thenReturn(true);
+        when(categoriaRepository.findByNombre("Editado")).thenReturn(Optional.empty());
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
-        String view = categoriaController.saveCategoria(categoriaUpdate);
+        String view = categoriaController.saveCategoria(categoriaUpdate, model);
         assertEquals("redirect:/categorias", view);
+        verify(categoriaRepository).findByNombre("Editado");
         verify(categoriaRepository).findById(1L);
-        verify(categoriaRepository).existsById(1L);
         verify(categoriaRepository).save(categoria);
         assertEquals(categoriaUpdate.getNombre(), categoria.getNombre());
     }

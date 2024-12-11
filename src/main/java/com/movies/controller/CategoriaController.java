@@ -71,17 +71,22 @@ public class CategoriaController {
     }
 
     @PostMapping("categorias")
-    public String saveCategoria(@ModelAttribute Categoria categoria) {
+    public String saveCategoria(@ModelAttribute Categoria categoria, Model model) {
+        // Verificar si ya existe una categoría con el mismo nombre
+        Optional<Categoria> existingCategoria = categoriaRepository.findByNombre(categoria.getNombre());
+        if (existingCategoria.isPresent() && !existingCategoria.get().getId().equals(categoria.getId())) {
+            model.addAttribute("error", "Ya existe una categoría con este nombre.");
+            return "categoria-form";
+        }
+
         if (categoria.getId() == null) {
             categoriaRepository.save(categoria);
         } else {
-            if (categoriaRepository.existsById(categoria.getId())) {
-                categoriaRepository.findById(categoria.getId())
-                        .ifPresent(categoriaDB -> {
-                            BeanUtils.copyProperties(categoria, categoriaDB, "id");
-                            categoriaRepository.save(categoriaDB);
-                        });
-            }
+            categoriaRepository.findById(categoria.getId())
+                    .ifPresent(categoriaDB -> {
+                        BeanUtils.copyProperties(categoria, categoriaDB, "id");
+                        categoriaRepository.save(categoriaDB);
+                    });
         }
         return "redirect:/categorias";
     }
