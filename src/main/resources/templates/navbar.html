@@ -3,9 +3,8 @@
 <body>
 <nav th:fragment="nav1" class="navbar navbar-expand-lg bg-success" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand text-white" href="#">
+        <a class="navbar-brand text-white" th:href="@{/}">
             <img th:src="@{/logo-image.jpg}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-
             App
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarApp" aria-controls="navbarApp" aria-expanded="false" aria-label="Alternar navegación">
@@ -44,4 +43,3 @@
 </nav>
 </body>
 </html>
-
