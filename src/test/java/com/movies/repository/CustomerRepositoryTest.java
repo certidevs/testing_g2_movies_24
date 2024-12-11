@@ -40,8 +40,8 @@ public class CustomerRepositoryTest {
         // Crear una lista de películas simuladas para el test.
         // Se configuran con datos básicos como ID, nombre, año y duración.
         List<Movie> movies = Arrays.asList(
-                Movie.builder().id(1L).name("Película 1").year(2024).duration(120).build(),
-                Movie.builder().id(2L).name("Película 2").year(2025).duration(60).build()
+                Movie.builder().name("Película 1").year(2024).duration(120).build(),
+                Movie.builder().name("Película 2").year(2025).duration(60).build()
         );
         // Guardar las películas en el repositorio para que estén disponibles en la base de datos.
         movieRepository.saveAll(movies);
@@ -49,8 +49,8 @@ public class CustomerRepositoryTest {
         // Crear una lista de clientes simulados para el test.
         // Cada cliente tiene un ID y un nombre configurados.
         List<Customer> customers = Arrays.asList(
-                Customer.builder().id(1L).nombre("Cliente 1").build(),
-                Customer.builder().id(2L).nombre("Cliente 2").build()
+                Customer.builder().nombre("Cliente 1").build(),
+                Customer.builder().nombre("Cliente 2").build()
         );
         // Guardar los clientes en el repositorio.
         customerRepository.saveAll(customers);
@@ -58,8 +58,8 @@ public class CustomerRepositoryTest {
         // Crear una lista de alquileres simulados que asocian películas y clientes.
         // Se asignan clientes y películas a cada alquiler.
         List<Rental> rentals = Arrays.asList(
-                Rental.builder().id(1L).movie(movies.get(0)).customer(customers.get(0)).build(), // Cliente 1 alquila Película 1.
-                Rental.builder().id(2L).movie(movies.get(0)).customer(customers.get(1)).build()  // Cliente 2 alquila Película 1.
+                Rental.builder().movie(movies.get(0)).customer(customers.get(0)).build(), // Cliente 1 alquila Película 1.
+                Rental.builder().movie(movies.get(0)).customer(customers.get(1)).build()  // Cliente 2 alquila Película 1.
         );
         // Guardar los alquileres en el repositorio.
         rentalRepository.saveAll(rentals);
@@ -95,8 +95,8 @@ public class CustomerRepositoryTest {
     @DisplayName("Prueba del método findByNombre ")
     void testFindByNombre() {
         List<Customer> customers = Arrays.asList(
-                Customer.builder().id(1L).nombre("Juan").build(),
-                Customer.builder().id(2L).nombre("Juan").build()
+                Customer.builder().nombre("Juan").build(),
+                Customer.builder().nombre("Juan").build()
         );
         customerRepository.saveAll(customers);
         List<Customer> result = customerRepository.findByNombre("Juan");
