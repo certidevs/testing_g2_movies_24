@@ -65,9 +65,9 @@ public class MovieFormTest {
         driver.get("http://localhost:8080/movies/new");
         driver.navigate().refresh();
         String title = driver.getTitle();
-        assertEquals("Formulario de Película", title);
+        assertEquals("Formulario películas", title);
         String header = driver.findElement(By.id("movie_form_h1")).getText();
-        assertEquals("Formulario peliculas", header);
+        assertEquals("Formulario de Película", header);
     }
 
     @Test

@@ -65,4 +65,3 @@ public class CategoriaFormTest {
         assertEquals("Crear Categoria", header);
     }
 }
-

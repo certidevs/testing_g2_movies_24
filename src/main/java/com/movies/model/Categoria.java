@@ -38,4 +38,3 @@ public class Categoria {
     private Set<Movie> movies = new HashSet<>();
 
 }
-
