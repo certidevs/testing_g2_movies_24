@@ -196,6 +196,9 @@
 			</executions>
 			<configuration>
 				<includes>
+					<include></include>
+					<include>**/*ServiceTest.java</include>
+					<include>**/*RepositoryTest.java</include>
 					<include>**/*ParcialIntegratedTest.java</include>
 					<include>**/*IntegrationTest.java</include>
 					<include>**/SeleniumTestUI/**/*Test.java</include>
