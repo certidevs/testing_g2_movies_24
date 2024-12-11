@@ -29,6 +29,7 @@ public class CustomerApiControllerTest {
     @MockBean
     private CustomerRepository customerRepository;
 
+    @MockBean
     private Customer customer;
 
     @BeforeEach

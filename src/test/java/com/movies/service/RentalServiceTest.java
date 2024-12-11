@@ -22,9 +22,11 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-@Transactional
+//@Transactional
 @ExtendWith(MockitoExtension.class)
 class RentalServiceTest {
+    @InjectMocks
+    private RentalService rentalService;
 
     @Mock
     private RentalRepository rentalRepository;
@@ -35,13 +37,15 @@ class RentalServiceTest {
     @Mock
     private CustomerRepository customerRepository;
 
-    @InjectMocks
-    private RentalService rentalService;
-
+    @Mock
     private Movie movie;
+    @Mock
     private Customer customer;
+    @Mock
     private Rental rental;
+    @Mock
     private Rental rental1;
+    @Mock
     private Rental rental2;
 
     @BeforeEach
