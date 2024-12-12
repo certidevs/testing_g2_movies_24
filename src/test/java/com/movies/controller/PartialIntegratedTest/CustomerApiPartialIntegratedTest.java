@@ -10,9 +10,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -145,5 +147,97 @@ public class CustomerApiPartialIntegratedTest {
 
         mockMvc.perform(delete("/api/customers/delete/1"))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    public void testPartialUpdate_Success() throws Exception {
+        Long customerId = 1L;
+        Customer existingCustomer = new Customer();
+        existingCustomer.setId(customerId);
+        existingCustomer.setNombre("Juan");
+        existingCustomer.setApellido("Pérez");
+        existingCustomer.setEmail("juan@example.com");
+
+        Customer updateCustomer = new Customer();
+        updateCustomer.setNombre("Carlos");
+
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(existingCustomer));
+
+        mockMvc.perform(patch("/api/customers/{id}", customerId)
+                        .contentType("application/merge-patch+json")
+                        .content("{\"nombre\":\"Carlos\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombre").value("Carlos"))
+                .andExpect(jsonPath("$.apellido").value("Pérez"))
+                .andExpect(jsonPath("$.email").value("juan@example.com"));
+
+        verify(customerRepository).save(existingCustomer);
+    }
+
+    @Test
+    public void testPartialUpdate_CustomerNotFound() throws Exception {
+        Long customerId = 1L;
+        Customer updateCustomer = new Customer();
+        updateCustomer.setNombre("Carlos");
+
+        when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(patch("/api/customers/{id}", customerId)
+                        .contentType("application/merge-patch+json")
+                        .content("{\"nombre\":\"Carlos\"}"))
+                .andExpect(status().isNotFound());
+
+        verify(customerRepository, never()).save(any());
+    }
+
+    @Test
+    public void testPartialUpdate_BadRequest() throws Exception {
+        mockMvc.perform(patch("/api/customers/{id}", (Long)null)
+                        .contentType("application/merge-patch+json")
+                        .content("{\"nombre\":\"Carlos\"}"))
+                .andExpect(status().isNotFound());
+    }
+    @Test
+    public void testDeleteAll_Success() throws Exception {
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+
+        doNothing().when(customerRepository).deleteAllByIdInBatch(ids);
+
+        mockMvc.perform(delete("/api/customers/deleteAll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(ids)))
+                .andExpect(status().isNoContent());
+
+        verify(customerRepository).deleteAllByIdInBatch(ids);
+    }
+
+    @Test
+    public void testDeleteAll_Conflict() throws Exception {
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+
+        doThrow(new RuntimeException()).when(customerRepository).deleteAllByIdInBatch(ids);
+
+        mockMvc.perform(delete("/api/customers/deleteAll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(ids)))
+                .andExpect(status().isConflict());
+
+        verify(customerRepository).deleteAllByIdInBatch(ids);
+    }
+
+    @Test
+    public void testDeleteAll_BadRequest() throws Exception {
+        mockMvc.perform(delete("/api/customers/deleteAll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(null)))
+                .andExpect(status().isBadRequest());
+    }
+
+    private static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
