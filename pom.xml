@@ -196,7 +196,7 @@
 			</executions>
 			<configuration>
 				<includes>
-					<include></include>
+					<include>**/*ApiPartialIntegratedTest.java</include>
 					<include>**/*ServiceTest.java</include>
 					<include>**/*RepositoryTest.java</include>
 					<include>**/*ParcialIntegratedTest.java</include>
