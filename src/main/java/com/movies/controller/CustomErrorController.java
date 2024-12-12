@@ -29,7 +29,6 @@ public class CustomErrorController {
         model.addAttribute("status", httpStatus.value());
         model.addAttribute("error", httpStatus.getReasonPhrase());
         model.addAttribute("message", "La página que buscas no está disponible o ocurrió un error.");
-
         return "error"; // Nombre de la vista de error
     }
 
@@ -37,14 +36,9 @@ public class CustomErrorController {
      * Manejo de IllegalArgumentException (Errores 400).
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleIllegalArgument(
-            IllegalArgumentException ex, Model model,
-            HttpServletResponse response) {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
-        model.addAttribute("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
-        model.addAttribute("message", ex.getMessage());
+            IllegalArgumentException ex, Model model, HttpServletResponse response) {
+        setResponseAttributes(response, model, HttpStatus.BAD_REQUEST, ex.getMessage());
         return "error";
     }
 
@@ -52,31 +46,43 @@ public class CustomErrorController {
      * Manejo de NoSuchElementException (Errores 404).
      */
     @ExceptionHandler(NoSuchElementException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNoSuchElement(
-            NoSuchElementException ex, Model model,
-            HttpServletResponse response) {
-        response.setStatus(HttpStatus.NOT_FOUND.value());
-        model.addAttribute("status", HttpStatus.NOT_FOUND.value());
-        model.addAttribute("error", HttpStatus.NOT_FOUND.getReasonPhrase());
-        model.addAttribute("message", ex.getMessage());
+            NoSuchElementException ex, Model model, HttpServletResponse response) {
+        setResponseAttributes(response, model, HttpStatus.NOT_FOUND, ex.getMessage());
         return "error";
     }
 
     /**
-     * Manejo de errores generales (500).
+     * Manejo de ResponseStatusException (Errores definidos por ResponseStatus).
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public String handleResponseStatusException(
+            ResponseStatusException ex, Model model, HttpServletResponse response) {
+        setResponseAttributes(response, model, (HttpStatus) ex.getStatusCode(), ex.getReason());
+        return "error";
+    }
+
+    /**
+     * Manejo de RuntimeException (Errores 500).
      */
     @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleRuntimeException(
-            RuntimeException ex, Model model,
-            HttpServletResponse response) {
-        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        model.addAttribute("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        model.addAttribute("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        model.addAttribute("message", ex.getMessage());
+            RuntimeException ex, Model model, HttpServletResponse response) {
+        setResponseAttributes(response, model, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         return "error";
+    }
+
+    /**
+     * Método auxiliar para configurar atributos comunes de respuesta.
+     */
+    private void setResponseAttributes(HttpServletResponse response, Model model, HttpStatus status, String message) {
+        response.setStatus(status.value());
+        model.addAttribute("status", status.value());
+        model.addAttribute("error", status.getReasonPhrase());
+        model.addAttribute("message", message != null ? message : "Ha ocurrido un error inesperado.");
     }
 
 
 }
+
+
