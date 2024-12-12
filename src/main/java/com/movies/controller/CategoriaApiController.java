@@ -14,16 +14,17 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 @RestController
+@RequestMapping("/api")
 public class CategoriaApiController {
    public CategoriaRepository categoriaRepository;
 
-    @GetMapping("api/categorias")
+    @GetMapping("/categorias")
     @Operation(summary = "Obtener todas las categorías", description = "Devuelve una lista de todas las categorías")
     public ResponseEntity<List<Categoria>> findAll() {
         return ResponseEntity.ok(categoriaRepository.findAll());
     }
 
-    @GetMapping("api/categorias/{id}")
+    @GetMapping("/categorias/{id}")
     @Operation(summary = "Obtener categoría por ID", description = "Devuelve una categoría específica según su ID")
     public ResponseEntity<Categoria> findById(@PathVariable Long id) {
         return categoriaRepository.findById(id)
@@ -31,7 +32,7 @@ public class CategoriaApiController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoría no encontrada"));
     }
 
-    @PostMapping("api/categorias/new")
+    @PostMapping("/categorias/new")
     @Operation(summary = "Crear una nueva categoría", description = "Crea una nueva categoría en la base de datos")
     public ResponseEntity<Categoria> create(@RequestBody Categoria categoria) {
         if (categoria.getId() != null) {
@@ -41,7 +42,7 @@ public class CategoriaApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCategoria);
     }
 
-    @PutMapping("api/categorias/update/{id}")
+    @PutMapping("/categorias/update/{id}")
     @Operation(summary = "Actualizar categoría", description = "Actualiza una categoría existente")
     public ResponseEntity<Categoria> update(@PathVariable Long id, @RequestBody Categoria categoria) {
         return categoriaRepository.findById(id)
@@ -54,7 +55,7 @@ public class CategoriaApiController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoría no encontrada"));
     }
 
-    @DeleteMapping("api/categorias/delete/{id}")
+    @DeleteMapping("/categorias/delete/{id}")
     @Operation(summary = "Eliminar categoría", description = "Elimina una categoría específica por su ID")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         if (!categoriaRepository.existsById(id)) {

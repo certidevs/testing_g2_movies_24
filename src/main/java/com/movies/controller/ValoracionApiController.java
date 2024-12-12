@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 @AllArgsConstructor
 @RestController
+@RequestMapping("/api")
 @Slf4j
 public class ValoracionApiController {
     private ValoracionRepository valoracionRepository;
@@ -20,14 +21,14 @@ public class ValoracionApiController {
     private MovieRepository movieRepository;
 
     // Obtener todas las valoraciones
-    @GetMapping("api/valoraciones")
+    @GetMapping("/valoraciones")
     @Operation(summary = "Obtener todas las valoraciones", description = "Devuelve una lista de todas las valoraciones registradas")
     public ResponseEntity<List<Valoracion>> findAll() {
         return ResponseEntity.ok(valoracionRepository.findAll());
     }
 
     // Obtener una valoración por su ID
-    @GetMapping("api/valoraciones/{id}")
+    @GetMapping("/valoraciones/{id}")
     @Operation(summary = "Obtener valoración por ID", description = "Devuelve una valoración específica según su ID")
     public ResponseEntity<Valoracion> findById(@PathVariable Long id) {
         return valoracionRepository.findById(id)
@@ -36,7 +37,7 @@ public class ValoracionApiController {
     }
 
     // Crear una nueva valoración
-    @PostMapping("api/valoraciones/new")
+    @PostMapping("/valoraciones/new")
     @Operation(summary = "Crear nueva valoración", description = "Crea una nueva valoración para una película y un cliente")
     public ResponseEntity<Valoracion> createValoracion(@RequestBody Valoracion valoracion) {
         if (valoracion.getId() != null) {
@@ -52,7 +53,7 @@ public class ValoracionApiController {
 
 
     // Actualizar una valoración existente
-    @PutMapping("api/valoraciones/update/{id}")
+    @PutMapping("/valoraciones/update/{id}")
     @Operation(summary = "Actualizar valoración", description = "Actualiza los datos de una valoración existente")
     public ResponseEntity<Valoracion> update(@PathVariable Long id, @RequestBody Valoracion valoracion) {
         return valoracionRepository.findById(id)
@@ -79,7 +80,7 @@ public class ValoracionApiController {
     }
 
     // Eliminar una valoración por su ID
-    @DeleteMapping("api/valoraciones/delete/{id}")
+    @DeleteMapping("/valoraciones/delete/{id}")
     @Operation(summary = "Eliminar valoración", description = "Elimina una valoración específica por su ID")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         if (!valoracionRepository.existsById(id)) {

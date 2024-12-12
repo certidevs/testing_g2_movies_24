@@ -14,19 +14,20 @@ import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
+@RequestMapping("/api")
 @RestController
 public class CustomerApiController {
     private CustomerRepository customerRepository;
 
     // Métodos GET
     // Metodo que nos devuelva un saludo
-    @GetMapping("api/welcome") // localhost:8080/welcome
+    @GetMapping("/welcome") // localhost:8080/welcome
     public ResponseEntity<String> welcome(){
         return ResponseEntity.ok("Bienvenido a un controlador de Spring");
     }
 
     // Metodo que captura un parámetro de la URL
-    @GetMapping("api/user") // localhost:8080/user?name=Daniela
+    @GetMapping("/user") // localhost:8080/user?name=Daniela
     public ResponseEntity<String> getUserName(@RequestParam(required = false) String name) {
         return ResponseEntity.ok("Welcome user " + name);
     }
@@ -34,7 +35,7 @@ public class CustomerApiController {
     // Métodos CRUD
     // Métodos GET
     // Metodo que nos devuelva todos los clientes
-    @GetMapping("api/customers") // localhost:8080/
+    @GetMapping("/customers") // localhost:8080/
     @Operation(
             summary = "Obtener detalles de un recurso",
             description = "Esta operación devuelve información detallada sobre un recurso específico"
@@ -44,7 +45,7 @@ public class CustomerApiController {
     }
 
     // Metodo que devuelva un cliente por su id
-    @GetMapping("api/customers/{id}") // localhost:8080/customers/2
+    @GetMapping("/customers/{id}") // localhost:8080/customers/2
     public ResponseEntity<Customer> findById(@PathVariable Long id) {
         return customerRepository.findById(id)
                 .map(customer -> {
@@ -55,7 +56,7 @@ public class CustomerApiController {
 
     // Metodo GET
     // Metodo para encontrar clientes que han visto una película específica
-    @GetMapping("api/customers-by-movie/{movieId}") // localhost:8080/customers-by-movie/{movieId}
+    @GetMapping("/customers-by-movie/{movieId}") // localhost:8080/customers-by-movie/{movieId}
     public ResponseEntity<List<Customer>> findCustomersByMovie(@PathVariable Long movieId) {
         var customers = customerRepository.findByRentedMovie(movieId);
 
@@ -69,7 +70,7 @@ public class CustomerApiController {
 
     // Metodo POST
     // Metodo para crear nuevo cliente
-    @PostMapping("api/customers/new")
+    @PostMapping("/customers/new")
     public ResponseEntity<Customer> create(@RequestBody Customer customer) {
         if(customer.getId() != null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -79,7 +80,7 @@ public class CustomerApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(customer);
     }
 /*encontrar cliente por filtro*/
-    @PostMapping("api/customers/filter")
+    @PostMapping("/customers/filter")
     public ResponseEntity<List<Customer>> findByFilter(@RequestBody Customer customer) {
         var customers = customerRepository.findAll(Example.of(customer));
 
@@ -89,7 +90,7 @@ public class CustomerApiController {
     // Metodo PUT
     // Metodo para actualizar un cliente
     // Se actualiza el objeto completo y los campos que no se envíen se ponen a null
-    @PutMapping("api/customers/update")
+    @PutMapping("/customers/update")
     public ResponseEntity<Customer> update(@RequestBody Customer customer) {
         if(customer.getId() == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -101,7 +102,7 @@ public class CustomerApiController {
 
     // Metodo PATCH
     // Actualización parcial de un cliente
-    @PatchMapping(value = "api/customers/{id}", consumes = {"application/json", "application/merge-patch+json"})
+    @PatchMapping(value = "/customers/{id}", consumes = {"application/json", "application/merge-patch+json"})
     public ResponseEntity<Customer> partialUpdate(
             @PathVariable Long id, @RequestBody Customer customer
     ) {
@@ -134,7 +135,7 @@ public class CustomerApiController {
 
     // Metodo DELETE
     // Metodo para eliminar un cliente
-    @DeleteMapping("api/customers/delete/{id}")
+    @DeleteMapping("/customers/delete/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         try {
             customerRepository.deleteById(id);
@@ -145,7 +146,7 @@ public class CustomerApiController {
     }
 
     // Metodo para eliminar múltiples clientes cuyo ID esté en la lista
-    @DeleteMapping("api/customers/deleteAll")
+    @DeleteMapping("/customers/deleteAll")
     public ResponseEntity<Void> deleteAll(@RequestBody List<Long> ids) {
         try {
             customerRepository.deleteAllByIdInBatch(ids);
