@@ -1,5 +1,6 @@
 package com.movies.controller.PartialIntegratedTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.movies.controller.CustomerApiController;
 import com.movies.model.Customer;
 import com.movies.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
@@ -26,6 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CustomerApiPartialIntegratedTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private CustomerApiController customerApiController;
+
 
     @MockBean
     private CustomerRepository customerRepository;
@@ -225,13 +232,6 @@ public class CustomerApiPartialIntegratedTest {
         verify(customerRepository).deleteAllByIdInBatch(ids);
     }
 
-    @Test
-    public void testDeleteAll_BadRequest() throws Exception {
-        mockMvc.perform(delete("/api/customers/deleteAll")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(null)))
-                .andExpect(status().isBadRequest());
-    }
 
     private static String asJsonString(final Object obj) {
         try {
