@@ -25,6 +25,7 @@ sonar cloud cobertura Testing Proyecto-> https://sonarcloud.io/summary/overall?i
 
 Trello-> https://trello.com/invite/b/674b2ca2576f1b764a912f03/ATTI6773ce3597663e69580df547c9dbc4fb38865348/pfinal-peliculas-g2-java-sw
 
+swagger-> localhost:8080/swagger-ui/index.html
 
 
 

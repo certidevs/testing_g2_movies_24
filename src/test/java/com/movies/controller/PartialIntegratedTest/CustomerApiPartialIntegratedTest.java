@@ -3,6 +3,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.movies.model.Customer;
 import com.movies.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,6 +41,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("GET API CUSTOMERS")
     void testWelcome() throws Exception {
         mockMvc.perform(get("/api/welcome"))
                 .andExpect(status().isOk())
@@ -47,6 +49,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("GET API CUSTOMERS BY NAME")
     void testGetUserName() throws Exception {
         mockMvc.perform(get("/api/user?name=Daniela"))
                 .andExpect(status().isOk())
@@ -54,6 +57,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("GET API CUSTOMERS BY NAME NOT FOUND")
     void testFindAllCustomers() throws Exception {
         when(customerRepository.findAll()).thenReturn(List.of(customer));
 
@@ -63,6 +67,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("GET API CUSTOMERS BY ID")
     void testFindCustomerById() throws Exception {
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
@@ -72,6 +77,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("GET API CUSTOMERS BY ID NOT FOUND")
     void testFindCustomerByIdNotFound() throws Exception {
         when(customerRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -80,6 +86,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("POST API CUSTOMERS")
     void testCreateCustomer() throws Exception {
         Customer newCustomer = new Customer();
         newCustomer.setNombre("Ana");
@@ -96,6 +103,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("POST API CUSTOMERS BAD REQUEST")
     void testCreateCustomerBadRequest() throws Exception {
         customer.setId(1L);  // Simulando que ya tiene un ID, lo cual es un error.
         when(customerRepository.save(any(Customer.class))).thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
@@ -107,6 +115,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("PUT API CUSTOMERS")
     void testUpdateCustomer() throws Exception {
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
         when(customerRepository.save(any(Customer.class))).thenReturn(customer);
@@ -121,6 +130,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("delete API CUSTOMERS ")
     void testDeleteCustomer() throws Exception {
         doNothing().when(customerRepository).deleteById(1L);
 
@@ -129,6 +139,7 @@ public class CustomerApiPartialIntegratedTest {
     }
 
     @Test
+    @DisplayName("delete API CUSTOMERS NOT FOUND")
     void testDeleteCustomerNotFound() throws Exception {
         doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(customerRepository).deleteById(1L);
 

@@ -1,16 +1,17 @@
 package com.movies.repository;
 
-import com.movies.model.Categoria;
-import com.movies.model.Movie;
+import com.movies.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class MovieRepositoryTest {
@@ -19,36 +20,66 @@ public class MovieRepositoryTest {
     private MovieRepository movieRepository;
 
     @Autowired
-    private CategoriaRepository categoriaRepository;
+    private CustomerRepository customerRepository;
 
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+    private Customer customer1;
+    private Customer customer2;
     private Categoria categoria;
+    private Movie movie1;
+    private Movie movie2;
 
     @BeforeEach
     public void setUp() {
        categoria = new Categoria();
         categoria.setNombre("Action");
+        categoria.setDescripcion("Accion y Aventura");
         categoria = categoriaRepository.save(categoria);
+        customer1 = Customer.builder()
+                .nombre("Juan")
+                .apellido("Pérez")
+                .email("juan@example.com")
+                .build();
+        customer2 = Customer.builder()
+                .nombre("Ana")
+                .apellido("López")
+                .email("ana@example.com")
+                .build();
+        customerRepository.saveAll(List.of(customer1, customer2));
 
-        Movie movie1 = Movie.builder()
+        movie1 = Movie.builder()
                 .name("Movie 1")
                 .duration(120)
                 .year(2020)
                 .categoria(categoria)
+                .customers(Collections.singleton(customer2))
                 .available(true)
                 .rentalPricePerDay(5.99)
                 .build();
 
-        Movie movie2 = Movie.builder()
+        movie2 = Movie.builder()
                 .name("Movie 2")
                 .duration(90)
                 .year(1999)
                 .categoria(categoria)
+                .customers(Collections.singleton(customer2))
                 .available(false)
                 .rentalPricePerDay(3.99)
                 .build();
+        movieRepository.saveAll(List.of(movie1, movie2));
 
-        movieRepository.save(movie1);
-        movieRepository.save(movie2);
+    }
+    @Test
+    @DisplayName("Test find by customer id")
+    void testFindByCustomerId() {
+        // Buscar películas alquiladas por customer1
+        List<Movie> moviesForCustomer1 = movieRepository.findByCustomerId(customer1.getId());
+        List<Movie> moviesForCustomer2 = movieRepository.findByCustomerId(customer2.getId());
+        assertNotNull(moviesForCustomer1, "La lista de películas no debería ser nula.");
+        assertEquals(0, moviesForCustomer1.size(), "Customer 1 debería tener 0 películas asociadas.");
+        assertNotNull(moviesForCustomer2, "La lista de películas no debería ser nula.");
+
     }
 
     @Test
@@ -88,4 +119,5 @@ public class MovieRepositoryTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getName()).isEqualTo("Movie 2");
     }
+
 }
