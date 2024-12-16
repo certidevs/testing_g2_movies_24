@@ -28,7 +28,8 @@ public class Main {
 			Customer customer1 = Customer.builder()
 					.nombre("Cliente")
 					.apellido("1")
-					.email("123@gmail.com")
+					.email("123@gmai" +
+							"l.com")
 					.password("123")
 					.build();
 			Customer customer2 = Customer.builder()
