@@ -16,11 +16,13 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.openqa.selenium.WebDriver;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 //@Disabled
+@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CategoriaDetailTest {
 
@@ -40,10 +42,10 @@ public class CategoriaDetailTest {
 
     @BeforeEach
     void setUp() {
-        categoriaRepository.deleteAllInBatch();
+        valoracionRepository.deleteAllInBatch();
         movieRepository.deleteAllInBatch();
         customerRepository.deleteAllInBatch();
-        valoracionRepository.deleteAllInBatch();
+        categoriaRepository.deleteAllInBatch();
         //driver = new ChromeDriver();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless"); // para que no se abra el navegador

@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 //@Disabled
+import org.springframework.transaction.annotation.Transactional;
+@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CategoriaFormTest {
     @Autowired
@@ -36,10 +38,10 @@ public class CategoriaFormTest {
 
     @BeforeEach
     void setUp() {
-        categoriaRepository.deleteAllInBatch();
-        movieRepository.deleteAllInBatch();
-        categoriaRepository.deleteAllInBatch();
         valoracionRepository.deleteAllInBatch();
+        movieRepository.deleteAllInBatch();
+        customerRepository.deleteAllInBatch();
+        categoriaRepository.deleteAllInBatch();
         //driver = new ChromeDriver();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless"); // para que no se abra el navegador
