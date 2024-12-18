@@ -22,8 +22,8 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled
-@Transactional
+//@Disabled
+//@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CategoriaDetailTest {
 
@@ -43,9 +43,7 @@ public class CategoriaDetailTest {
 
     @BeforeEach
     void setUp() {
-        valoracionRepository.deleteAllInBatch();
-        movieRepository.deleteAllInBatch();
-        customerRepository.deleteAllInBatch();
+
         categoriaRepository.deleteAllInBatch();
         //driver = new ChromeDriver();
         ChromeOptions options = new ChromeOptions();
@@ -65,7 +63,7 @@ public class CategoriaDetailTest {
     @Test
     @DisplayName("Test de detalle de categoría")
     public void testCategoriaDetailPage() {
-        Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).nombre("Categoria").descripcion("Descripcion").build());
+        Categoria categoria = categoriaRepository.save(Categoria.builder().nombre("Categoria").descripcion("Descripcion").build());
         driver.get("http://localhost:8080/categorias/" + categoria.getId());
         driver.navigate().refresh();
 

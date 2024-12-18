@@ -19,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 //@Disabled
 import org.springframework.transaction.annotation.Transactional;
-@Transactional
+//@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CategoriaFormTest {
     @Autowired
@@ -38,9 +38,6 @@ public class CategoriaFormTest {
 
     @BeforeEach
     void setUp() {
-        valoracionRepository.deleteAllInBatch();
-        movieRepository.deleteAllInBatch();
-        customerRepository.deleteAllInBatch();
         categoriaRepository.deleteAllInBatch();
         //driver = new ChromeDriver();
         ChromeOptions options = new ChromeOptions();

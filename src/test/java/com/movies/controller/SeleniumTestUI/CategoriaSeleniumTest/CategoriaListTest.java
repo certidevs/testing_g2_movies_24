@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-@Disabled
-@Transactional
+//@Disabled
+//@Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CategoriaListTest {
     @Autowired
@@ -38,10 +38,9 @@ public class CategoriaListTest {
 
     @BeforeEach
     void setUp() {
-        valoracionRepository.deleteAllInBatch();
-        movieRepository.deleteAllInBatch();
-        customerRepository.deleteAllInBatch();
         categoriaRepository.deleteAllInBatch();
+        categoriaRepository.save(Categoria.builder().nombre("Categoria").build());
+
 
         //driver = new ChromeDriver();
         ChromeOptions options = new ChromeOptions();
@@ -59,7 +58,7 @@ public class CategoriaListTest {
     @Test
     @DisplayName("Test Lista Categorias título y cabecera ")
     public void testCategoriaListPageTitleAndHeader() {
-        categoriaRepository.save(Categoria.builder().id(1L).nombre("Categoria").descripcion("Descripcion").build());
+        categoriaRepository.save(Categoria.builder().nombre("Categoria").descripcion("Descripcion").build());
         driver.get("http://localhost:8080/categorias");
         driver.navigate().refresh();
         String title =driver.getTitle();
@@ -71,7 +70,7 @@ public class CategoriaListTest {
     @Test
     @DisplayName("Test Crear nueva categoría")
     public void testCreateNewCategoriaButton() {
-        categoriaRepository.save(Categoria.builder().id(1L).nombre("Categoria").descripcion("Descripcion").build());
+        categoriaRepository.save(Categoria.builder().nombre("Categoria").descripcion("Descripcion").build());
         driver.get("http://localhost:8080/categorias");
         driver.navigate().refresh();
         WebElement createButton = driver.findElement(By.id("btnCreate_categoria"));
@@ -85,7 +84,7 @@ public class CategoriaListTest {
     @Test
     @DisplayName("Test contenido de la tabla de categorías")
     public void testCategoriaTableContent() {
-        categoriaRepository.save(Categoria.builder().id(1L).nombre("Categoria").descripcion("Descripcion").build());
+        categoriaRepository.save(Categoria.builder().nombre("Categoria").descripcion("Descripcion").build());
         driver.get("http://localhost:8080/categorias");
         driver.navigate().refresh();
         WebElement categoriaTable = driver.findElement(By.id("categoria_list_table"));
@@ -104,7 +103,7 @@ public class CategoriaListTest {
     @Test
     @DisplayName("Test acciones de categoría")
     public void testCategoriaActions() {
-        categoriaRepository.save(Categoria.builder().id(1L).nombre("Ana").descripcion("Descripcion").build());
+        categoriaRepository.save(Categoria.builder().nombre("Ana").descripcion("Descripcion").build());
         driver.get("http://localhost:8080/categorias");
         driver.navigate().refresh();
         List<WebElement> actionButtons = driver.findElements(By.cssSelector("td a"));
@@ -131,7 +130,7 @@ public class CategoriaListTest {
     @Test
     @DisplayName("Test mensaje de no categorías")
     public void testNoCategoriasMessage() {
-        categoriaRepository.save(Categoria.builder().id(1L).nombre("Categoria").descripcion("Descripcion").build());
+        categoriaRepository.save(Categoria.builder().nombre("Categoria").descripcion("Descripcion").build());
         driver.get("http://localhost:8080/categorias");
         driver.navigate().refresh();
         List<WebElement> noCategoriasMessage = driver.findElements(By.id("noCategorias"));
