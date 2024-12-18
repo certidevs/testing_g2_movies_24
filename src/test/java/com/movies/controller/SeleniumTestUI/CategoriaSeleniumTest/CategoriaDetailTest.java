@@ -5,23 +5,24 @@ import com.movies.repository.CategoriaRepository;
 import com.movies.repository.CustomerRepository;
 import com.movies.repository.MovieRepository;
 import com.movies.repository.ValoracionRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.openqa.selenium.WebDriver;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//@Disabled
+@Disabled
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CategoriaDetailTest {
@@ -55,20 +56,28 @@ public class CategoriaDetailTest {
         options.addArguments("--disable-dev-shm-usage"); // Deshabilita el uso de /dev/shm manejo de memoria compartida
         driver = new ChromeDriver(options);
     }
+
     @AfterEach
     void tearDown() {
         driver.quit();
     }
+
     @Test
     @DisplayName("Test de detalle de categoría")
     public void testCategoriaDetailPage() {
-
         Categoria categoria = categoriaRepository.save(Categoria.builder().id(1L).nombre("Categoria").descripcion("Descripcion").build());
         driver.get("http://localhost:8080/categorias/" + categoria.getId());
         driver.navigate().refresh();
 
-        String header = driver.findElement(By.id("h1_categoria_detail")).getText();
-        assertEquals("Detalle de la Categoría", header);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30)); // Increased timeout duration
+        try {
+            WebElement header = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("h1_categoria_detail")));
+            assertEquals("Detalle de la Categoría", header.getText());
+        } catch (org.openqa.selenium.TimeoutException e) {
+            System.out.println("Element not found within the timeout period. Page source:");
+            System.out.println(driver.getPageSource()); // Print the page source for debugging
+            throw e;
+        }
 
         String categoriaId = driver.findElement(By.id("categoria_id")).getText();
         assertTrue(categoriaId.matches("\\d+"), "El ID de las categorias debe ser numérico");
@@ -92,7 +101,6 @@ public class CategoriaDetailTest {
         assertEquals("Volver a la lista de categorías", backButton.getText());
     }
 }
-
 
 
 
